@@ -50,7 +50,7 @@ Submit a scenario to the demo API. The backend simulates risk-neutral terminal p
     <label class="demo-field"><span>Strike</span><input name="strike" type="number" value="100" min="1" step="1"></label>
     <label class="demo-field"><span>Rate</span><input name="rate" type="number" value="0.03" step="0.01"></label>
     <label class="demo-field"><span>Volatility</span><input name="volatility" type="number" value="0.20" min="0.01" step="0.01"></label>
-    <label class="demo-field"><span>Maturity (years)</span><input name="maturity" type="number" value="1" min="0.01" step="0.25"></label>
+    <label class="demo-field"><span>Maturity (years)</span><input name="maturity" type="number" value="1" min="0.25" step="0.25"></label>
     <label class="demo-field"><span>Paths</span><input name="paths" type="number" value="25000" min="1000" max="100000" step="1000"></label>
     <label class="demo-field"><span>Option</span><select name="optionType"><option value="call">Call</option><option value="put">Put</option></select></label>
     <label class="demo-field"><span>Seed</span><input name="seed" type="number" value="42" min="1" step="1"></label>
