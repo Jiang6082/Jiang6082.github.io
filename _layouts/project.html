@@ -14,4 +14,4 @@ layout: default
   {% if page.metrics %}<dl class="metric-grid">{% for metric in page.metrics %}<div><dt>{{ metric.label }}</dt><dd>{{ metric.value }}</dd></div>{% endfor %}</dl>{% endif %}
   <div class="prose">{{ content }}</div>
 </article>
-<script src="{{ '/assets/js/demos.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+<script src="{{ '/assets/js/demos.js' | relative_url }}?v={{ site.time | date: '%s' }}&amp;page={{ page.slug }}"></script>
