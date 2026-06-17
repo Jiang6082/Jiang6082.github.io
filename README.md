@@ -2,6 +2,8 @@
 
 A static personal website built for GitHub Pages with Jekyll. Hosting is free and no database is required.
 
+The owner workspace is available at `https://jiang6082.github.io/studio/`. It opens GitHub's authenticated editor with prepared templates for diary entries and photo records. Only repository collaborators with write access can publish changes.
+
 ## Customize it
 
 1. Replace `Your Name` in `_config.yml` and `index.html`.

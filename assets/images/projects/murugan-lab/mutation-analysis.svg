@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mutation sequence analysis visualization</title>
+  <desc id="desc">A scientific dashboard showing a DNA sequence alignment, mutation counts, and positional distribution.</desc>
+  <rect width="1440" height="900" fill="#101d2b"/>
+  <text x="72" y="93" fill="#8ce0c2" font-family="monospace" font-size="18" letter-spacing="3">MUTATION ANALYZER / SEQUENCE 041025</text>
+  <text x="72" y="151" fill="#f3f4eb" font-family="Georgia, serif" font-size="47">Sequence quality &amp; mutation profile</text>
+  <rect x="72" y="193" width="1296" height="196" rx="16" fill="#17293a" stroke="#385268"/>
+  <text x="105" y="235" fill="#819aad" font-family="monospace" font-size="17">REFERENCE</text>
+  <text x="105" y="279" fill="#e7ecdf" font-family="monospace" font-size="23" letter-spacing="10">ATGCTACGTTACGATCGATCGGCTAGCTAACGTTAGC</text>
+  <text x="105" y="323" fill="#819aad" font-family="monospace" font-size="17">SAMPLE 07</text>
+  <text x="105" y="367" fill="#e7ecdf" font-family="monospace" font-size="23" letter-spacing="10">ATGCTACGTTACGAT</text>
+  <rect x="764" y="340" width="27" height="35" rx="4" fill="#e56950"/>
+  <text x="768" y="367" fill="#fff" font-family="monospace" font-size="23">T</text>
+  <text x="805" y="367" fill="#e7ecdf" font-family="monospace" font-size="23" letter-spacing="10">GATCGGCTAG</text>
+  <rect x="1181" y="340" width="27" height="35" rx="4" fill="#f1c75b"/>
+  <text x="1185" y="367" fill="#101d2b" font-family="monospace" font-size="23">G</text>
+  <text x="1222" y="367" fill="#e7ecdf" font-family="monospace" font-size="23" letter-spacing="10">TAAC</text>
+  <rect x="72" y="421" width="625" height="398" rx="16" fill="#17293a" stroke="#385268"/>
+  <text x="105" y="465" fill="#f3f4eb" font-family="Arial, sans-serif" font-size="22" font-weight="700">Mutations by position</text>
+  <line x1="120" y1="757" x2="654" y2="757" stroke="#567084" stroke-width="2"/>
+  <line x1="120" y1="510" x2="120" y2="757" stroke="#567084" stroke-width="2"/>
+  <g fill="#8ce0c2">
+    <rect x="145" y="710" width="25" height="47"/><rect x="185" y="682" width="25" height="75"/><rect x="225" y="721" width="25" height="36"/><rect x="265" y="632" width="25" height="125"/><rect x="305" y="694" width="25" height="63"/><rect x="345" y="575" width="25" height="182"/><rect x="385" y="658" width="25" height="99"/><rect x="425" y="540" width="25" height="217"/><rect x="465" y="675" width="25" height="82"/><rect x="505" y="608" width="25" height="149"/><rect x="545" y="703" width="25" height="54"/><rect x="585" y="649" width="25" height="108"/>
+  </g>
+  <g fill="#819aad" font-family="monospace" font-size="14"><text x="143" y="784">10</text><text x="263" y="784">40</text><text x="383" y="784">70</text><text x="498" y="784">100</text><text x="580" y="784">130</text></g>
+  <rect x="729" y="421" width="639" height="398" rx="16" fill="#17293a" stroke="#385268"/>
+  <text x="762" y="465" fill="#f3f4eb" font-family="Arial, sans-serif" font-size="22" font-weight="700">Mutation types</text>
+  <circle cx="930" cy="638" r="112" fill="none" stroke="#263f52" stroke-width="50"/>
+  <circle cx="930" cy="638" r="112" fill="none" stroke="#8ce0c2" stroke-width="50" stroke-dasharray="390 704" transform="rotate(-90 930 638)"/>
+  <circle cx="930" cy="638" r="112" fill="none" stroke="#e56950" stroke-width="50" stroke-dasharray="176 704" stroke-dashoffset="-390" transform="rotate(-90 930 638)"/>
+  <circle cx="930" cy="638" r="112" fill="none" stroke="#f1c75b" stroke-width="50" stroke-dasharray="98 704" stroke-dashoffset="-566" transform="rotate(-90 930 638)"/>
+  <g font-family="Arial, sans-serif" font-size="18">
+    <rect x="1100" y="548" width="16" height="16" rx="3" fill="#8ce0c2"/><text x="1131" y="563" fill="#d9e0e3">Substitution</text>
+    <rect x="1100" y="601" width="16" height="16" rx="3" fill="#e56950"/><text x="1131" y="616" fill="#d9e0e3">Deletion</text>
+    <rect x="1100" y="654" width="16" height="16" rx="3" fill="#f1c75b"/><text x="1131" y="669" fill="#d9e0e3">Insertion</text>
+  </g>
+  <text x="930" y="631" text-anchor="middle" fill="#f3f4eb" font-family="Georgia, serif" font-size="36">2,418</text>
+  <text x="930" y="661" text-anchor="middle" fill="#819aad" font-family="monospace" font-size="13">READS PASSED</text>
+</svg>
