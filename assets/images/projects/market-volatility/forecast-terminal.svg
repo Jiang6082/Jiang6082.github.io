@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Market volatility forecasting terminal</title>
+  <desc id="desc">A dark quantitative dashboard showing realized and forecast volatility, model metrics, and ETF coverage.</desc>
+  <rect width="1440" height="900" fill="#101713"/>
+  <rect x="48" y="42" width="1344" height="816" rx="20" fill="#17221c" stroke="#355044" stroke-width="2"/>
+  <text x="82" y="96" fill="#9ad9bc" font-family="monospace" font-size="17" letter-spacing="3">VOLATILITY RESEARCH / HELD-OUT TEST</text>
+  <text x="82" y="151" fill="#f3f0e7" font-family="Georgia, serif" font-size="44">Next-day realized volatility</text>
+  <g font-family="monospace" font-size="14">
+    <rect x="1060" y="75" width="112" height="38" rx="19" fill="#24372d"/><text x="1086" y="99" fill="#9ad9bc">14 ETFs</text>
+    <rect x="1184" y="75" width="160" height="38" rx="19" fill="#24372d"/><text x="1208" y="99" fill="#9ad9bc">36,804 rows</text>
+  </g>
+  <rect x="82" y="193" width="942" height="426" rx="14" fill="#111a15" stroke="#2d4439"/>
+  <text x="111" y="232" fill="#718d7e" font-family="monospace" font-size="14">REALIZED</text>
+  <line x1="111" y1="558" x2="988" y2="558" stroke="#355044"/>
+  <line x1="111" y1="468" x2="988" y2="468" stroke="#26382f"/>
+  <line x1="111" y1="378" x2="988" y2="378" stroke="#26382f"/>
+  <line x1="111" y1="288" x2="988" y2="288" stroke="#26382f"/>
+  <path d="M111 515 C160 520 173 477 218 492 S284 538 331 457 S405 383 446 423 S511 506 559 470 S622 337 674 369 S724 443 775 396 S839 249 884 310 S940 414 988 332" fill="none" stroke="#ef6a45" stroke-width="4"/>
+  <path d="M111 524 C166 514 180 493 226 486 S285 499 331 467 S400 417 446 428 S510 469 559 458 S623 388 674 382 S730 405 775 386 S837 320 884 323 S942 367 988 346" fill="none" stroke="#91dfbd" stroke-width="4"/>
+  <path d="M111 544 C166 534 181 513 226 506 S286 519 331 487 S400 437 446 448 S510 489 559 478 S623 408 674 402 S730 425 775 406 S837 340 884 343 S942 387 988 366 L988 326 C942 347 930 323 884 303 S837 300 775 366 S730 385 674 362 S623 368 559 438 S510 449 446 408 S400 397 331 447 S286 479 226 466 S166 494 111 504z" fill="#91dfbd" opacity=".11"/>
+  <g fill="#718d7e" font-family="monospace" font-size="13"><text x="111" y="588">JAN</text><text x="326" y="588">APR</text><text x="546" y="588">JUL</text><text x="765" y="588">OCT</text><text x="950" y="588">DEC</text></g>
+  <g font-family="monospace" font-size="14"><circle cx="765" cy="219" r="5" fill="#ef6a45"/><text x="779" y="224" fill="#a9b8af">Actual</text><circle cx="860" cy="219" r="5" fill="#91dfbd"/><text x="874" y="224" fill="#a9b8af">Forecast</text></g>
+  <g>
+    <rect x="1050" y="193" width="294" height="126" rx="14" fill="#203229"/>
+    <text x="1075" y="230" fill="#7e9b8b" font-family="monospace" font-size="13">TEST MAE</text>
+    <text x="1075" y="286" fill="#f3f0e7" font-family="Georgia, serif" font-size="46">0.002432</text>
+    <rect x="1050" y="337" width="294" height="126" rx="14" fill="#203229"/>
+    <text x="1075" y="374" fill="#7e9b8b" font-family="monospace" font-size="13">VS. 20D BASELINE</text>
+    <text x="1075" y="430" fill="#91dfbd" font-family="Georgia, serif" font-size="46">-14.74%</text>
+    <rect x="1050" y="481" width="294" height="138" rx="14" fill="#203229"/>
+    <text x="1075" y="518" fill="#7e9b8b" font-family="monospace" font-size="13">WINNING MODEL</text>
+    <text x="1075" y="561" fill="#f3f0e7" font-family="Georgia, serif" font-size="29">Random forest</text>
+    <text x="1075" y="590" fill="#91dfbd" font-family="monospace" font-size="13">R²  0.4874</text>
+  </g>
+  <rect x="82" y="649" width="1262" height="151" rx="14" fill="#111a15" stroke="#2d4439"/>
+  <text x="111" y="687" fill="#718d7e" font-family="monospace" font-size="13">ETF UNIVERSE</text>
+  <g fill="#24372d" stroke="#3a5849"><rect x="111" y="714" width="74" height="46" rx="8"/><rect x="197" y="714" width="74" height="46" rx="8"/><rect x="283" y="714" width="74" height="46" rx="8"/><rect x="369" y="714" width="74" height="46" rx="8"/><rect x="455" y="714" width="74" height="46" rx="8"/><rect x="541" y="714" width="74" height="46" rx="8"/><rect x="627" y="714" width="74" height="46" rx="8"/><rect x="713" y="714" width="74" height="46" rx="8"/><rect x="799" y="714" width="74" height="46" rx="8"/><rect x="885" y="714" width="74" height="46" rx="8"/><rect x="971" y="714" width="74" height="46" rx="8"/><rect x="1057" y="714" width="74" height="46" rx="8"/><rect x="1143" y="714" width="74" height="46" rx="8"/><rect x="1229" y="714" width="74" height="46" rx="8"/></g>
+  <g fill="#b9c9c0" font-family="monospace" font-size="14" text-anchor="middle"><text x="148" y="742">SPY</text><text x="234" y="742">QQQ</text><text x="320" y="742">IWM</text><text x="406" y="742">XLB</text><text x="492" y="742">XLC</text><text x="578" y="742">XLE</text><text x="664" y="742">XLF</text><text x="750" y="742">XLI</text><text x="836" y="742">XLK</text><text x="922" y="742">XLP</text><text x="1008" y="742">XLRE</text><text x="1094" y="742">XLU</text><text x="1180" y="742">XLV</text><text x="1266" y="742">XLY</text></g>
+</svg>

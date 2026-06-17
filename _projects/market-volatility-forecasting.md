@@ -5,8 +5,8 @@ order: 1
 summary: An end-to-end quantitative machine-learning pipeline for forecasting next-day realized volatility across 14 liquid U.S. equity and sector ETFs.
 tags: [Python, Machine Learning, Time Series, PyTorch]
 project_url: https://github.com/Jiang6082/market-volatility-forecasting
-image: /assets/images/projects/market-volatility/model-comparison.png
-image_alt: Bar chart comparing model error on the held-out test set
+image: /assets/images/projects/market-volatility/forecast-terminal.svg
+image_alt: Quantitative dashboard showing realized and forecast volatility
 metrics:
   - label: ETF-day observations
     value: 36,804
@@ -38,3 +38,25 @@ On the 2024&ndash;2025 held-out test period, the random forest produced the lowe
 ## Engineering depth
 
 The repository includes deterministic sample-data generation, download and feature CLIs, model artifacts, a self-contained visual dashboard, and tests for target alignment, adjusted-close policy, split ordering, leakage resistance, metrics, and reporting. The design makes every headline result traceable to generated output rather than a hand-written claim.
+
+## Try the forecasting calculation
+
+This live lab sends high-low observations to the project demo API. The backend calculates daily Parkinson volatility, a rolling mean, an EWMA estimate, and a blended next-day forecast. Edit any values to see how a wider trading range changes the estimate.
+
+<section class="demo-panel" data-demo="volatility">
+  <form class="demo-form">
+    <label class="demo-field demo-field-wide"><span>Daily high / low observations</span><textarea name="observations" rows="8">101.2,99.4
+101.8,100.1
+102.0,99.8
+101.4,100.2
+103.1,100.7
+102.8,101.1
+104.0,101.5
+103.2,101.8
+102.9,100.9
+104.4,102.0</textarea></label>
+    <button class="demo-submit" type="submit">Run forecast</button>
+  </form>
+  <div class="demo-status" aria-live="polite">Ready to calculate on the backend.</div>
+  <div class="demo-results"></div>
+</section>

@@ -39,3 +39,23 @@ Antithetic variates, moment matching, Sobol draws, Brownian bridges, and control
 ## Built as software
 
 The project is packaged with typed dataclasses, reproducible seeds, 43 tests, 85% coverage, Ruff, mypy, CI, MkDocs, pre-commit hooks, and a command-line interface. The result is both a numerical-methods experiment and a reusable piece of software.
+
+## Price an option
+
+Submit a scenario to the demo API. The backend simulates risk-neutral terminal prices with a seeded random generator, then returns the Monte Carlo estimate, Black-Scholes benchmark, standard error, and 95% confidence interval.
+
+<section class="demo-panel" data-demo="options">
+  <form class="demo-form demo-form-grid">
+    <label class="demo-field"><span>Spot</span><input name="spot" type="number" value="100" min="1" step="1"></label>
+    <label class="demo-field"><span>Strike</span><input name="strike" type="number" value="100" min="1" step="1"></label>
+    <label class="demo-field"><span>Rate</span><input name="rate" type="number" value="0.03" step="0.01"></label>
+    <label class="demo-field"><span>Volatility</span><input name="volatility" type="number" value="0.20" min="0.01" step="0.01"></label>
+    <label class="demo-field"><span>Maturity (years)</span><input name="maturity" type="number" value="1" min="0.01" step="0.25"></label>
+    <label class="demo-field"><span>Paths</span><input name="paths" type="number" value="25000" min="1000" max="100000" step="1000"></label>
+    <label class="demo-field"><span>Option</span><select name="optionType"><option value="call">Call</option><option value="put">Put</option></select></label>
+    <label class="demo-field"><span>Seed</span><input name="seed" type="number" value="42" min="1" step="1"></label>
+    <button class="demo-submit" type="submit">Run simulation</button>
+  </form>
+  <div class="demo-status" aria-live="polite">Ready to calculate on the backend.</div>
+  <div class="demo-results"></div>
+</section>

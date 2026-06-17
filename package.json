@@ -1,0 +1,9 @@
+{
+  "name": "jiang6082-project-demos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test api/demo.test.js"
+  }
+}
+

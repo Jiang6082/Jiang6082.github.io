@@ -33,3 +33,17 @@ Later iterations introduced a percent-identity threshold so mutation calls are o
 ## Research-facing outputs
 
 The plotting workflow limits extreme positional counts using a configurable percentile, adds a Poisson view of mutation frequencies, and writes a summary text file for quick interpretation. The result bridges raw sequencing files and the figures a researcher needs to inspect experimental patterns.
+
+## Analyze two sequences
+
+Paste a reference and observed sequence. The backend runs a global alignment, calculates percent identity, and classifies substitutions, insertions, and deletions. Inputs are capped at 500 bases for this public demonstration and are not stored.
+
+<section class="demo-panel" data-demo="mutations">
+  <form class="demo-form demo-form-grid">
+    <label class="demo-field demo-field-wide"><span>Reference sequence</span><textarea name="reference" rows="4">ATGCTACGTTACGATCGATCGGCTAGCTAACGTTAGC</textarea></label>
+    <label class="demo-field demo-field-wide"><span>Observed sequence</span><textarea name="sample" rows="4">ATGCTACGTTACGATTGATCGGCTAGCTAGACGTTAGC</textarea></label>
+    <button class="demo-submit" type="submit">Analyze mutations</button>
+  </form>
+  <div class="demo-status" aria-live="polite">Ready to align on the backend.</div>
+  <div class="demo-results"></div>
+</section>

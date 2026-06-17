@@ -35,3 +35,6 @@ exclude:
   - README.md
   - Gemfile
   - Gemfile.lock
+  - api
+  - package.json
+  - vercel.json

@@ -37,3 +37,20 @@ The front end is organized into focused pages for listings, property details, sa
 ## Backend design
 
 Express routes separate authentication, users, properties, AI features, seller workflows, integrations, insights, and experience APIs. Database bootstrap logic keeps local setup reproducible, while caching, rate limiting, property transforms, and tests cover the boundaries that usually become fragile in a full-stack application.
+
+## Search the demo inventory
+
+These controls query a server-side listing endpoint with price, bedroom, property-type, sorting, and pagination logic. The demo inventory is intentionally synthetic; no real listing data or personal information is collected.
+
+<section class="demo-panel" data-demo="properties">
+  <form class="demo-form demo-form-grid">
+    <label class="demo-field"><span>City or neighborhood</span><input name="city" type="search" placeholder="Chicago"></label>
+    <label class="demo-field"><span>Maximum price</span><input name="maxPrice" type="number" value="900000" min="100000" step="25000"></label>
+    <label class="demo-field"><span>Minimum beds</span><select name="minBeds"><option value="0">Any</option><option value="2" selected>2+</option><option value="3">3+</option><option value="4">4+</option></select></label>
+    <label class="demo-field"><span>Property type</span><select name="type"><option value="">Any</option><option>Condo</option><option>Townhouse</option><option>House</option></select></label>
+    <label class="demo-field"><span>Sort</span><select name="sort"><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="sqft-desc">Largest first</option></select></label>
+    <button class="demo-submit" type="submit">Search listings</button>
+  </form>
+  <div class="demo-status" aria-live="polite">Ready to query the backend.</div>
+  <div class="demo-results property-results"></div>
+</section>
