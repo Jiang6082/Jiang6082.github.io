@@ -1,6 +1,7 @@
 ---
 title: Murugan Lab Research
 year: 2025
+order: 4
 summary: A bioinformatics analysis tool that processes FASTQ or raw sequence data and reports mutation positions, types, counts, alignment quality, and statistical summaries.
 tags: [Python, Bioinformatics, Sequence Analysis, Research]
 project_url: https://github.com/Jiang6082/Murugan-Lab-Research
@@ -32,4 +33,3 @@ Later iterations introduced a percent-identity threshold so mutation calls are o
 ## Research-facing outputs
 
 The plotting workflow limits extreme positional counts using a configurable percentile, adds a Poisson view of mutation frequencies, and writes a summary text file for quick interpretation. The result bridges raw sequencing files and the figures a researcher needs to inspect experimental patterns.
-

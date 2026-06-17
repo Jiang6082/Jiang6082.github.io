@@ -11,7 +11,7 @@ permalink: /projects/
 </header>
 
 <section class="project-list">
-  {% assign sorted_projects = site.projects | sort: 'year' | reverse %}
+  {% assign sorted_projects = site.projects | sort: 'order' %}
   {% for project in sorted_projects %}
   <article class="project-card">
     <a class="project-image" href="{{ project.url | relative_url }}">
@@ -26,4 +26,3 @@ permalink: /projects/
   </article>
   {% endfor %}
 </section>
-

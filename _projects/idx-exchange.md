@@ -1,6 +1,7 @@
 ---
 title: IDX Exchange
 year: 2026
+order: 3
 summary: A full-stack property-search platform inspired by Zillow and Redfin, combining rich search workflows with account, seller, agent, and integration tooling.
 tags: [React, Node.js, Express, MySQL]
 project_url: https://github.com/Jiang6082/idx-exchange
@@ -36,4 +37,3 @@ The front end is organized into focused pages for listings, property details, sa
 ## Backend design
 
 Express routes separate authentication, users, properties, AI features, seller workflows, integrations, insights, and experience APIs. Database bootstrap logic keeps local setup reproducible, while caching, rate limiting, property transforms, and tests cover the boundaries that usually become fragile in a full-stack application.
-

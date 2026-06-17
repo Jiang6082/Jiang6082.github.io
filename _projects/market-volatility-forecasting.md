@@ -1,6 +1,7 @@
 ---
 title: Market Volatility Forecasting
 year: 2026
+order: 1
 summary: An end-to-end quantitative machine-learning pipeline for forecasting next-day realized volatility across 14 liquid U.S. equity and sector ETFs.
 tags: [Python, Machine Learning, Time Series, PyTorch]
 project_url: https://github.com/Jiang6082/market-volatility-forecasting
@@ -37,4 +38,3 @@ On the 2024&ndash;2025 held-out test period, the random forest produced the lowe
 ## Engineering depth
 
 The repository includes deterministic sample-data generation, download and feature CLIs, model artifacts, a self-contained visual dashboard, and tests for target alignment, adjusted-close policy, split ordering, leakage resistance, metrics, and reporting. The design makes every headline result traceable to generated output rather than a hand-written claim.
-

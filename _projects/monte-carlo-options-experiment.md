@@ -1,6 +1,7 @@
 ---
 title: Monte Carlo Options Engine
 year: 2026
+order: 2
 summary: A tested quantitative-finance package for pricing European, Asian, digital, barrier, and American-style options with analytical benchmarks and variance reduction.
 tags: [Python, NumPy, Quantitative Finance, Simulation]
 project_url: https://github.com/Jiang6082/monte-carlo-options-experiment

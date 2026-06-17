@@ -45,8 +45,8 @@ a { color: inherit; }
 .page-intro > p:last-child { max-width: 620px; margin: 3rem 0 0 auto; font-family: var(--serif); font-size: clamp(1.5rem, 2.7vw, 2.4rem); line-height: 1.2; }
 .project-list { border-top: 1px solid var(--line); }
 .project-card { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 7vw, 7rem); padding: 4rem 0; border-bottom: 1px solid var(--line); }
-.project-image { min-height: 420px; display: grid; place-items: center; overflow: hidden; background: var(--green); color: var(--paper); text-decoration: none; }
-.project-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.project-image { height: clamp(320px, 38vw, 520px); display: grid; place-items: center; overflow: hidden; background: white; color: var(--paper); text-decoration: none; }
+.project-image img { width: 100%; height: 100%; object-fit: contain; transition: transform .4s; }
 .project-image:hover img { transform: scale(1.025); }
 .project-image span { font-family: var(--serif); font-size: 10rem; font-style: italic; }
 .project-copy { align-self: center; }
@@ -143,7 +143,7 @@ a { color: inherit; }
   .home-note { grid-template-columns: 1fr; gap: 2rem; padding: 5rem 0; }
   .page-intro h1, .photo-intro h1 { font-size: clamp(4rem, 22vw, 7rem); }
   .project-card { grid-template-columns: 1fr; }
-  .project-image { min-height: 300px; }
+  .project-image { height: 300px; }
   .photo-grid { display: block; }
   .photo-card { display: block; margin-bottom: 14px; }
   .photo-overlay { opacity: 1; }
