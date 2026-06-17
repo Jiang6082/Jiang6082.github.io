@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<article class="detail-page">
+  <a class="back-link" href="{{ '/projects/' | relative_url }}">&larr; All projects</a>
+  <header class="detail-header">
+    <p class="eyebrow">Project / {{ page.year }}</p>
+    <h1>{{ page.title }}</h1>
+    <p class="lede">{{ page.summary }}</p>
+    {% if page.project_url %}<a class="text-link" href="{{ page.project_url }}">Visit project &nearr;</a>{% endif %}
+  </header>
+  {% if page.image %}<img class="detail-image" src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title }}">{% endif %}
+  <div class="prose">{{ content }}</div>
+</article>
+

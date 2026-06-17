@@ -1,0 +1,22 @@
+---
+layout: default
+title: Photography
+description: A collection of photographs and their stories.
+permalink: /photography/
+---
+<header class="page-intro photo-intro">
+  <p class="eyebrow">Through my lens</p>
+  <h1>Photography</h1>
+  <p>Photographs of places, passing light, and details worth remembering.</p>
+</header>
+
+<section class="photo-grid">
+  {% assign sorted_photos = site.photos | sort: 'date_taken' | reverse %}
+  {% for photo in sorted_photos %}
+  <a class="photo-card" href="{{ photo.url | relative_url }}">
+    <img src="{{ photo.image | relative_url }}" alt="{{ photo.alt | default: photo.title }}" loading="lazy">
+    <span class="photo-overlay"><strong>{{ photo.title | default: 'Untitled' }}</strong>{% if photo.date_taken %}<small>{{ photo.date_taken | date: '%Y' }}</small>{% endif %}</span>
+  </a>
+  {% endfor %}
+</section>
+

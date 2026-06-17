@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<article class="post-page">
+  <a class="back-link" href="{{ '/diary/' | relative_url }}">&larr; Diary</a>
+  <header class="post-header">
+    <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  </header>
+  <div class="prose post-body">{{ content }}</div>
+</article>
+

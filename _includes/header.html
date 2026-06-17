@@ -1,0 +1,14 @@
+<header class="site-header">
+  <a class="site-name" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+  <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="sr-only">Toggle navigation</span>
+    <span></span><span></span>
+  </button>
+  <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+    <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}aria-current="page"{% endif %}>Home</a>
+    <a href="{{ '/projects/' | relative_url }}" {% if page.url contains '/projects/' %}aria-current="page"{% endif %}>Projects</a>
+    <a href="{{ '/photography/' | relative_url }}" {% if page.url contains '/photography/' %}aria-current="page"{% endif %}>Photography</a>
+    <a href="{{ '/diary/' | relative_url }}" {% if page.url contains '/diary/' %}aria-current="page"{% endif %}>Diary</a>
+  </nav>
+</header>
+

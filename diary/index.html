@@ -1,0 +1,21 @@
+---
+layout: default
+title: Diary
+description: Notes, observations, and random thoughts.
+permalink: /diary/
+---
+<header class="page-intro diary-intro">
+  <p class="eyebrow">Notes to self</p>
+  <h1>Diary &amp;<br><em>other thoughts</em></h1>
+</header>
+
+<section class="post-list">
+  {% for post in site.posts %}
+  <article class="post-row">
+    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%b %-d, %Y' }}</time>
+    <div><h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2><p>{{ post.description | default: post.excerpt | strip_html | truncate: 150 }}</p></div>
+    <a class="row-arrow" href="{{ post.url | relative_url }}" aria-label="Read {{ post.title }}">&rarr;</a>
+  </article>
+  {% endfor %}
+</section>
+

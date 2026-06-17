@@ -1,0 +1,37 @@
+title: Jiang6082
+description: Personal website, projects, photography, and notes.
+url: "https://jiang6082.github.io"
+baseurl: ""
+
+markdown: kramdown
+permalink: /diary/:year/:month/:day/:title/
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+  photos:
+    output: true
+    permalink: /photography/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+  - scope:
+      path: ""
+      type: photos
+    values:
+      layout: photo
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

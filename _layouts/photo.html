@@ -1,0 +1,23 @@
+---
+layout: default
+---
+<article class="detail-page photo-detail">
+  <a class="back-link" href="{{ '/photography/' | relative_url }}">&larr; Photography</a>
+  <img class="photo-full" src="{{ page.image | relative_url }}" alt="{{ page.alt | default: page.title }}">
+  <div class="photo-caption">
+    <div>
+      <p class="eyebrow">{% if page.date_taken %}{{ page.date_taken | date: '%B %-d, %Y' }}{% else %}Photograph{% endif %}</p>
+      <h1>{{ page.title | default: 'Untitled' }}</h1>
+      <div class="prose">{{ content }}</div>
+    </div>
+    <dl class="spec-list">
+      {% if page.camera %}<div><dt>Camera</dt><dd>{{ page.camera }}</dd></div>{% endif %}
+      {% if page.lens %}<div><dt>Lens</dt><dd>{{ page.lens }}</dd></div>{% endif %}
+      {% if page.focal_length %}<div><dt>Focal length</dt><dd>{{ page.focal_length }}</dd></div>{% endif %}
+      {% if page.aperture %}<div><dt>Aperture</dt><dd>{{ page.aperture }}</dd></div>{% endif %}
+      {% if page.shutter_speed %}<div><dt>Shutter</dt><dd>{{ page.shutter_speed }}</dd></div>{% endif %}
+      {% if page.iso %}<div><dt>ISO</dt><dd>{{ page.iso }}</dd></div>{% endif %}
+    </dl>
+  </div>
+</article>
+
