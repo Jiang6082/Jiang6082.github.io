@@ -1,74 +1,484 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { photos } from "../data/photos";
+import { collections, singles, type Photo } from "../data/photos";
 import { cld } from "../lib/cloudinary";
+
+// Shape each photo into a plain object the client lightbox can consume.
+const toItem = (p: Photo) => ({
+  title: p.title ?? "",
+  caption: p.caption ?? "",
+  alt: p.alt || p.title || "Photo",
+  placeholder: !!p.placeholder || !p.publicId,
+  thumb: p.publicId ? cld(p.publicId, { width: 900 }) : "",
+  full: p.publicId ? cld(p.publicId, { width: 2000 }) : "",
+});
+
+// Groups the lightbox navigates within: one per collection, plus singles.
+const groups = [
+  ...collections.map((c) => ({
+    key: `col-${c.id}`,
+    title: c.title,
+    items: c.photos.map(toItem),
+  })),
+  { key: "singles", title: "Photos", items: singles.map(toItem) },
+];
+
+const coverOf = (c: (typeof collections)[number]) =>
+  toItem(c.cover ?? c.photos[0]);
 ---
 
-<BaseLayout title="Photography" description="A selection of photos I've taken.">
+<BaseLayout title="Photography" description="Collections and single frames.">
   <h1>Photography</h1>
-  <p class="muted">A selection of shots I'm fond of. Click any image to view full size.</p>
+  <p class="muted">
+    Click any photo to view it full-screen — use the arrows or your ← / → keys
+    to move through a set, Esc to close.
+  </p>
 
-  <div class="gallery">
-    {
-      photos.map((photo) => (
-        <figure class="photo">
-          {photo.placeholder ? (
-            <div class="placeholder" aria-label={photo.alt}>
-              <span>{photo.caption ?? "Photo"}</span>
-            </div>
-          ) : (
-            <a href={cld(photo.publicId, { width: 2000 })} target="_blank" rel="noopener">
-              <img
-                src={cld(photo.publicId, { width: 800 })}
-                srcset={`${cld(photo.publicId, { width: 400 })} 400w, ${cld(photo.publicId, { width: 800 })} 800w, ${cld(photo.publicId, { width: 1200 })} 1200w`}
-                sizes="(max-width: 700px) 100vw, 350px"
-                alt={photo.alt}
-                loading="lazy"
-              />
-            </a>
-          )}
-          {photo.caption && <figcaption class="muted small">{photo.caption}</figcaption>}
-        </figure>
-      ))
-    }
+  {
+    collections.length > 0 && (
+      <section class="block">
+        <h2>Collections</h2>
+        <div class="collections">
+          {collections.map((c) => {
+            const cover = coverOf(c);
+            return (
+              <button
+                class="collection"
+                data-group={`col-${c.id}`}
+                data-index="0"
+                aria-label={`Open collection: ${c.title}`}
+              >
+                <span class="cover">
+                  {cover.placeholder ? (
+                    <span class="ph" />
+                  ) : (
+                    <img src={cover.thumb} alt={cover.alt} loading="lazy" />
+                  )}
+                  <span class="count">{c.photos.length} photos</span>
+                </span>
+                <span class="c-title">{c.title}</span>
+                {c.description && <span class="c-desc muted">{c.description}</span>}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    singles.length > 0 && (
+      <section class="block">
+        <h2>Photos</h2>
+        <div class="masonry">
+          {singles.map((p, i) => {
+            const item = toItem(p);
+            return (
+              <button
+                class="tile"
+                data-group="singles"
+                data-index={i}
+                aria-label={item.title || "Open photo"}
+              >
+                {item.placeholder ? (
+                  <span class="ph tall" />
+                ) : (
+                  <img src={item.thumb} alt={item.alt} loading="lazy" />
+                )}
+                {item.title && <span class="tile-title">{item.title}</span>}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Lightbox overlay -->
+  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lb-btn lb-close" aria-label="Close">&times;</button>
+    <button class="lb-btn lb-prev" aria-label="Previous photo">&#8249;</button>
+    <button class="lb-btn lb-next" aria-label="Next photo">&#8250;</button>
+    <figure class="lb-figure">
+      <div class="lb-media"></div>
+      <figcaption class="lb-cap">
+        <h3 class="lb-title"></h3>
+        <p class="lb-caption muted"></p>
+        <span class="lb-counter muted small"></span>
+      </figcaption>
+    </figure>
   </div>
+
+  <script is:inline set:html={`window.__GALLERY__ = ${JSON.stringify(groups)};`} />
 </BaseLayout>
 
+<script>
+  interface Item {
+    title: string;
+    caption: string;
+    alt: string;
+    placeholder: boolean;
+    thumb: string;
+    full: string;
+  }
+  interface Group {
+    key: string;
+    title: string;
+    items: Item[];
+  }
+
+  const groups: Group[] = (window as any).__GALLERY__ ?? [];
+  const byKey = new Map(groups.map((g) => [g.key, g]));
+
+  const lb = document.getElementById("lightbox")!;
+  const media = lb.querySelector<HTMLElement>(".lb-media")!;
+  const elTitle = lb.querySelector<HTMLElement>(".lb-title")!;
+  const elCaption = lb.querySelector<HTMLElement>(".lb-caption")!;
+  const elCounter = lb.querySelector<HTMLElement>(".lb-counter")!;
+  const btnPrev = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
+  const btnNext = lb.querySelector<HTMLButtonElement>(".lb-next")!;
+  const btnClose = lb.querySelector<HTMLButtonElement>(".lb-close")!;
+
+  let current: Item[] = [];
+  let index = 0;
+  let lastFocus: HTMLElement | null = null;
+
+  function render() {
+    const item = current[index];
+    if (!item) return;
+    media.innerHTML = "";
+    if (item.placeholder) {
+      const ph = document.createElement("div");
+      ph.className = "lb-placeholder";
+      ph.textContent = item.title || "Photo";
+      media.appendChild(ph);
+    } else {
+      const img = document.createElement("img");
+      img.src = item.full;
+      img.alt = item.alt;
+      media.appendChild(img);
+    }
+    elTitle.textContent = item.title;
+    elTitle.style.display = item.title ? "" : "none";
+    elCaption.textContent = item.caption;
+    elCaption.style.display = item.caption ? "" : "none";
+    const multi = current.length > 1;
+    elCounter.textContent = multi ? `${index + 1} / ${current.length}` : "";
+    btnPrev.style.display = multi ? "" : "none";
+    btnNext.style.display = multi ? "" : "none";
+  }
+
+  function open(groupKey: string, startIndex: number) {
+    const group = byKey.get(groupKey);
+    if (!group) return;
+    current = group.items;
+    index = Math.max(0, Math.min(startIndex, current.length - 1));
+    lastFocus = document.activeElement as HTMLElement;
+    lb.hidden = false;
+    document.body.style.overflow = "hidden";
+    render();
+    btnClose.focus();
+  }
+
+  function close() {
+    lb.hidden = true;
+    document.body.style.overflow = "";
+    media.innerHTML = "";
+    lastFocus?.focus();
+  }
+
+  const next = () => {
+    index = (index + 1) % current.length;
+    render();
+  };
+  const prev = () => {
+    index = (index - 1 + current.length) % current.length;
+    render();
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-group]").forEach((el) => {
+    el.addEventListener("click", () => {
+      open(el.dataset.group!, Number(el.dataset.index || 0));
+    });
+  });
+
+  btnNext.addEventListener("click", next);
+  btnPrev.addEventListener("click", prev);
+  btnClose.addEventListener("click", close);
+  lb.addEventListener("click", (e) => {
+    // Click on the backdrop (not the image/buttons/caption) closes.
+    if (e.target === lb || e.target === lb.querySelector(".lb-figure")) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight" && current.length > 1) next();
+    else if (e.key === "ArrowLeft" && current.length > 1) prev();
+  });
+</script>
+
 <style>
-  .gallery {
-    margin-top: 1.5rem;
-    columns: 2;
+  .block {
+    margin-top: 2.5rem;
+  }
+  .block h2 {
+    margin-top: 0;
+  }
+
+  /* Neutral placeholder fill */
+  .ph {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      var(--border),
+      color-mix(in srgb, var(--border) 55%, var(--muted))
+    );
+  }
+
+  /* ── Collections grid ─────────────────────────────────────────── */
+  .collections {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.1rem;
+  }
+  .collection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+  }
+  .cover {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 2;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+  .collection:hover .cover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+  }
+  .collection:hover .cover img {
+    transform: scale(1.05);
+  }
+  .count {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+  }
+  .c-title {
+    font-weight: 650;
+    font-size: 1.02rem;
+  }
+  .c-desc {
+    font-size: 0.88rem;
+  }
+
+  /* ── Singles masonry ──────────────────────────────────────────── */
+  .masonry {
+    columns: 3;
     column-gap: 1rem;
   }
-  @media (max-width: 560px) {
-    .gallery {
+  @media (max-width: 760px) {
+    .masonry {
+      columns: 2;
+    }
+  }
+  @media (max-width: 460px) {
+    .masonry {
       columns: 1;
     }
   }
-  .photo {
+  .tile {
+    position: relative;
+    display: block;
+    width: 100%;
     margin: 0 0 1rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: none;
+    cursor: pointer;
     break-inside: avoid;
+    box-shadow: var(--shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
-  .photo img {
+  .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+  }
+  .tile img {
     width: 100%;
-    border-radius: 8px;
-    transition: opacity 0.2s ease;
+    display: block;
   }
-  .photo a:hover img {
-    opacity: 0.9;
+  .ph.tall {
+    height: 14rem;
   }
-  .placeholder {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    background: linear-gradient(135deg, var(--border), color-mix(in srgb, var(--border) 60%, var(--muted)));
-    border-radius: 8px;
+  .tile-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.5rem 0.75rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .tile:hover .tile-title {
+    opacity: 1;
+  }
+
+  /* ── Lightbox ─────────────────────────────────────────────────── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--muted);
-    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(6px);
+    padding: 1.5rem;
+    animation: lb-in 0.2s ease;
   }
-  figcaption {
-    margin-top: 0.4rem;
+  .lightbox[hidden] {
+    display: none;
+  }
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+    }
+  }
+  .lb-figure {
+    margin: 0;
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .lb-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 76vh;
+  }
+  .lb-media img {
+    max-width: 100%;
+    max-height: 76vh;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .lb-placeholder {
+    width: min(70vw, 640px);
+    aspect-ratio: 3 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.75);
+    background: linear-gradient(135deg, #3a3a44, #55556a);
+    font-size: 1rem;
+  }
+  .lb-cap {
+    text-align: center;
+    color: #fff;
+    max-width: 40rem;
+  }
+  .lb-title {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #fff;
+  }
+  .lb-caption {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+  .lb-counter {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.55) !important;
+  }
+  .lb-btn {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    cursor: pointer;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .lb-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: scale(1.06);
+  }
+  .lb-close {
+    top: 1.1rem;
+    right: 1.1rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .lb-prev,
+  .lb-next {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .lb-prev:hover,
+  .lb-next:hover {
+    transform: translateY(-50%) scale(1.06);
+  }
+  .lb-prev {
+    left: 1.1rem;
+  }
+  .lb-next {
+    right: 1.1rem;
+  }
+  @media (max-width: 560px) {
+    .lb-prev {
+      left: 0.4rem;
+    }
+    .lb-next {
+      right: 0.4rem;
+    }
   }
 </style>
