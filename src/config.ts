@@ -36,9 +36,5 @@ export const GITHUB = {
   username: "jiang6082",
 };
 
-// ── Cloudinary ──────────────────────────────────────────────────
-// After you create a free Cloudinary account, put your "cloud name"
-// here (Dashboard → Product Environment Credentials → Cloud name).
-export const CLOUDINARY = {
-  cloudName: "your-cloud-name",
-};
+// Photos are stored locally under src/photos and optimized by Astro at
+// build time — see src/data/photos.ts. (No image host / API keys needed.)

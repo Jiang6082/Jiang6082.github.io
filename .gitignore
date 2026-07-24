@@ -12,3 +12,7 @@ npm-debug.log*
 # macOS / editor
 .DS_Store
 .vscode/
+
+# Original full-size photos — staging area for `npm run photos`.
+# The resized, web-ready copies in src/photos/ ARE committed; these aren't.
+photos-src/

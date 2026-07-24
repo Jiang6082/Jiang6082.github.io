@@ -1,35 +1,58 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getImage } from "astro:assets";
 import { collections, singles, type Photo } from "../data/photos";
-import { cld } from "../lib/cloudinary";
+
+// All images under src/photos are imported so Astro can optimize them and
+// expose their real dimensions. Files are resolved by `src` at build time.
+const files = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+}) as Record<string, { default: ImageMetadata }>;
+
+const clampAr = (ar: number) => Math.max(0.5, Math.min(ar, 2.6));
 
 // Shape each photo into a plain object the client lightbox can consume,
-// plus an aspect ratio for the justified row layout.
-const toItem = (p: Photo) => {
-  const ar = p.w && p.h ? p.w / p.h : 1.5;
-  return {
+// generating an optimized thumbnail + full-size WebP for real photos.
+async function toItem(p: Photo) {
+  const mod = p.src ? files[`../photos/${p.src}`] : undefined;
+  const base = {
     title: p.title ?? "",
     caption: p.caption ?? "",
     alt: p.alt || p.title || "Photo",
-    placeholder: !!p.placeholder || !p.publicId,
-    ar: Math.max(0.5, Math.min(ar, 2.6)), // clamp extremes
-    thumb: p.publicId ? cld(p.publicId, { width: 900 }) : "",
-    full: p.publicId ? cld(p.publicId, { width: 2000 }) : "",
   };
-};
+  if (!mod) {
+    return { ...base, placeholder: true, ar: clampAr(p.ar ?? 1.5), thumb: "", full: "" };
+  }
+  const meta = mod.default;
+  const thumb = await getImage({ src: meta, width: 900, format: "webp" });
+  const full = await getImage({ src: meta, width: 2000, format: "webp" });
+  return {
+    ...base,
+    placeholder: false,
+    ar: clampAr(meta.width / meta.height),
+    thumb: thumb.src,
+    full: full.src,
+  };
+}
 
 // One labeled group per collection, then a group for the standalone photos.
-const groups = [
-  ...collections.map((c) => ({
+const groups = [];
+for (const c of collections) {
+  groups.push({
     key: `col-${c.id}`,
     title: c.title,
     description: c.description ?? "",
-    items: c.photos.map(toItem),
-  })),
-  ...(singles.length
-    ? [{ key: "singles", title: "Photos", description: "", items: singles.map(toItem) }]
-    : []),
-];
+    items: await Promise.all(c.photos.map(toItem)),
+  });
+}
+if (singles.length) {
+  groups.push({
+    key: "singles",
+    title: "Photos",
+    description: "",
+    items: await Promise.all(singles.map(toItem)),
+  });
+}
 ---
 
 <BaseLayout title="Photography" description="Collections and single frames." wide>
