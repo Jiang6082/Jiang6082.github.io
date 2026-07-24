@@ -1,6 +1,7 @@
 :root {
   --bg: #ffffff;
   --bg-2: #e9ecf5;
+  --green-bg: #e6f0dd;
   --surface: #ffffff;
   --surface-2: #f7f7f8;
   --fg: #18181b;
@@ -22,6 +23,7 @@
 :root[data-theme="dark"] {
   --bg: #0a0a0b;
   --bg-2: #191922;
+  --green-bg: #0e150d;
   --surface: #161618;
   --surface-2: #161618;
   --fg: #ededed;
@@ -39,6 +41,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0a0a0b;
     --bg-2: #191922;
+    --green-bg: #0e150d;
     --surface: #161618;
     --surface-2: #161618;
     --fg: #ededed;
@@ -84,12 +87,13 @@ body {
   background-repeat: no-repeat;
 }
 
-/* About page: a faint, dappled botanical-green wash. */
+/* About page: a dappled botanical-green wash over a green-tinted base. */
 body.page-about {
+  background-color: var(--green-bg);
   background-image:
-    radial-gradient(1000px 560px at 12% -8%, rgba(74, 140, 74, 0.2), transparent 60%),
-    radial-gradient(900px 620px at 92% 2%, rgba(154, 172, 58, 0.15), transparent 58%),
-    radial-gradient(1200px 820px at 50% 116%, rgba(38, 110, 68, 0.16), transparent 62%);
+    radial-gradient(1200px 850px at 18% -5%, rgba(96, 168, 88, 0.34), transparent 64%),
+    radial-gradient(1050px 780px at 100% 8%, rgba(176, 186, 74, 0.24), transparent 60%),
+    radial-gradient(1300px 950px at 50% 118%, rgba(44, 124, 74, 0.3), transparent 64%);
 }
 
 .container {
