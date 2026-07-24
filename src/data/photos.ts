@@ -51,15 +51,18 @@ export interface Collection {
 export const collections: Collection[] = [];
 
 // ── Standalone photos ───────────────────────────────────────────
-// Add `title` / `caption` to any of these to show them in the lightbox.
+// TITLES & CAPTIONS GO HERE — add `title` and/or `caption` to any entry.
+// Both are optional and show in the fullscreen lightbox (title also appears
+// on hover). Example:
+//   { src: "IMG_0047.jpg", title: "Gamcheon Village", caption: "Busan, 2025" }
 export const singles: Photo[] = [
-  { src: "IMG_0047.jpg" },
-  { src: "IMG_0116.jpg" },
-  { src: "IMG_0298.jpg" },
-  { src: "IMG_0334.jpg" },
-  { src: "IMG_0460.jpg" },
-  { src: "IMG_0484.jpg" },
-  { src: "IMG_0534.jpg" },
-  { src: "IMG_0766.jpg" },
-  { src: "IMG_9433-2.jpg" },
+  { src: "IMG_0047.jpg", title: "", caption: "" },
+  { src: "IMG_0116.jpg", title: "", caption: "" },
+  { src: "IMG_0298.jpg", title: "", caption: "" },
+  { src: "IMG_0334.jpg", title: "", caption: "" },
+  { src: "IMG_0460.jpg", title: "", caption: "" },
+  { src: "IMG_0484.jpg", title: "", caption: "" },
+  { src: "IMG_0534.jpg", title: "", caption: "" },
+  { src: "IMG_0766.jpg", title: "", caption: "" },
+  { src: "IMG_9433-2.jpg", title: "", caption: "" },
 ];

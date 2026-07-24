@@ -76,6 +76,7 @@ if (singles.length) {
             <button
               class="cell"
               style={`--ar:${item.ar.toFixed(3)}`}
+              data-ar={item.ar.toFixed(4)}
               data-group={g.key}
               data-index={i}
               aria-label={item.title || "Open photo"}
@@ -213,6 +214,51 @@ if (singles.length) {
     else if (e.key === "ArrowRight" && current.length > 1) next();
     else if (e.key === "ArrowLeft" && current.length > 1) prev();
   });
+
+  // ── Justified layout (Google-Photos style, no cropping) ─────────
+  // Each row's height is computed so photos fill the full width at their
+  // true aspect ratios — portraits stay narrow, never stretched/cropped.
+  function layoutGrids() {
+    document.querySelectorAll<HTMLElement>(".pgrid").forEach((grid) => {
+      const style = getComputedStyle(grid);
+      const gap = parseFloat(style.gap) || 4;
+      const targetH = parseFloat(style.getPropertyValue("--row-h")) || 320;
+      const W = grid.clientWidth;
+      if (!W) return;
+      const cells = Array.from(grid.children) as HTMLElement[];
+      let row: HTMLElement[] = [];
+      let sumAr = 0;
+      const flush = (isLast: boolean) => {
+        if (!row.length) return;
+        const gaps = gap * (row.length - 1);
+        let h = (W - gaps) / sumAr;
+        if (isLast && h > targetH) h = targetH; // don't blow up a sparse last row
+        for (const c of row) {
+          const ar = parseFloat(c.dataset.ar || "1.5") || 1.5;
+          c.style.flex = "0 0 auto";
+          c.style.width = Math.floor(ar * h) + "px";
+          c.style.height = Math.round(h) + "px";
+        }
+        row = [];
+        sumAr = 0;
+      };
+      for (const c of cells) {
+        const ar = parseFloat(c.dataset.ar || "1.5") || 1.5;
+        row.push(c);
+        sumAr += ar;
+        if (sumAr * targetH + gap * (row.length - 1) >= W) flush(false);
+      }
+      flush(true);
+    });
+  }
+
+  layoutGrids();
+  window.addEventListener("load", layoutGrids); // re-run once fonts settle
+  let resizeTimer: number;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(layoutGrids, 120);
+  });
 </script>
 
 <style>
@@ -220,6 +266,8 @@ if (singles.length) {
   .pg-head {
     padding: 0 clamp(0.75rem, 3vw, 1.5rem);
     max-width: 46rem;
+    margin: 0 auto;
+    text-align: center;
   }
   .pg-head h1 {
     margin-bottom: 0.35rem;
