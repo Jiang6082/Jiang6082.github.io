@@ -14,6 +14,10 @@ export const SITE = {
   // If using a custom domain or a <user>.github.io repo, leave as "".
   base: "",
   email: "leung.jor@northeastern.edu",
+  // Your portrait for the About hero. Drop an image in `public/` (e.g.
+  // public/me.jpg) and set this to "/me.jpg". While empty, a framed
+  // placeholder holds the exact space so the layout doesn't shift.
+  photo: "",
 };
 
 // Social / profile links shown in the header and footer.

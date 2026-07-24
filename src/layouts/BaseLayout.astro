@@ -15,11 +15,14 @@ const desc = description ?? SITE.tagline;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
   <head>
     <script is:inline>
-      // Apply the saved theme before first paint to avoid a flash.
+      // Mark JS available (so reveal content is safely hidden only with JS),
+      // and apply the saved theme before first paint to avoid a flash.
       (function () {
+        document.documentElement.classList.remove("no-js");
+        document.documentElement.classList.add("js");
         try {
           var t = localStorage.getItem("theme");
           if (t === "dark" || t === "light") {
@@ -52,5 +55,26 @@ const desc = description ?? SITE.tagline;
       </div>
     </main>
     <Footer />
+    <script>
+      // Reveal-on-scroll for any element with class "reveal".
+      const els = document.querySelectorAll<HTMLElement>(".reveal");
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce || !("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("is-visible"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>

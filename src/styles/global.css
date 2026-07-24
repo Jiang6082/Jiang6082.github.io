@@ -153,6 +153,32 @@ hr {
   font-size: 0.9rem;
 }
 
+/* ── Scroll-reveal (progressive; no-JS/reduced-motion shows content) ─ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* If JS is disabled, never leave content hidden. */
+.no-js .reveal {
+  opacity: 1;
+  transform: none;
+}
+
 /* ── Social icon buttons ───────────────────────────────────────── */
 .social-row {
   display: flex;
