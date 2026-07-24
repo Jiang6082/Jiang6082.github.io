@@ -2,111 +2,110 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import { GITHUB } from "../config";
-import { getRepos, languageBreakdown, langColor } from "../lib/github";
+import { projects, languageBreakdown, type Project } from "../data/projects";
+import { langColor } from "../lib/colors";
 
-const repos = await getRepos();
-const breakdown = languageBreakdown(repos);
-const totalRepos = repos.length;
+const breakdown = languageBreakdown(projects);
+const total = projects.length;
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short" });
+const codeLink = (p: Project) =>
+  p.visibility === "public" && p.repo ? p.repo : null;
 ---
 
-<BaseLayout title="Projects" description="Things I've built.">
+<BaseLayout title="Projects" description="A few things I've built.">
   <h1>Projects</h1>
   <p class="muted">
-    A live look at what I'm building on
-    <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
+    A few things I've been building — mostly around quantitative finance and
+    automation.
   </p>
 
   {
-    totalRepos === 0 ? (
-      <p class="empty muted">
-        Projects couldn't be loaded from GitHub right now (this can happen if the
-        API rate limit was hit during the build). They'll appear on the next
-        deploy — or visit
-        <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">
-          github.com/{GITHUB.username}
-        </a>
-        directly.
-      </p>
-    ) : (
-      <>
-        {breakdown.length > 0 && (
-          <section class="langs" aria-label="Language distribution">
-            <div class="bar">
-              {breakdown.map((b) => (
-                <span
-                  class="seg"
-                  style={`width:${(b.count / totalRepos) * 100}%;background:${langColor(b.lang)}`}
-                  title={`${b.lang}: ${b.count}`}
-                />
-              ))}
-            </div>
-            <ul class="legend">
-              {breakdown.map((b) => (
-                <li>
-                  <span class="dot" style={`background:${langColor(b.lang)}`} />
-                  {b.lang} <span class="muted">{b.count}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <div class="grid">
-          {repos.map((repo) => (
-            <article class="card">
-              <a class="card-head" href={repo.url} target="_blank" rel="noopener">
-                <span class="repo-name">
-                  <Icon name="github" size={16} />
-                  {repo.name}
-                </span>
-              </a>
-              {repo.description && <p class="desc">{repo.description}</p>}
-              {repo.topics.length > 0 && (
-                <div class="topics">
-                  {repo.topics.slice(0, 4).map((t) => (
-                    <span class="topic">{t}</span>
-                  ))}
-                </div>
-              )}
-              <div class="meta">
-                {repo.language && (
-                  <span class="lang">
-                    <span class="dot" style={`background:${langColor(repo.language)}`} />
-                    {repo.language}
-                  </span>
-                )}
-                <span title="Stars">★ {repo.stars}</span>
-                <span title="Forks">⑂ {repo.forks}</span>
-                <span class="updated muted">Updated {fmtDate(repo.updated)}</span>
-              </div>
-              <div class="links">
-                <a href={repo.url} target="_blank" rel="noopener">Code →</a>
-                {repo.homepage && (
-                  <a href={repo.homepage} target="_blank" rel="noopener">Live demo →</a>
-                )}
-              </div>
-            </article>
+    breakdown.length > 0 && (
+      <section class="langs" aria-label="Language distribution">
+        <div class="bar">
+          {breakdown.map((b) => (
+            <span
+              class="seg"
+              style={`width:${(b.count / total) * 100}%;background:${langColor(b.lang)}`}
+              title={`${b.lang}: ${b.count}`}
+            />
           ))}
         </div>
-      </>
+        <ul class="legend">
+          {breakdown.map((b) => (
+            <li>
+              <span class="dot" style={`background:${langColor(b.lang)}`} />
+              {b.lang} <span class="muted">{b.count}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
     )
   }
+
+  <div class="grid">
+    {
+      projects.map((p) => {
+        const href = codeLink(p);
+        return (
+          <article class="card">
+            <div class="card-head">
+              {href ? (
+                <a class="repo-name" href={href} target="_blank" rel="noopener">
+                  <Icon name="github" size={16} />
+                  {p.name}
+                </a>
+              ) : (
+                <span class="repo-name">
+                  <Icon name="github" size={16} />
+                  {p.name}
+                </span>
+              )}
+              <span class:list={["badge", p.visibility]}>{p.visibility}</span>
+            </div>
+
+            {p.description && <p class="desc">{p.description}</p>}
+
+            {p.topics && p.topics.length > 0 && (
+              <div class="topics">
+                {p.topics.slice(0, 6).map((t) => (
+                  <span class="topic">{t}</span>
+                ))}
+              </div>
+            )}
+
+            <div class="foot">
+              {p.language && (
+                <span class="lang">
+                  <span class="dot" style={`background:${langColor(p.language)}`} />
+                  {p.language}
+                </span>
+              )}
+              <span class="links">
+                {href && (
+                  <a href={href} target="_blank" rel="noopener">
+                    Code →
+                  </a>
+                )}
+                {p.demo && (
+                  <a href={p.demo} target="_blank" rel="noopener">
+                    Live demo →
+                  </a>
+                )}
+              </span>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+
+  <p class="more muted small">
+    More on <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
+  </p>
 </BaseLayout>
 
 <style>
-  .empty {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-  }
-  .empty a {
-    margin-left: 0.25rem;
-  }
-
   /* Language distribution */
   .langs {
     margin: 1.75rem 0 2.25rem;
@@ -148,7 +147,7 @@ const fmtDate = (iso: string) =>
   /* Cards */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: 1rem;
   }
   .card {
@@ -166,11 +165,10 @@ const fmtDate = (iso: string) =>
     box-shadow: var(--shadow-hover);
   }
   .card-head {
-    color: var(--fg);
-  }
-  .card-head:hover {
-    text-decoration: none;
-    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
   .repo-name {
     display: inline-flex;
@@ -178,7 +176,28 @@ const fmtDate = (iso: string) =>
     gap: 0.45rem;
     font-weight: 650;
     font-size: 1.05rem;
+    color: var(--fg);
     word-break: break-word;
+  }
+  a.repo-name:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .badge {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .badge.public {
+    color: #16a34a;
+    border-color: color-mix(in srgb, #16a34a 45%, var(--border));
+    background: color-mix(in srgb, #16a34a 10%, transparent);
   }
   .desc {
     margin: 0.6rem 0 0;
@@ -199,28 +218,27 @@ const fmtDate = (iso: string) =>
     padding: 0.08rem 0.5rem;
     border-radius: 999px;
   }
-  .meta {
+  .foot {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem 0.9rem;
-    margin-top: 0.9rem;
-    font-size: 0.82rem;
-    color: var(--fg);
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-top: 0.95rem;
+    font-size: 0.85rem;
   }
   .lang {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-  }
-  .updated {
-    font-size: 0.78rem;
+    color: var(--fg);
   }
   .links {
-    display: flex;
+    display: inline-flex;
     gap: 1rem;
-    margin-top: 0.85rem;
-    font-size: 0.88rem;
     font-weight: 500;
+  }
+  .more {
+    margin-top: 2rem;
   }
 </style>
