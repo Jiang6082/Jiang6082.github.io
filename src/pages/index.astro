@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE, SOCIALS } from "../config";
+---
+
+<BaseLayout title="About">
+  <section class="hero">
+    <h1>{SITE.name}</h1>
+    <p class="muted tagline">{SITE.tagline}</p>
+  </section>
+
+  <section class="prose">
+    <p>
+      Hi — I'm {SITE.name.split(" ")[0]}. Welcome to my corner of the internet.
+      This is where I write, share what I'm building, and post photos I've taken.
+    </p>
+    <p>
+      <!-- Replace this with a couple of real paragraphs about yourself: what
+           you study or work on, what you're into, what you're currently
+           exploring. Keep it human. -->
+      I'm a student at Northeastern University interested in software, design,
+      and photography. Right now I'm exploring <em>(edit me)</em> and always
+      happy to chat about new projects.
+    </p>
+
+    <h2>Find me elsewhere</h2>
+    <ul class="links">
+      {
+        SOCIALS.map((s) => (
+          <li>
+            <a href={s.url} target={s.url.startsWith("http") ? "_blank" : undefined} rel="noopener">
+              {s.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: 1.5rem;
+  }
+  .tagline {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  .links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+</style>

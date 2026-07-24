@@ -1,0 +1,78 @@
+---
+import { SITE } from "../config";
+
+const base = import.meta.env.BASE_URL;
+// Join base + path without producing double slashes.
+const link = (p: string) => (base.replace(/\/$/, "") + p) || "/";
+
+const nav = [
+  { label: "About", href: link("/") },
+  { label: "Blog", href: link("/blog") },
+  { label: "Photography", href: link("/photography") },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => {
+  const h = href.replace(/\/$/, "") || "/";
+  if (h === (base.replace(/\/$/, "") || "/")) return current === h;
+  return current === h || current.startsWith(h + "/");
+};
+---
+
+<header class="site-header">
+  <div class="container inner">
+    <a class="brand" href={link("/")}>{SITE.name}</a>
+    <nav>
+      {
+        nav.map((item) => (
+          <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 3.5rem;
+  }
+  .brand {
+    font-weight: 700;
+    color: var(--fg);
+    font-size: 1.05rem;
+  }
+  .brand:hover {
+    text-decoration: none;
+    color: var(--accent);
+  }
+  nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+  nav a {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  nav a:hover {
+    color: var(--fg);
+    text-decoration: none;
+  }
+  nav a.active {
+    color: var(--fg);
+    font-weight: 600;
+  }
+</style>
