@@ -45,38 +45,21 @@ export interface Collection {
 }
 
 // ── Albums / collections ────────────────────────────────────────
-export const collections: Collection[] = [
-  {
-    id: "sample-trip",
-    title: "A Trip Somewhere",
-    description: "Placeholder album — replace with a real collection.",
-    photos: [
-      { title: "Arrival", caption: "The first evening.", ar: 1.5, placeholder: true },
-      { title: "Old town", caption: "Wandering side streets.", ar: 0.67, placeholder: true },
-      { title: "Golden hour", ar: 1.78, placeholder: true },
-      { title: "Rooftops", caption: "The view from up high.", ar: 1.0, placeholder: true },
-      { title: "Harbor", ar: 1.5, placeholder: true },
-    ],
-  },
-  {
-    id: "sample-street",
-    title: "Street",
-    description: "Placeholder album — candid moments around the city.",
-    photos: [
-      { title: "Crosswalk", ar: 0.67, placeholder: true },
-      { title: "Neon", caption: "After the rain.", ar: 1.5, placeholder: true },
-      { title: "Market", ar: 1.6, placeholder: true },
-    ],
-  },
-];
+// None yet. To add an album later, push an entry like:
+//   { id: "busan-2025", title: "Busan, 2025", description: "…",
+//     photos: [{ src: "busan/gamcheon.jpg", title: "Petit Prince" }, …] }
+export const collections: Collection[] = [];
 
 // ── Standalone photos ───────────────────────────────────────────
+// Add `title` / `caption` to any of these to show them in the lightbox.
 export const singles: Photo[] = [
-  { title: "Quiet morning", caption: "A calm start to the day.", ar: 1.5, placeholder: true },
-  { title: "City lights", ar: 0.67, placeholder: true },
-  { title: "On the trail", caption: "Somewhere off the map.", ar: 1.5, placeholder: true },
-  { title: "Reflections", ar: 1.6, placeholder: true },
-  { title: "Skyline", ar: 2.2, placeholder: true },
-  { title: "Portrait", ar: 0.67, placeholder: true },
-  { title: "Still life", ar: 1.0, placeholder: true },
+  { src: "IMG_0047.jpg" },
+  { src: "IMG_0116.jpg" },
+  { src: "IMG_0298.jpg" },
+  { src: "IMG_0334.jpg" },
+  { src: "IMG_0460.jpg" },
+  { src: "IMG_0484.jpg" },
+  { src: "IMG_0534.jpg" },
+  { src: "IMG_0766.jpg" },
+  { src: "IMG_9433-2.jpg" },
 ];

@@ -1,10 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
+import { getImage } from "astro:assets";
 import { SITE, SOCIALS } from "../config";
 
-const photoSrc = SITE.photo
-  ? `${import.meta.env.BASE_URL.replace(/\/$/, "")}${SITE.photo}`
+// Optimized portrait for the hero, resolved from src/photos.
+const photoFiles = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+}) as Record<string, { default: ImageMetadata }>;
+const portraitMod = SITE.photo ? photoFiles[`../photos/${SITE.photo}`] : undefined;
+const portrait = portraitMod
+  ? await getImage({ src: portraitMod.default, width: 700, format: "webp" })
   : null;
 
 // Roles cycled by the typewriter effect — edit freely.
@@ -77,8 +83,8 @@ const stack = [
       <div class="glow" aria-hidden="true"></div>
       <div class="portrait">
         {
-          photoSrc ? (
-            <img src={photoSrc} alt={SITE.name} width="360" height="450" />
+          portrait ? (
+            <img src={portrait.src} alt={SITE.name} width="280" height="350" />
           ) : (
             <div class="portrait-placeholder">
               <Icon name="user" size={56} />
