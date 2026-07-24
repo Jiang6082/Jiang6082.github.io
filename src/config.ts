@@ -19,9 +19,9 @@ export const SITE = {
 // Social / profile links shown in the header and footer.
 // Remove any you don't want; add more freely.
 export const SOCIALS = [
-  { name: "GitHub", url: "https://github.com/jiang6082" },
-  { name: "LinkedIn", url: "https://www.linkedin.com/in/charlesj8450" },
-  { name: "Email", url: `mailto:${"leung.jor@northeastern.edu"}` },
+  { name: "GitHub", icon: "github", url: "https://github.com/jiang6082" },
+  { name: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/charlesj8450" },
+  { name: "Email", icon: "email", url: `mailto:${"leung.jor@northeastern.edu"}` },
 ];
 
 // ── Cloudinary ──────────────────────────────────────────────────

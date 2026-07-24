@@ -1,13 +1,42 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
 import { SITE, SOCIALS } from "../config";
+
+const initials = SITE.name
+  .split(" ")
+  .map((w) => w[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
 ---
 
 <BaseLayout title="About">
   <section class="hero">
-    <h1>{SITE.name}</h1>
-    <p class="muted tagline">{SITE.tagline}</p>
+    <div class="avatar" aria-hidden="true">{initials}</div>
+    <div class="hero-text">
+      <h1>{SITE.name}</h1>
+      <p class="muted tagline">{SITE.tagline}</p>
+    </div>
   </section>
+
+  <ul class="social-row hero-socials">
+    {
+      SOCIALS.map((s) => (
+        <li>
+          <a
+            class="social-btn"
+            href={s.url}
+            target={s.url.startsWith("http") ? "_blank" : undefined}
+            rel="noopener"
+          >
+            <Icon name={s.icon} size={18} />
+            <span>{s.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 
   <section class="prose">
     <p>
@@ -22,35 +51,46 @@ import { SITE, SOCIALS } from "../config";
       and photography. Right now I'm exploring <em>(edit me)</em> and always
       happy to chat about new projects.
     </p>
-
-    <h2>Find me elsewhere</h2>
-    <ul class="links">
-      {
-        SOCIALS.map((s) => (
-          <li>
-            <a href={s.url} target={s.url.startsWith("http") ? "_blank" : undefined} rel="noopener">
-              {s.name}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
     margin-bottom: 1.5rem;
   }
+  .avatar {
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1, #a855f7 55%, #ec4899);
+    box-shadow: var(--shadow);
+    user-select: none;
+  }
+  .hero-text {
+    min-width: 0;
+  }
   .tagline {
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     margin: 0;
   }
-  .links {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
+  .hero-socials {
+    margin-bottom: 2.25rem;
+  }
+  @media (max-width: 480px) {
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
   }
 </style>

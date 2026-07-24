@@ -1,19 +1,29 @@
 ---
 import { SITE, SOCIALS } from "../config";
+import Icon from "./Icon.astro";
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container inner">
-    <div class="socials">
+    <ul class="social-row socials">
       {
         SOCIALS.map((s) => (
-          <a href={s.url} target={s.url.startsWith("http") ? "_blank" : undefined} rel="noopener">
-            {s.name}
-          </a>
+          <li>
+            <a
+              class="social-icon"
+              href={s.url}
+              target={s.url.startsWith("http") ? "_blank" : undefined}
+              rel="noopener"
+              aria-label={s.name}
+              title={s.name}
+            >
+              <Icon name={s.icon} size={18} />
+            </a>
+          </li>
         ))
       }
-    </div>
+    </ul>
     <p class="muted small">© {year} {SITE.name}</p>
   </div>
 </footer>
@@ -21,7 +31,7 @@ const year = new Date().getFullYear();
 <style>
   .site-footer {
     border-top: 1px solid var(--border);
-    padding: 1.5rem 0;
+    padding: 1.75rem 0;
   }
   .inner {
     display: flex;
@@ -31,17 +41,7 @@ const year = new Date().getFullYear();
     gap: 0.75rem;
   }
   .socials {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .socials a {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .socials a:hover {
-    color: var(--fg);
-    text-decoration: none;
+    gap: 0.25rem;
   }
   .site-footer p {
     margin: 0;

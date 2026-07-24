@@ -21,14 +21,21 @@ const fmt = (d: Date) =>
   <ul class="post-list">
     {
       posts.map((post) => (
-        <li>
-          <a class="title" href={`${base}/blog/${post.id}`}>
-            {post.data.title}
+        <li class="card">
+          <a class="card-link" href={`${base}/blog/${post.id}`}>
+            <time class="muted small" datetime={post.data.date.toISOString()}>
+              {fmt(post.data.date)}
+            </time>
+            <span class="title">{post.data.title}</span>
+            {post.data.description && <p class="muted excerpt">{post.data.description}</p>}
+            {post.data.tags.length > 0 && (
+              <span class="tags">
+                {post.data.tags.map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </span>
+            )}
           </a>
-          <time class="muted small" datetime={post.data.date.toISOString()}>
-            {fmt(post.data.date)}
-          </time>
-          {post.data.description && <p class="muted excerpt">{post.data.description}</p>}
         </li>
       ))
     }
@@ -39,23 +46,56 @@ const fmt = (d: Date) =>
   .post-list {
     list-style: none;
     padding: 0;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
+    display: grid;
+    gap: 1rem;
   }
-  .post-list li {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border);
+  .card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: transform 0.15s ease, border-color 0.15s ease,
+      box-shadow 0.15s ease;
   }
-  .title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--fg);
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: var(--shadow-hover);
+  }
+  .card-link {
     display: block;
+    padding: 1.25rem 1.4rem;
+    color: inherit;
   }
-  .title:hover {
-    color: var(--accent);
+  .card-link:hover {
     text-decoration: none;
   }
+  .title {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin-top: 0.2rem;
+  }
+  .card:hover .title {
+    color: var(--accent);
+  }
   .excerpt {
-    margin: 0.35rem 0 0;
+    margin: 0.4rem 0 0;
+  }
+  .tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
   }
 </style>
