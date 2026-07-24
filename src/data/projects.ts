@@ -44,10 +44,10 @@ export const projects: Project[] = [
   },
   {
     name: "QJS",
-    // TODO: add a short description of what QJS is.
-    description: "",
+    description:
+      "Quant & trading internship scanner — automatically tracks quant, trading, research, and engineering internships across a 300+ firm universe, with GitHub as the shared source of truth.",
     language: "JavaScript",
-    topics: [],
+    topics: ["nodejs", "web-scraping", "internships", "quant", "automation"],
     visibility: "private",
     repo: "https://github.com/Jiang6082/QJS",
   },
