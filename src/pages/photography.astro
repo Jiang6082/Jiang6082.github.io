@@ -245,18 +245,23 @@ if (singles.length) {
   .pgrid {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
-    --row-h: 240px;
+    gap: 4px;
+    --row-h: 360px;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     .pgrid {
-      --row-h: 190px;
+      --row-h: 300px;
     }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 760px) {
     .pgrid {
-      --row-h: 150px;
-      gap: 2px;
+      --row-h: 240px;
+      gap: 3px;
+    }
+  }
+  @media (max-width: 480px) {
+    .pgrid {
+      --row-h: 200px;
     }
   }
   .cell {

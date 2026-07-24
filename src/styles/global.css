@@ -1,5 +1,6 @@
 :root {
   --bg: #ffffff;
+  --bg-2: #e9ecf5;
   --surface: #ffffff;
   --surface-2: #f7f7f8;
   --fg: #18181b;
@@ -20,6 +21,7 @@
 /* Dark palette, shared by the manual override and the system preference. */
 :root[data-theme="dark"] {
   --bg: #0a0a0b;
+  --bg-2: #191922;
   --surface: #161618;
   --surface-2: #161618;
   --fg: #ededed;
@@ -36,6 +38,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0a0a0b;
+    --bg-2: #191922;
     --surface: #161618;
     --surface-2: #161618;
     --fg: #ededed;
@@ -55,7 +58,16 @@
 
 html {
   font-family: var(--font-sans);
-  background: var(--bg);
+  background-color: var(--bg);
+  /* Soft glow from the top so content (and the portrait) lifts off a flat
+     background. Anchored to the viewport, subtle and neutral. */
+  background-image: radial-gradient(
+    1100px 620px at 50% -6%,
+    var(--bg-2),
+    transparent 62%
+  );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--fg);
   line-height: 1.7;
   font-size: 17px;
