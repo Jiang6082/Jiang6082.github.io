@@ -24,6 +24,11 @@ export interface Photo {
   caption?: string;
   /** Alt text for accessibility. */
   alt: string;
+  /** Original pixel width/height — drives the justified (Google-Photos-style)
+   *  row layout so photos keep their aspect ratio. Cloudinary shows these in
+   *  the Media Library; if omitted, a default 3:2 ratio is assumed. */
+  w?: number;
+  h?: number;
   /** Render a neutral placeholder tile instead of a Cloudinary image. */
   placeholder?: boolean;
 }
@@ -47,10 +52,11 @@ export const collections: Collection[] = [
     title: "A Trip Somewhere",
     description: "Placeholder album — replace with a real collection.",
     photos: [
-      { publicId: "", alt: "Placeholder", title: "Arrival", caption: "The first evening.", placeholder: true },
-      { publicId: "", alt: "Placeholder", title: "Old town", caption: "Wandering side streets.", placeholder: true },
-      { publicId: "", alt: "Placeholder", title: "Golden hour", placeholder: true },
-      { publicId: "", alt: "Placeholder", title: "Rooftops", caption: "The view from up high.", placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Arrival", caption: "The first evening.", w: 1600, h: 1067, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Old town", caption: "Wandering side streets.", w: 1067, h: 1600, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Golden hour", w: 1600, h: 900, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Rooftops", caption: "The view from up high.", w: 1200, h: 1200, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Harbor", w: 1600, h: 1067, placeholder: true },
     ],
   },
   {
@@ -58,18 +64,20 @@ export const collections: Collection[] = [
     title: "Street",
     description: "Placeholder album — candid moments around the city.",
     photos: [
-      { publicId: "", alt: "Placeholder", title: "Crosswalk", placeholder: true },
-      { publicId: "", alt: "Placeholder", title: "Neon", caption: "After the rain.", placeholder: true },
-      { publicId: "", alt: "Placeholder", title: "Market", placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Crosswalk", w: 1067, h: 1600, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Neon", caption: "After the rain.", w: 1600, h: 1067, placeholder: true },
+      { publicId: "", alt: "Placeholder", title: "Market", w: 1600, h: 1000, placeholder: true },
     ],
   },
 ];
 
 // ── Standalone photos ───────────────────────────────────────────
 export const singles: Photo[] = [
-  { publicId: "", alt: "Placeholder", title: "Quiet morning", caption: "A calm start to the day.", placeholder: true },
-  { publicId: "", alt: "Placeholder", title: "City lights", placeholder: true },
-  { publicId: "", alt: "Placeholder", title: "On the trail", caption: "Somewhere off the map.", placeholder: true },
-  { publicId: "", alt: "Placeholder", title: "Reflections", placeholder: true },
-  { publicId: "", alt: "Placeholder", title: "Skyline", placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "Quiet morning", caption: "A calm start to the day.", w: 1600, h: 1067, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "City lights", w: 1067, h: 1600, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "On the trail", caption: "Somewhere off the map.", w: 1600, h: 1067, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "Reflections", w: 1600, h: 1000, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "Skyline", w: 1600, h: 720, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "Portrait", w: 1000, h: 1500, placeholder: true },
+  { publicId: "", alt: "Placeholder", title: "Still life", w: 1200, h: 1200, placeholder: true },
 ];

@@ -3,95 +3,71 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { collections, singles, type Photo } from "../data/photos";
 import { cld } from "../lib/cloudinary";
 
-// Shape each photo into a plain object the client lightbox can consume.
-const toItem = (p: Photo) => ({
-  title: p.title ?? "",
-  caption: p.caption ?? "",
-  alt: p.alt || p.title || "Photo",
-  placeholder: !!p.placeholder || !p.publicId,
-  thumb: p.publicId ? cld(p.publicId, { width: 900 }) : "",
-  full: p.publicId ? cld(p.publicId, { width: 2000 }) : "",
-});
+// Shape each photo into a plain object the client lightbox can consume,
+// plus an aspect ratio for the justified row layout.
+const toItem = (p: Photo) => {
+  const ar = p.w && p.h ? p.w / p.h : 1.5;
+  return {
+    title: p.title ?? "",
+    caption: p.caption ?? "",
+    alt: p.alt || p.title || "Photo",
+    placeholder: !!p.placeholder || !p.publicId,
+    ar: Math.max(0.5, Math.min(ar, 2.6)), // clamp extremes
+    thumb: p.publicId ? cld(p.publicId, { width: 900 }) : "",
+    full: p.publicId ? cld(p.publicId, { width: 2000 }) : "",
+  };
+};
 
-// Groups the lightbox navigates within: one per collection, plus singles.
+// One labeled group per collection, then a group for the standalone photos.
 const groups = [
   ...collections.map((c) => ({
     key: `col-${c.id}`,
     title: c.title,
+    description: c.description ?? "",
     items: c.photos.map(toItem),
   })),
-  { key: "singles", title: "Photos", items: singles.map(toItem) },
+  ...(singles.length
+    ? [{ key: "singles", title: "Photos", description: "", items: singles.map(toItem) }]
+    : []),
 ];
-
-const coverOf = (c: (typeof collections)[number]) =>
-  toItem(c.cover ?? c.photos[0]);
 ---
 
-<BaseLayout title="Photography" description="Collections and single frames.">
-  <h1>Photography</h1>
-  <p class="muted">
-    Click any photo to view it full-screen — use the arrows or your ← / → keys
-    to move through a set, Esc to close.
-  </p>
+<BaseLayout title="Photography" description="Collections and single frames." wide>
+  <header class="pg-head">
+    <h1>Photography</h1>
+    <p class="muted">
+      Click any photo to view it full-screen — use the arrows or your ← / →
+      keys to move through a set, Esc to close.
+    </p>
+  </header>
 
   {
-    collections.length > 0 && (
-      <section class="block">
-        <h2>Collections</h2>
-        <div class="collections">
-          {collections.map((c) => {
-            const cover = coverOf(c);
-            return (
-              <button
-                class="collection"
-                data-group={`col-${c.id}`}
-                data-index="0"
-                aria-label={`Open collection: ${c.title}`}
-              >
-                <span class="cover">
-                  {cover.placeholder ? (
-                    <span class="ph" />
-                  ) : (
-                    <img src={cover.thumb} alt={cover.alt} loading="lazy" />
-                  )}
-                  <span class="count">{c.photos.length} photos</span>
-                </span>
-                <span class="c-title">{c.title}</span>
-                {c.description && <span class="c-desc muted">{c.description}</span>}
-              </button>
-            );
-          })}
+    groups.map((g) => (
+      <section class="group">
+        <div class="group-label">
+          <span class="g-title">{g.title}</span>
+          {g.description && <span class="g-desc"> · {g.description}</span>}
+        </div>
+        <div class="pgrid">
+          {g.items.map((item, i) => (
+            <button
+              class="cell"
+              style={`--ar:${item.ar.toFixed(3)}`}
+              data-group={g.key}
+              data-index={i}
+              aria-label={item.title || "Open photo"}
+            >
+              {item.placeholder ? (
+                <span class="ph" />
+              ) : (
+                <img src={item.thumb} alt={item.alt} loading="lazy" />
+              )}
+              {item.title && <span class="cell-title">{item.title}</span>}
+            </button>
+          ))}
         </div>
       </section>
-    )
-  }
-
-  {
-    singles.length > 0 && (
-      <section class="block">
-        <h2>Photos</h2>
-        <div class="masonry">
-          {singles.map((p, i) => {
-            const item = toItem(p);
-            return (
-              <button
-                class="tile"
-                data-group="singles"
-                data-index={i}
-                aria-label={item.title || "Open photo"}
-              >
-                {item.placeholder ? (
-                  <span class="ph tall" />
-                ) : (
-                  <img src={item.thumb} alt={item.alt} loading="lazy" />
-                )}
-                {item.title && <span class="tile-title">{item.title}</span>}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-    )
+    ))
   }
 
   <!-- Lightbox overlay -->
@@ -206,7 +182,6 @@ const coverOf = (c: (typeof collections)[number]) =>
   btnPrev.addEventListener("click", prev);
   btnClose.addEventListener("click", close);
   lb.addEventListener("click", (e) => {
-    // Click on the backdrop (not the image/buttons/caption) closes.
     if (e.target === lb || e.target === lb.querySelector(".lb-figure")) close();
   });
   document.addEventListener("keydown", (e) => {
@@ -218,142 +193,109 @@ const coverOf = (c: (typeof collections)[number]) =>
 </script>
 
 <style>
-  .block {
-    margin-top: 2.5rem;
+  /* Header keeps a little breathing room; grids go fully edge-to-edge. */
+  .pg-head {
+    padding: 0 clamp(0.75rem, 3vw, 1.5rem);
+    max-width: 46rem;
   }
-  .block h2 {
-    margin-top: 0;
+  .pg-head h1 {
+    margin-bottom: 0.35rem;
   }
 
-  /* Neutral placeholder fill */
-  .ph {
-    display: block;
+  .group {
+    margin-top: 1.75rem;
+  }
+  .group-label {
+    padding: 0 clamp(0.75rem, 3vw, 1.5rem);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .g-title {
+    font-weight: 650;
+    color: var(--fg);
+  }
+  .g-desc {
+    color: var(--muted);
+  }
+
+  /* ── Justified, full-bleed, borderless grid (Google-Photos style) ─ */
+  .pgrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    --row-h: 240px;
+  }
+  @media (max-width: 900px) {
+    .pgrid {
+      --row-h: 190px;
+    }
+  }
+  @media (max-width: 600px) {
+    .pgrid {
+      --row-h: 150px;
+      gap: 2px;
+    }
+  }
+  .cell {
+    position: relative;
+    height: var(--row-h);
+    /* grow / shrink / basis all scale with aspect ratio → rows fill width
+       while photos keep their proportions. */
+    flex: var(--ar) 1 calc(var(--ar) * var(--row-h));
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: var(--surface-2);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .cell img,
+  .cell .ph {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cell .ph {
     background: linear-gradient(
       135deg,
       var(--border),
       color-mix(in srgb, var(--border) 55%, var(--muted))
     );
   }
-
-  /* ── Collections grid ─────────────────────────────────────────── */
-  .collections {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.1rem;
+  .cell img {
+    transition: transform 0.3s ease, filter 0.2s ease;
   }
-  .collection {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0;
-    border: none;
-    background: none;
-    text-align: left;
-    cursor: pointer;
-    color: inherit;
-    font: inherit;
+  .cell:hover img {
+    transform: scale(1.04);
   }
-  .cover {
-    position: relative;
-    display: block;
-    aspect-ratio: 3 / 2;
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-  }
-  .cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.35s ease;
-  }
-  .collection:hover .cover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-  }
-  .collection:hover .cover img {
-    transform: scale(1.05);
-  }
-  .count {
+  .cell::after {
+    content: "";
     position: absolute;
-    right: 0.6rem;
-    bottom: 0.6rem;
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.55);
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    backdrop-filter: blur(4px);
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.2s ease;
+    pointer-events: none;
   }
-  .c-title {
-    font-weight: 650;
-    font-size: 1.02rem;
+  .cell:hover::after {
+    background: rgba(0, 0, 0, 0.12);
   }
-  .c-desc {
-    font-size: 0.88rem;
-  }
-
-  /* ── Singles masonry ──────────────────────────────────────────── */
-  .masonry {
-    columns: 3;
-    column-gap: 1rem;
-  }
-  @media (max-width: 760px) {
-    .masonry {
-      columns: 2;
-    }
-  }
-  @media (max-width: 460px) {
-    .masonry {
-      columns: 1;
-    }
-  }
-  .tile {
-    position: relative;
-    display: block;
-    width: 100%;
-    margin: 0 0 1rem;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: none;
-    cursor: pointer;
-    break-inside: avoid;
-    box-shadow: var(--shadow);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-  }
-  .tile:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-  }
-  .tile img {
-    width: 100%;
-    display: block;
-  }
-  .ph.tall {
-    height: 14rem;
-  }
-  .tile-title {
+  .cell-title {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 1.5rem 0.75rem 0.6rem;
-    font-size: 0.85rem;
+    z-index: 1;
+    padding: 1.6rem 0.6rem 0.5rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: #fff;
+    text-align: left;
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
     opacity: 0;
-    transition: opacity 0.18s ease;
+    transition: opacity 0.2s ease;
   }
-  .tile:hover .tile-title {
+  .cell:hover .cell-title {
     opacity: 1;
   }
 
@@ -365,7 +307,7 @@ const coverOf = (c: (typeof collections)[number]) =>
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.88);
+    background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(6px);
     padding: 1.5rem;
     animation: lb-in 0.2s ease;
@@ -380,7 +322,7 @@ const coverOf = (c: (typeof collections)[number]) =>
   }
   .lb-figure {
     margin: 0;
-    max-width: min(92vw, 1100px);
+    max-width: min(94vw, 1200px);
     max-height: 90vh;
     display: flex;
     flex-direction: column;
@@ -391,12 +333,12 @@ const coverOf = (c: (typeof collections)[number]) =>
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 76vh;
+    max-height: 78vh;
   }
   .lb-media img {
     max-width: 100%;
-    max-height: 76vh;
-    border-radius: 8px;
+    max-height: 78vh;
+    border-radius: 6px;
     object-fit: contain;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
@@ -406,10 +348,9 @@ const coverOf = (c: (typeof collections)[number]) =>
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 6px;
     color: rgba(255, 255, 255, 0.75);
     background: linear-gradient(135deg, #3a3a44, #55556a);
-    font-size: 1rem;
   }
   .lb-cap {
     text-align: center;
@@ -444,7 +385,6 @@ const coverOf = (c: (typeof collections)[number]) =>
   }
   .lb-btn:hover {
     background: rgba(255, 255, 255, 0.22);
-    transform: scale(1.06);
   }
   .lb-close {
     top: 1.1rem;
