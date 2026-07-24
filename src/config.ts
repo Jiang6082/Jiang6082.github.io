@@ -4,7 +4,7 @@
 
 export const SITE = {
   // Your name as it appears in the header and page titles.
-  name: "Jor Leung", // <-- change to your name
+  name: "Charles Jiang",
   // Short tagline shown under your name on the About page.
   tagline: "Student · Developer · Photographer",
   // Used for <title>, RSS, and SEO. No trailing slash.
@@ -20,7 +20,7 @@ export const SITE = {
 // Remove any you don't want; add more freely.
 export const SOCIALS = [
   { name: "GitHub", url: "https://github.com/jiang6082" },
-  { name: "LinkedIn", url: "https://www.linkedin.com/in/your-handle" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/charlesj8450" },
   { name: "Email", url: `mailto:${"leung.jor@northeastern.edu"}` },
 ];
 
