@@ -144,20 +144,48 @@ if (singles.length) {
   let index = 0;
   let lastFocus: HTMLElement | null = null;
 
+  // Zoom / pan state (inline styles, because the lightbox <img> is created
+  // in JS and Astro's scoped CSS would not apply to it).
+  let scale = 1;
+  let tx = 0;
+  let ty = 0;
+  let curImg: HTMLImageElement | null = null;
+  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, hi));
+
+  function applyTransform() {
+    if (!curImg) return;
+    curImg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    curImg.style.cursor = scale > 1 ? "grab" : "zoom-in";
+  }
+  function resetZoom() {
+    scale = 1;
+    tx = 0;
+    ty = 0;
+  }
+
   function render() {
     const item = current[index];
     if (!item) return;
     media.innerHTML = "";
+    resetZoom();
+    curImg = null;
     if (item.placeholder) {
       const ph = document.createElement("div");
       ph.className = "lb-placeholder";
+      ph.style.cssText =
+        "width:min(70vw,640px);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;border-radius:6px;color:rgba(255,255,255,.75);background:linear-gradient(135deg,#3a3a44,#55556a);";
       ph.textContent = item.title || "Photo";
       media.appendChild(ph);
     } else {
       const img = document.createElement("img");
       img.src = item.full;
       img.alt = item.alt;
+      img.draggable = false;
+      img.style.cssText =
+        "display:block;max-width:94vw;max-height:84vh;width:auto;height:auto;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform-origin:center center;transition:transform .08s ease-out;user-select:none;-webkit-user-drag:none;touch-action:none;";
       media.appendChild(img);
+      curImg = img;
+      applyTransform();
     }
     elTitle.textContent = item.title;
     elTitle.style.display = item.title ? "" : "none";
@@ -214,6 +242,73 @@ if (singles.length) {
     if (e.key === "Escape") close();
     else if (e.key === "ArrowRight" && current.length > 1) next();
     else if (e.key === "ArrowLeft" && current.length > 1) prev();
+  });
+
+  // ── Zoom (scroll) & pan (drag) ──────────────────────────────────
+  function zoomAt(clientX: number, clientY: number, factor: number) {
+    if (!curImg) return;
+    const newScale = clamp(scale * factor, 1, 6);
+    if (newScale === scale) return;
+    const rect = curImg.getBoundingClientRect();
+    // Center of the untransformed image (scaling is about center, so the
+    // transformed rect's center is the static center plus the translation).
+    const c0x = rect.left + rect.width / 2 - tx;
+    const c0y = rect.top + rect.height / 2 - ty;
+    const vx = clientX - c0x;
+    const vy = clientY - c0y;
+    const ratio = newScale / scale;
+    tx = vx - (vx - tx) * ratio;
+    ty = vy - (vy - ty) * ratio;
+    scale = newScale;
+    if (scale <= 1.001) resetZoom();
+    applyTransform();
+  }
+
+  lb.addEventListener(
+    "wheel",
+    (e) => {
+      if (lb.hidden || !curImg) return;
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+    },
+    { passive: false }
+  );
+
+  let dragging = false;
+  let sx = 0, sy = 0, stx = 0, sty = 0;
+  media.addEventListener("pointerdown", (e) => {
+    if (!curImg || scale <= 1) return;
+    dragging = true;
+    sx = e.clientX;
+    sy = e.clientY;
+    stx = tx;
+    sty = ty;
+    curImg.style.transition = "none";
+    curImg.style.cursor = "grabbing";
+    media.setPointerCapture?.(e.pointerId);
+  });
+  media.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    tx = stx + (e.clientX - sx);
+    ty = sty + (e.clientY - sy);
+    applyTransform();
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    if (curImg) curImg.style.transition = "transform .08s ease-out";
+    applyTransform();
+  };
+  media.addEventListener("pointerup", endDrag);
+  media.addEventListener("pointercancel", endDrag);
+  media.addEventListener("dblclick", (e) => {
+    if (!curImg) return;
+    if (scale > 1) resetZoom();
+    else {
+      zoomAt(e.clientX, e.clientY, 2.4);
+      return;
+    }
+    applyTransform();
   });
 
   // ── Justified layout (Google-Photos style, no cropping) ─────────
@@ -387,6 +482,7 @@ if (singles.length) {
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(6px);
     padding: 1.5rem;
+    overflow: hidden;
     animation: lb-in 0.2s ease;
   }
   .lightbox[hidden] {
@@ -453,6 +549,7 @@ if (singles.length) {
   }
   .lb-btn {
     position: absolute;
+    z-index: 2;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: #fff;
