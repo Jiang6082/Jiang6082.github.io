@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../config";
+import Icon from "./Icon.astro";
 
 const base = import.meta.env.BASE_URL;
 // Join base + path without producing double slashes.
@@ -7,6 +8,7 @@ const link = (p: string) => (base.replace(/\/$/, "") + p) || "/";
 
 const nav = [
   { label: "About", href: link("/") },
+  { label: "Projects", href: link("/projects") },
   { label: "Blog", href: link("/blog") },
   { label: "Photography", href: link("/photography") },
 ];
@@ -22,25 +24,51 @@ const isActive = (href: string) => {
 <header class="site-header">
   <div class="container inner">
     <a class="brand" href={link("/")}>{SITE.name}</a>
-    <nav>
-      {
-        nav.map((item) => (
-          <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
-            {item.label}
-          </a>
-        ))
-      }
-    </nav>
+    <div class="right">
+      <nav>
+        {
+          nav.map((item) => (
+            <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <button
+        id="theme-toggle"
+        class="theme-toggle"
+        type="button"
+        aria-label="Toggle color theme"
+        title="Toggle light / dark"
+      >
+        <span class="icon-moon"><Icon name="moon" size={17} /></span>
+        <span class="icon-sun"><Icon name="sun" size={17} /></span>
+      </button>
+    </div>
   </div>
 </header>
+
+<script>
+  const btn = document.getElementById("theme-toggle");
+  btn?.addEventListener("click", () => {
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const current = root.getAttribute("data-theme") || (prefersDark ? "dark" : "light");
+    const next = current === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {}
+  });
+</script>
 
 <style>
   .site-header {
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
     z-index: 10;
   }
   .inner {
@@ -48,20 +76,26 @@ const isActive = (href: string) => {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    height: 3.5rem;
+    height: 3.75rem;
   }
   .brand {
     font-weight: 700;
     color: var(--fg);
     font-size: 1.05rem;
+    letter-spacing: -0.01em;
   }
   .brand:hover {
     text-decoration: none;
     color: var(--accent);
   }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
   nav {
     display: flex;
-    gap: 1.25rem;
+    gap: 1.1rem;
   }
   nav a {
     color: var(--muted);
@@ -74,5 +108,16 @@ const isActive = (href: string) => {
   nav a.active {
     color: var(--fg);
     font-weight: 600;
+  }
+  @media (max-width: 560px) {
+    .right {
+      gap: 0.85rem;
+    }
+    nav {
+      gap: 0.85rem;
+    }
+    nav a {
+      font-size: 0.9rem;
+    }
   }
 </style>

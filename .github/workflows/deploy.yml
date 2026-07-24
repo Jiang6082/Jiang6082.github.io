@@ -23,6 +23,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Install, build, and upload
         uses: withastro/action@v4
+        env:
+          # Lets the Projects page query the GitHub API with a higher rate
+          # limit during the build. This token is provided automatically.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # with:
         #   path: .            # root of the Astro project
         #   node-version: 20

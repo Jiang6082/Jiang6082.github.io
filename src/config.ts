@@ -24,6 +24,20 @@ export const SOCIALS = [
   { name: "Email", icon: "email", url: `mailto:${"leung.jor@northeastern.edu"}` },
 ];
 
+// ── GitHub (Projects page) ──────────────────────────────────────
+// The Projects page pulls your public repos from the GitHub API at build
+// time and shows them as cards with language + star/fork visualizations.
+export const GITHUB = {
+  username: "jiang6082",
+  // Leave empty [] to auto-feature your most notable repos (by stars, then
+  // most recently updated). Or list exact repo names to feature, in order.
+  featured: [] as string[],
+  // Repos to always hide (this site, forks you don't want to show, etc.).
+  exclude: ["jiang6082.github.io", "Jiang6082.github.io"],
+  // How many repos to show when auto-selecting.
+  limit: 9,
+};
+
 // ── Cloudinary ──────────────────────────────────────────────────
 // After you create a free Cloudinary account, put your "cloud name"
 // here (Dashboard → Product Environment Credentials → Cloud name).

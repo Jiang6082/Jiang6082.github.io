@@ -1,0 +1,226 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import { GITHUB } from "../config";
+import { getRepos, languageBreakdown, langColor } from "../lib/github";
+
+const repos = await getRepos();
+const breakdown = languageBreakdown(repos);
+const totalRepos = repos.length;
+
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short" });
+---
+
+<BaseLayout title="Projects" description="Things I've built.">
+  <h1>Projects</h1>
+  <p class="muted">
+    A live look at what I'm building on
+    <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
+  </p>
+
+  {
+    totalRepos === 0 ? (
+      <p class="empty muted">
+        Projects couldn't be loaded from GitHub right now (this can happen if the
+        API rate limit was hit during the build). They'll appear on the next
+        deploy — or visit
+        <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">
+          github.com/{GITHUB.username}
+        </a>
+        directly.
+      </p>
+    ) : (
+      <>
+        {breakdown.length > 0 && (
+          <section class="langs" aria-label="Language distribution">
+            <div class="bar">
+              {breakdown.map((b) => (
+                <span
+                  class="seg"
+                  style={`width:${(b.count / totalRepos) * 100}%;background:${langColor(b.lang)}`}
+                  title={`${b.lang}: ${b.count}`}
+                />
+              ))}
+            </div>
+            <ul class="legend">
+              {breakdown.map((b) => (
+                <li>
+                  <span class="dot" style={`background:${langColor(b.lang)}`} />
+                  {b.lang} <span class="muted">{b.count}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <div class="grid">
+          {repos.map((repo) => (
+            <article class="card">
+              <a class="card-head" href={repo.url} target="_blank" rel="noopener">
+                <span class="repo-name">
+                  <Icon name="github" size={16} />
+                  {repo.name}
+                </span>
+              </a>
+              {repo.description && <p class="desc">{repo.description}</p>}
+              {repo.topics.length > 0 && (
+                <div class="topics">
+                  {repo.topics.slice(0, 4).map((t) => (
+                    <span class="topic">{t}</span>
+                  ))}
+                </div>
+              )}
+              <div class="meta">
+                {repo.language && (
+                  <span class="lang">
+                    <span class="dot" style={`background:${langColor(repo.language)}`} />
+                    {repo.language}
+                  </span>
+                )}
+                <span title="Stars">★ {repo.stars}</span>
+                <span title="Forks">⑂ {repo.forks}</span>
+                <span class="updated muted">Updated {fmtDate(repo.updated)}</span>
+              </div>
+              <div class="links">
+                <a href={repo.url} target="_blank" rel="noopener">Code →</a>
+                {repo.homepage && (
+                  <a href={repo.homepage} target="_blank" rel="noopener">Live demo →</a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .empty {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+  .empty a {
+    margin-left: 0.25rem;
+  }
+
+  /* Language distribution */
+  .langs {
+    margin: 1.75rem 0 2.25rem;
+  }
+  .bar {
+    display: flex;
+    height: 12px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .seg {
+    height: 100%;
+    min-width: 3px;
+  }
+  .legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    padding: 0;
+    margin: 0.85rem 0 0;
+    font-size: 0.85rem;
+  }
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  /* Cards */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 1.15rem 1.25rem;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: var(--shadow-hover);
+  }
+  .card-head {
+    color: var(--fg);
+  }
+  .card-head:hover {
+    text-decoration: none;
+    color: var(--accent);
+  }
+  .repo-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 650;
+    font-size: 1.05rem;
+    word-break: break-word;
+  }
+  .desc {
+    margin: 0.6rem 0 0;
+    font-size: 0.92rem;
+    color: var(--muted);
+    flex: 1;
+  }
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.7rem;
+  }
+  .topic {
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.08rem 0.5rem;
+    border-radius: 999px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+    margin-top: 0.9rem;
+    font-size: 0.82rem;
+    color: var(--fg);
+  }
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .updated {
+    font-size: 0.78rem;
+  }
+  .links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.85rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+</style>
