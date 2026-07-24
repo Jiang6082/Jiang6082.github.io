@@ -9,9 +9,11 @@ interface Props {
   description?: string;
   /** Render content edge-to-edge (no centered container). */
   wide?: boolean;
+  /** Extra class on <body> (e.g. "page-about" for the green background). */
+  bodyClass?: string;
 }
 
-const { title, description, wide } = Astro.props;
+const { title, description, wide, bodyClass } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
 const desc = description ?? SITE.tagline;
 ---
@@ -49,7 +51,7 @@ const desc = description ?? SITE.tagline;
     <meta property="og:type" content="website" />
     <meta name="generator" content={Astro.generator} />
   </head>
-  <body>
+  <body class={bodyClass}>
     <Header />
     <main>
       {

@@ -59,15 +59,6 @@
 html {
   font-family: var(--font-sans);
   background-color: var(--bg);
-  /* Soft glow from the top so content (and the portrait) lifts off a flat
-     background. Anchored to the viewport, subtle and neutral. */
-  background-image: radial-gradient(
-    1100px 620px at 50% -6%,
-    var(--bg-2),
-    transparent 62%
-  );
-  background-attachment: fixed;
-  background-repeat: no-repeat;
   color: var(--fg);
   line-height: 1.7;
   font-size: 17px;
@@ -81,6 +72,24 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Soft neutral glow from the top so content lifts off a flat background.
+     Anchored to the viewport, subtle. Per-page overrides below. */
+  background-color: var(--bg);
+  background-image: radial-gradient(
+    1100px 620px at 50% -6%,
+    var(--bg-2),
+    transparent 62%
+  );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* About page: a faint, dappled botanical-green wash. */
+body.page-about {
+  background-image:
+    radial-gradient(1000px 560px at 12% -8%, rgba(74, 140, 74, 0.2), transparent 60%),
+    radial-gradient(900px 620px at 92% 2%, rgba(154, 172, 58, 0.15), transparent 58%),
+    radial-gradient(1200px 820px at 50% 116%, rgba(38, 110, 68, 0.16), transparent 62%);
 }
 
 .container {
