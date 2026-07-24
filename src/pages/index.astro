@@ -44,10 +44,6 @@ const stack = [
 
 <BaseLayout title="About">
   <section class="hero reveal">
-    <div class="aurora" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </div>
-
     <div class="hero-main">
       <p class="eyebrow">Hi, I'm</p>
       <h1 class="name">{SITE.name}</h1>
@@ -80,7 +76,6 @@ const stack = [
     </div>
 
     <div class="portrait-wrap">
-      <div class="glow" aria-hidden="true"></div>
       <div class="portrait">
         {
           portrait ? (
@@ -183,66 +178,6 @@ const stack = [
     margin-bottom: 4.5rem;
     overflow: visible;
   }
-  .hero-main,
-  .portrait-wrap {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Animated aurora backdrop */
-  .aurora {
-    position: absolute;
-    inset: -35% -12% -20%;
-    z-index: 0;
-    pointer-events: none;
-    filter: blur(64px);
-    opacity: 0.42;
-  }
-  .aurora span {
-    position: absolute;
-    width: 22rem;
-    height: 22rem;
-    border-radius: 50%;
-  }
-  .aurora span:nth-child(1) {
-    background: #6366f1;
-    top: -3rem;
-    left: -2rem;
-    animation: drift1 15s ease-in-out infinite;
-  }
-  .aurora span:nth-child(2) {
-    background: #ec4899;
-    top: 1rem;
-    right: -3rem;
-    animation: drift2 19s ease-in-out infinite;
-  }
-  .aurora span:nth-child(3) {
-    background: #22d3ee;
-    bottom: -5rem;
-    left: 34%;
-    animation: drift3 17s ease-in-out infinite;
-  }
-  @media (prefers-color-scheme: light) {
-    .aurora {
-      opacity: 0.28;
-    }
-  }
-  @keyframes drift1 {
-    50% {
-      transform: translate(3rem, 2rem) scale(1.15);
-    }
-  }
-  @keyframes drift2 {
-    50% {
-      transform: translate(-2.5rem, 2.5rem) scale(1.1);
-    }
-  }
-  @keyframes drift3 {
-    50% {
-      transform: translate(2rem, -2.5rem) scale(1.2);
-    }
-  }
-
   .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.14em;
@@ -299,35 +234,18 @@ const stack = [
   .portrait-wrap {
     flex-shrink: 0;
   }
-  .glow {
-    position: absolute;
-    inset: -18%;
-    background: radial-gradient(
-      circle at 50% 40%,
-      color-mix(in srgb, var(--accent) 55%, transparent),
-      transparent 70%
-    );
-    filter: blur(28px);
-    opacity: 0.6;
-    z-index: 0;
-    pointer-events: none;
-  }
   .portrait {
     position: relative;
-    z-index: 1;
     width: 15rem;
     aspect-ratio: 4 / 5;
-    border-radius: 20px;
-    padding: 4px;
-    background: linear-gradient(140deg, #6366f1, #a855f7 50%, #ec4899);
-    box-shadow: var(--shadow);
+    border-radius: 14px;
+    overflow: hidden;
     animation: float 6.5s ease-in-out infinite;
   }
   .portrait img,
   .portrait-placeholder {
     width: 100%;
     height: 100%;
-    border-radius: 16px;
     object-fit: cover;
     display: block;
   }
@@ -432,7 +350,6 @@ const stack = [
 
   /* ── Reduced motion ───────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .aurora span,
     .name,
     .portrait,
     .caret {
