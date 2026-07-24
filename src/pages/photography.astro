@@ -24,8 +24,9 @@ async function toItem(p: Photo) {
     return { ...base, placeholder: true, ar: clampAr(p.ar ?? 1.5), thumb: "", full: "" };
   }
   const meta = mod.default;
-  const thumb = await getImage({ src: meta, width: 900, format: "webp" });
-  const full = await getImage({ src: meta, width: 2000, format: "webp" });
+  const thumb = await getImage({ src: meta, width: Math.min(900, meta.width), format: "webp" });
+  // Full-size for the lightbox — never upscaled past the original.
+  const full = await getImage({ src: meta, width: Math.min(2400, meta.width), format: "webp" });
   return {
     ...base,
     placeholder: false,
@@ -398,24 +399,27 @@ if (singles.length) {
   }
   .lb-figure {
     margin: 0;
-    max-width: min(94vw, 1200px);
-    max-height: 90vh;
+    max-width: 94vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.9rem;
+    gap: 0.75rem;
   }
   .lb-media {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 78vh;
+    min-height: 0;
   }
+  /* Size against the viewport so the whole photo is shown at its true
+     aspect ratio — portraits bound by height, landscapes by width. */
   .lb-media img {
-    max-width: 100%;
-    max-height: 78vh;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 94vw;
+    max-height: 82vh;
     border-radius: 6px;
-    object-fit: contain;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
   .lb-placeholder {
