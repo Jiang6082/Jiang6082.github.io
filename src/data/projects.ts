@@ -27,7 +27,7 @@ export const projects: Project[] = [
   {
     name: "project-emberforge",
     description:
-      "A research system for discovering quantitative trading factors, with statistical safeguards to tell real edges apart from noise. Research-only, no trading.",
+      "A research system for discovering quantitative trading factors, with statistical safeguards to tell real edges apart from noise. Factors that survive are handed off to its companion engine, project-geld, for backtesting. Research-only, no trading.",
     language: "Python",
     topics: ["python", "quant-research", "factor-discovery", "statistics"],
     visibility: "public",
@@ -36,7 +36,7 @@ export const projects: Project[] = [
   {
     name: "project-geld",
     description:
-      "Research, backtesting, and Alpaca paper-trading engine for US equities, with out-of-sample and cost checks before any strategy reaches paper trading. Paper-only.",
+      "Research, backtesting, and Alpaca paper-trading engine for US equities, with out-of-sample and cost checks before any strategy reaches paper trading. It picks up factors discovered in its companion project, project-emberforge. Paper-only.",
     language: "Python",
     topics: ["python", "quantitative-finance", "algorithmic-trading", "alpaca", "backtesting"],
     visibility: "public",
@@ -57,7 +57,7 @@ export const projects: Project[] = [
       "Quant & trading internship scanner — automatically tracks quant, trading, research, and engineering internships across a 300+ firm universe, with GitHub as the shared source of truth.",
     language: "JavaScript",
     topics: ["nodejs", "web-scraping", "internships", "quant", "automation"],
-    visibility: "private",
+    visibility: "public",
     repo: "https://github.com/Jiang6082/QJS",
   },
 ];
