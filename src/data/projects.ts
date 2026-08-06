@@ -36,11 +36,20 @@ export const projects: Project[] = [
   {
     name: "project-geld",
     description:
-      "US-equity research, backtesting, and Alpaca paper-trading engine.",
+      "Research, backtesting, and Alpaca paper-trading engine for US equities. A strategy is only promoted if it keeps out-of-sample alpha after realistic costs — enforced with Benjamini-Hochberg FDR control, alpha/beta gates, and a locked forward-shadow protocol. Runs a dual-account paper workflow (daily + 15-minute intraday). Paper-only by design.",
     language: "Python",
     topics: ["python", "quantitative-finance", "algorithmic-trading", "alpaca", "backtesting"],
     visibility: "public",
     repo: "https://github.com/Jiang6082/project-geld",
+  },
+  {
+    name: "project-emberforge",
+    description:
+      "AI-assisted platform for discovering quantitative trading factors — built to stop you fooling yourself. It records every trial and prices in how many you ran (Deflated Sharpe, FDR), statically and dynamically hunts look-ahead leakage, flags rediscovered duplicates, and refuses to call anything “alpha.” A research system, not a trading bot — no brokerage code, no orders.",
+    language: "Python",
+    topics: ["python", "quant-research", "factor-discovery", "statistics"],
+    visibility: "public",
+    repo: "https://github.com/Jiang6082/project-emberforge",
   },
   {
     name: "QJS",
@@ -50,15 +59,6 @@ export const projects: Project[] = [
     topics: ["nodejs", "web-scraping", "internships", "quant", "automation"],
     visibility: "private",
     repo: "https://github.com/Jiang6082/QJS",
-  },
-  {
-    name: "summer27-internship-agent",
-    description:
-      "Summer 2027 software-internship discovery, review, tracking, and application assistant.",
-    language: "Python",
-    topics: ["python", "automation", "agent"],
-    visibility: "private",
-    repo: "https://github.com/Jiang6082/summer27-internship-agent",
   },
 ];
 
