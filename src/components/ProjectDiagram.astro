@@ -1,0 +1,202 @@
+---
+// A small animated, thematic diagram standing in for each project (they're
+// code repos, not visual products). `kind` picks which one.
+interface Props {
+  kind: string;
+}
+const { kind } = Astro.props;
+---
+
+<div class="diagram" data-kind={kind}>
+  {
+    kind === "distribution" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Factor distribution">
+        <line class="axis" x1="18" y1="122" x2="222" y2="122" />
+        <path class="curve" d="M22,122 Q120,10 218,122" />
+        <circle class="dot" cx="60" cy="112" r="3.5" />
+        <circle class="dot" cx="88" cy="104" r="3.5" />
+        <circle class="dot" cx="150" cy="100" r="3.5" />
+        <circle class="dot" cx="178" cy="110" r="3.5" />
+        <circle class="dot" cx="104" cy="96" r="3.5" />
+        <circle class="dot" cx="134" cy="98" r="3.5" />
+        <circle class="hit" cx="120" cy="54" r="7" />
+      </svg>
+    )
+  }
+  {
+    kind === "candles" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Price candles">
+        <line class="axis" x1="18" y1="130" x2="222" y2="130" />
+        <g class="up"><line x1="46" y1="40" x2="46" y2="112" /><rect x="38" y="58" width="16" height="42" rx="2" /></g>
+        <g class="down"><line x1="86" y1="52" x2="86" y2="124" /><rect x="78" y="70" width="16" height="40" rx="2" /></g>
+        <g class="up"><line x1="126" y1="30" x2="126" y2="100" /><rect x="118" y="46" width="16" height="44" rx="2" /></g>
+        <g class="up"><line x1="166" y1="24" x2="166" y2="86" /><rect x="158" y="36" width="16" height="38" rx="2" /></g>
+        <g class="down"><line x1="206" y1="40" x2="206" y2="108" /><rect x="198" y="56" width="16" height="36" rx="2" /></g>
+      </svg>
+    )
+  }
+  {
+    kind === "volatility" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Volatility forecast">
+        <line class="axis" x1="18" y1="128" x2="222" y2="128" />
+        <path class="area" d="M20,110 L44,70 L68,96 L92,40 L116,84 L140,52 L164,100 L188,64 L214,88 L214,128 L20,128 Z" />
+        <path class="vline" d="M20,110 L44,70 L68,96 L92,40 L116,84 L140,52 L164,100 L188,64 L214,88" />
+      </svg>
+    )
+  }
+  {
+    kind === "options" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Option payoff">
+        <line class="axis" x1="30" y1="120" x2="222" y2="120" />
+        <line class="axis" x1="30" y1="18" x2="30" y2="120" />
+        <line class="strike" x1="120" y1="24" x2="120" y2="126" />
+        <path class="payoff" d="M34,100 L120,100 L210,32" />
+        <circle class="hit" cx="120" cy="100" r="5" />
+      </svg>
+    )
+  }
+  {
+    kind === "scan" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Role scanner">
+        {Array.from({ length: 18 }).map((_, i) => {
+          const cx = 34 + (i % 6) * 34;
+          const cy = 34 + Math.floor(i / 6) * 38;
+          const hot = i === 3 || i === 9 || i === 14;
+          return <circle class={hot ? "hit" : "dot"} cx={cx} cy={cy} r={hot ? 6 : 4} />;
+        })}
+        <rect class="scanline" x="18" y="18" width="204" height="3" rx="1.5" />
+      </svg>
+    )
+  }
+</div>
+
+<style>
+  .diagram {
+    width: 100%;
+    color: var(--accent);
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .axis {
+    stroke: var(--border);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .dot {
+    fill: var(--muted);
+    opacity: 0.7;
+  }
+  .hit {
+    fill: var(--accent);
+  }
+  .curve {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    opacity: 0.85;
+  }
+  /* candles */
+  .up line,
+  .down line {
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .up line {
+    stroke: var(--accent);
+  }
+  .down line {
+    stroke: var(--muted);
+  }
+  .up rect {
+    fill: var(--accent);
+  }
+  .down rect {
+    fill: var(--muted);
+  }
+  /* volatility */
+  .area {
+    fill: var(--accent);
+    opacity: 0.12;
+  }
+  .vline {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-dasharray: 520;
+    stroke-dashoffset: 520;
+    animation: draw 5s ease-in-out infinite;
+  }
+  /* options */
+  .payoff {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    animation: draw 4.5s ease-in-out infinite;
+  }
+  .strike {
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 5;
+    opacity: 0.6;
+  }
+  /* scan */
+  .scanline {
+    fill: var(--accent);
+    opacity: 0.55;
+    animation: sweep 3.2s ease-in-out infinite;
+  }
+
+  @keyframes draw {
+    0% {
+      stroke-dashoffset: 520;
+    }
+    55%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes sweep {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(96px);
+    }
+  }
+  .hit {
+    animation: pulse 2.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vline,
+    .payoff,
+    .scanline,
+    .hit {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

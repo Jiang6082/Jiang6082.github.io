@@ -35,9 +35,9 @@ const indexed = items.map((it, i) => ({ ...it, idx: i }));
 const top = indexed.filter((_, i) => i % 2 === 0);
 const bottom = indexed.filter((_, i) => i % 2 === 1);
 
-// Small deterministic scatter so a row isn't a rigid line.
-const ty = (i: number) => [10, -14, 6, -8, 16, -4][i % 6];
-const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
+// Deterministic scatter so a row reads as loose/individual, not a rigid line.
+const ty = (i: number) => [26, -34, 14, -20, 40, -10, 30, -26][i % 8];
+const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
 ---
 
 <BaseLayout title="Photography · Lab" description="An experimental scrolling view of the gallery." wide>
@@ -55,7 +55,7 @@ const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
 
   <div class="rows">
     <div class="rowwrap">
-      <div class="marquee" style="--speed:48s">
+      <div class="marquee" style="--speed:78s">
         {
           [...top, ...top].map((it, i) => (
             <button
@@ -73,7 +73,7 @@ const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
     </div>
 
     <div class="rowwrap">
-      <div class="marquee rev" style="--speed:56s">
+      <div class="marquee rev" style="--speed:92s">
         {
           [...bottom, ...bottom].map((it, i) => (
             <button
@@ -137,7 +137,7 @@ const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
   .rows {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2.75rem;
     padding: 1.5rem 0 3rem;
   }
   .rowwrap {
@@ -145,9 +145,10 @@ const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
   }
   .marquee {
     display: flex;
-    gap: 1.6rem;
+    gap: 3rem;
     width: max-content;
-    padding: 1.5rem 0.8rem;
+    padding: 2.5rem 0.8rem;
+    align-items: center;
     animation: scroll var(--speed, 50s) linear infinite;
   }
   .marquee.rev {
