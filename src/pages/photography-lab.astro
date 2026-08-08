@@ -30,39 +30,42 @@ const items = (await Promise.all(all.map(toItem))).filter(Boolean) as NonNullabl
   Awaited<ReturnType<typeof toItem>>
 >[];
 
-const step = items.length ? 360 / items.length : 40; // angle between photos
+const step = items.length ? 360 / items.length : 40;
 ---
 
 <BaseLayout title="Photography · Lab" description="An experimental 3D view of the gallery." wide>
   <div class="ring-head">
     <span class="eyebrow">EXPERIMENT</span>
-    <h1>Gallery, in the round</h1>
+    <h1>Standing in the gallery</h1>
     <p class="muted lede">
-      The same photos, arranged in a circle around you. <strong>Scroll</strong> to
-      spin the world; <strong>click</strong> a photo to open it (scroll to zoom,
-      drag to pan, ← / → to move). The
+      You're in the middle, photos all around you. <strong>Scroll</strong> to
+      turn and look around the room; <strong>click</strong> a photo to open it
+      (scroll to zoom, drag to pan, ← / → to move). The
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/photography`}>standard gallery</a>
       is still the main one.
     </p>
   </div>
 
-  <div class="ring-scene" id="scene">
-    <div class="ring" id="ring">
-      {
-        items.map((it, i) => (
-          <button
-            class="ring-item"
-            data-group="lab"
-            data-index={i}
-            style={`--a:${(i * step).toFixed(3)}deg; aspect-ratio:${it.ar.toFixed(3)}`}
-            aria-label={it.title || "Open photo"}
-          >
-            <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
-          </button>
-        ))
-      }
+  <div class="lab-clip">
+    <div class="ring-scene" id="scene">
+      <div class="ring" id="ring">
+        {
+          items.map((it, i) => (
+            <button
+              class="ring-item"
+              data-group="lab"
+              data-index={i}
+              data-a={(i * step).toFixed(3)}
+              style={`--a:${(i * step).toFixed(3)}deg; width:clamp(13rem, 22vw, 19rem); aspect-ratio:${it.ar.toFixed(3)}`}
+              aria-label={it.title || "Open photo"}
+            >
+              <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
+            </button>
+          ))
+        }
+      </div>
+      <span class="ring-hint" aria-hidden="true">scroll to look around ⟲</span>
     </div>
-    <span class="ring-hint" aria-hidden="true">scroll to spin ⟲</span>
   </div>
 
   <script
@@ -91,31 +94,40 @@ const step = items.length ? 360 / items.length : 40; // angle between photos
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (scene && ring) {
-    let rot = 0; // current angle
-    let target = 0; // desired angle
-    const idle = reduce ? 0 : 0.015; // gentle perpetual drift
+    const faces = Array.from(ring.querySelectorAll<HTMLElement>(".ring-item"));
+    const angles = faces.map((f) => parseFloat(f.dataset.a || "0"));
+    const FADE = 74; // degrees from center at which a photo fully fades out
+
+    let rot = 0;
+    let target = 0;
+    const norm = (a: number) => ((((a % 360) + 540) % 360) - 180);
 
     const loop = () => {
-      if (!reduce) target += idle;
       rot += (target - rot) * 0.09;
-      ring.style.transform = `translate(-50%, -50%) rotateY(${rot}deg)`;
+      ring.style.setProperty("--rot", `${rot}deg`);
+      // Fade photos out as they swing to your sides / behind you — this also
+      // hides the extreme scaling CSS produces near the edges of view.
+      for (let i = 0; i < faces.length; i++) {
+        const d = Math.abs(norm(rot + angles[i]));
+        const op = Math.max(0, Math.min(1, 1 - d / FADE));
+        faces[i].style.opacity = String(op);
+        faces[i].style.pointerEvents = op > 0.6 ? "auto" : "none";
+      }
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
 
-    // Scroll spins the world (only when the lightbox is closed).
     scene.addEventListener(
       "wheel",
       (e) => {
         if (lb && !lb.hidden) return;
         e.preventDefault();
-        target += e.deltaY * 0.18;
+        target += e.deltaY * 0.16;
       },
       { passive: false }
     );
 
-    // Drag / swipe also spins; suppress the click that would open a photo
-    // if the pointer actually moved (so a drag doesn't trigger the lightbox).
+    // Drag / swipe to turn; suppress the click that opens a photo if dragged.
     let down = false;
     let moved = false;
     let lastX = 0;
@@ -129,7 +141,7 @@ const step = items.length ? 360 / items.length : 40; // angle between photos
       const dx = e.clientX - lastX;
       lastX = e.clientX;
       if (Math.abs(dx) > 2) moved = true;
-      target += dx * 0.35;
+      target -= dx * 0.3;
     });
     const up = () => (down = false);
     scene.addEventListener("pointerup", up);
@@ -142,7 +154,7 @@ const step = items.length ? 360 / items.length : 40; // angle between photos
           e.preventDefault();
         }
       },
-      true // capture, so it runs before the tile's click handler
+      true
     );
   }
 </script>
@@ -171,56 +183,51 @@ const step = items.length ? 360 / items.length : 40; // angle between photos
     font-weight: 600;
   }
 
+  .lab-clip {
+    overflow: hidden;
+  }
   .ring-scene {
     position: relative;
-    height: min(72vh, 40rem);
+    height: min(76vh, 42rem);
     margin-top: 1rem;
-    perspective: 1700px;
-    overflow: hidden;
-    touch-action: pan-y;
+    /* Small perspective = wide field of view = feels immersive/first-person. */
+    perspective: 900px;
+    perspective-origin: 50% 50%;
     cursor: grab;
+    touch-action: pan-y;
   }
   .ring-scene:active {
     cursor: grabbing;
   }
+  /* The ring's rotation point is pushed out to the camera, so we sit at the
+     centre of the circle of photos and rotating looks *around* the room. */
   .ring {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 0;
-    height: 0;
     transform-style: preserve-3d;
-    transform: translate(-50%, -50%);
+    transform: translateZ(900px) rotateY(var(--rot, 0deg));
   }
   .ring-item {
     position: absolute;
     left: 0;
     top: 0;
-    width: clamp(13rem, 24vw, 20rem);
     padding: 0;
     border: none;
     background: none;
     cursor: pointer;
-    /* place each photo on the circle: turn, then push outward */
-    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(34rem);
+    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(-700px);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.5);
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
     backface-visibility: hidden;
+    will-change: opacity;
   }
   .ring-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: filter 0.3s ease;
-  }
-  .ring-item:hover {
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.65);
-  }
-  .ring-item:hover img {
-    filter: brightness(1.08);
   }
 
   .ring-hint {
@@ -236,8 +243,14 @@ const step = items.length ? 360 / items.length : 40; // angle between photos
   }
 
   @media (max-width: 640px) {
+    .ring {
+      transform: translateZ(720px) rotateY(var(--rot, 0deg));
+    }
+    .ring-scene {
+      perspective: 720px;
+    }
     .ring-item {
-      transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(26rem);
+      transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(-560px);
     }
   }
 </style>
