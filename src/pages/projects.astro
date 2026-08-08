@@ -12,7 +12,8 @@ const codeLink = (p: Project) =>
   p.visibility === "public" && p.repo ? p.repo : null;
 ---
 
-<BaseLayout title="Projects" description="A few things I've built.">
+<BaseLayout title="Projects" description="A few things I've built." wide>
+  <div class="proj">
   <h1>Projects</h1>
   <p class="muted">
     A few things I've been building — mostly around quantitative finance and
@@ -103,9 +104,17 @@ const codeLink = (p: Project) =>
   <p class="more muted small">
     More on <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
   </p>
+  </div>
 </BaseLayout>
 
 <style>
+  .proj {
+    width: 100%;
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
   /* Language distribution */
   .langs {
     margin: 1.75rem 0 2.25rem;
@@ -147,7 +156,7 @@ const codeLink = (p: Project) =>
   /* Cards */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
     gap: 1rem;
   }
   .card {

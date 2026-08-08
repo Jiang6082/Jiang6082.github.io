@@ -1,5 +1,5 @@
 ---
-import { SITE } from "../config";
+import { SITE, ANALYTICS } from "../config";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
@@ -50,6 +50,16 @@ const desc = description ?? SITE.tagline;
     <meta property="og:description" content={desc} />
     <meta property="og:type" content="website" />
     <meta name="generator" content={Astro.generator} />
+    {
+      ANALYTICS.goatCounter && (
+        <script
+          is:inline
+          data-goatcounter={`https://${ANALYTICS.goatCounter}.goatcounter.com/count`}
+          async
+          src="//gc.zgo.at/count.js"
+        />
+      )
+    }
   </head>
   <body class={bodyClass}>
     <Header />

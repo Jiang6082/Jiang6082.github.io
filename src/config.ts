@@ -37,3 +37,13 @@ export const GITHUB = {
 
 // Photos are stored locally under src/photos and optimized by Astro at
 // build time — see src/data/photos.ts. (No image host / API keys needed.)
+
+// ── Analytics (optional, privacy-friendly) ──────────────────────
+// Cookieless visitor counting via GoatCounter — free, no consent banner
+// needed, doesn't track individuals. Create a free site at
+// https://www.goatcounter.com, then set `goatCounter` to your code (the
+// subdomain — e.g. "charlesjiang" for charlesjiang.goatcounter.com).
+// Leave it "" to keep analytics OFF entirely.
+export const ANALYTICS = {
+  goatCounter: "",
+};
