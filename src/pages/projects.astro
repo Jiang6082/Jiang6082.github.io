@@ -1,111 +1,120 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Icon from "../components/Icon.astro";
 import { GITHUB } from "../config";
-import { projects, languageBreakdown, type Project } from "../data/projects";
+import { projects, type Project } from "../data/projects";
 import { langColor } from "../lib/colors";
-
-const breakdown = languageBreakdown(projects);
-const total = projects.length;
 
 const codeLink = (p: Project) =>
   p.visibility === "public" && p.repo ? p.repo : null;
+const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
-<BaseLayout title="Projects" description="A few things I've built." wide>
+<BaseLayout title="Projects" description="Selected work." wide>
   <div class="proj">
-  <h1>Projects</h1>
-  <p class="muted">
-    A few things I've been building — mostly around quantitative finance and
-    automation.
-  </p>
+    <header class="work-head">
+      <span class="eyebrow">SELECTED WORK</span>
+      <h1>Projects</h1>
+      <p class="muted lede">
+        Mostly quantitative finance, research, and automation. Hover a project
+        for a quick description.
+      </p>
+    </header>
 
-  {
-    breakdown.length > 0 && (
-      <section class="langs" aria-label="Language distribution">
-        <div class="bar">
-          {breakdown.map((b) => (
-            <span
-              class="seg"
-              style={`width:${(b.count / total) * 100}%;background:${langColor(b.lang)}`}
-              title={`${b.lang}: ${b.count}`}
-            />
-          ))}
-        </div>
-        <ul class="legend">
-          {breakdown.map((b) => (
+    <ul class="work-list">
+      {
+        projects.map((p, i) => {
+          const href = codeLink(p);
+          return (
             <li>
-              <span class="dot" style={`background:${langColor(b.lang)}`} />
-              {b.lang} <span class="muted">{b.count}</span>
+              <a
+                class:list={["work-row", { islink: !!href }]}
+                href={href ?? undefined}
+                target={href ? "_blank" : undefined}
+                rel={href ? "noopener" : undefined}
+                aria-disabled={href ? undefined : "true"}
+                data-desc={p.description ?? ""}
+                data-tags={(p.topics ?? []).join(",")}
+                data-color={langColor(p.language)}
+              >
+                <span class="w-idx">{pad(i + 1)}</span>
+                <span class="w-name">{p.name}</span>
+                <span class="w-tail">
+                  <span class="w-meta">
+                    {p.language}
+                    {p.visibility === "private" ? " · private" : ""}
+                  </span>
+                  <span class="w-arrow" aria-hidden="true">{href ? "↗" : "—"}</span>
+                </span>
+                <span class="w-desc">{p.description}</span>
+              </a>
             </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
+          );
+        })
+      }
+    </ul>
 
-  <div class="grid">
-    {
-      projects.map((p) => {
-        const href = codeLink(p);
-        return (
-          <article class="card">
-            <div class="card-head">
-              {href ? (
-                <a class="repo-name" href={href} target="_blank" rel="noopener">
-                  <Icon name="github" size={16} />
-                  {p.name}
-                </a>
-              ) : (
-                <span class="repo-name">
-                  <Icon name="github" size={16} />
-                  {p.name}
-                </span>
-              )}
-              <span class:list={["badge", p.visibility]}>{p.visibility}</span>
-            </div>
-
-            {p.description && <p class="desc">{p.description}</p>}
-
-            {p.topics && p.topics.length > 0 && (
-              <div class="topics">
-                {p.topics.slice(0, 6).map((t) => (
-                  <span class="topic">{t}</span>
-                ))}
-              </div>
-            )}
-
-            <div class="foot">
-              {p.language && (
-                <span class="lang">
-                  <span class="dot" style={`background:${langColor(p.language)}`} />
-                  {p.language}
-                </span>
-              )}
-              <span class="links">
-                {href && (
-                  <a href={href} target="_blank" rel="noopener">
-                    Code →
-                  </a>
-                )}
-                {p.demo && (
-                  <a href={p.demo} target="_blank" rel="noopener">
-                    Live demo →
-                  </a>
-                )}
-              </span>
-            </div>
-          </article>
-        );
-      })
-    }
+    <p class="more muted small">
+      More on
+      <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
+    </p>
   </div>
 
-  <p class="more muted small">
-    More on <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
-  </p>
+  <div class="work-preview" aria-hidden="true">
+    <span class="wp-tags"></span>
+    <p class="wp-desc"></p>
   </div>
 </BaseLayout>
+
+<script>
+  const preview = document.querySelector<HTMLElement>(".work-preview");
+  const wpDesc = preview?.querySelector<HTMLElement>(".wp-desc");
+  const wpTags = preview?.querySelector<HTMLElement>(".wp-tags");
+  const rows = document.querySelectorAll<HTMLElement>(".work-row");
+  const canHover = window.matchMedia("(hover: hover)").matches;
+
+  if (preview && wpDesc && wpTags && canHover) {
+    let mx = 0,
+      my = 0,
+      raf = 0;
+    const place = () => {
+      raf = 0;
+      const pad = 18;
+      const w = preview.offsetWidth;
+      const h = preview.offsetHeight;
+      let x = mx + 24;
+      let y = my + 20;
+      if (x + w + pad > window.innerWidth) x = mx - w - 24;
+      if (y + h + pad > window.innerHeight) y = window.innerHeight - h - pad;
+      if (y < pad) y = pad;
+      preview.style.left = `${x}px`;
+      preview.style.top = `${y}px`;
+    };
+    rows.forEach((row) => {
+      row.addEventListener("pointerenter", () => {
+        wpDesc.textContent = row.dataset.desc || "";
+        wpTags.innerHTML = "";
+        (row.dataset.tags || "")
+          .split(",")
+          .filter(Boolean)
+          .slice(0, 6)
+          .forEach((t) => {
+            const s = document.createElement("span");
+            s.className = "wp-tag";
+            s.textContent = t;
+            wpTags.appendChild(s);
+          });
+        preview.style.setProperty("--wp-color", row.dataset.color || "");
+        preview.classList.add("show");
+      });
+      row.addEventListener("pointerleave", () => preview.classList.remove("show"));
+      row.addEventListener("pointermove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        if (!raf) raf = requestAnimationFrame(place);
+      });
+    });
+  }
+</script>
 
 <style>
   .proj {
@@ -115,139 +124,165 @@ const codeLink = (p: Project) =>
     padding: 0 1.5rem;
   }
 
-  /* Language distribution */
-  .langs {
-    margin: 1.75rem 0 2.25rem;
+  .work-head {
+    margin-bottom: 2.75rem;
   }
-  .bar {
-    display: flex;
-    height: 12px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--muted);
   }
-  .seg {
-    height: 100%;
-    min-width: 3px;
+  .work-head h1 {
+    margin: 0.5rem 0 0.4rem;
   }
-  .legend {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.1rem;
-    padding: 0;
-    margin: 0.85rem 0 0;
-    font-size: 0.85rem;
-  }
-  .legend li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .dot {
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: inline-block;
+  .lede {
+    max-width: 40rem;
+    margin: 0;
   }
 
-  /* Cards */
-  .grid {
+  /* ── The list ─────────────────────────────────────────────────── */
+  .work-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .work-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    gap: 1rem;
-  }
-  .card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    padding: 1.15rem 1.25rem;
-    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .card:hover {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    box-shadow: var(--shadow-hover);
-  }
-  .card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  .repo-name {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-weight: 650;
-    font-size: 1.05rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    column-gap: 1.5rem;
+    padding: 1.6rem 0.25rem;
+    border-bottom: 1px solid var(--border);
     color: var(--fg);
-    word-break: break-word;
+    position: relative;
+    transition: padding 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.28s ease;
   }
-  a.repo-name:hover {
-    color: var(--accent);
+  a.work-row:hover {
     text-decoration: none;
   }
-  .badge {
-    flex-shrink: 0;
-    font-size: 0.68rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 0.12rem 0.5rem;
-    border-radius: 999px;
+  .work-row[aria-disabled] {
+    cursor: default;
+  }
+  .w-idx {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding-top: 0.35rem;
+  }
+  .w-name {
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
+  }
+  .w-tail {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
+    align-self: center;
+  }
+  .w-meta {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .w-arrow {
+    color: var(--muted);
+    font-size: 1.1rem;
+    transition: transform 0.28s ease, color 0.2s ease;
+  }
+  .w-desc {
+    display: none;
+    grid-column: 2 / -1;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (hover: hover) {
+    .work-row:hover {
+      padding-left: 1.1rem;
+      padding-right: 1.1rem;
+      background: var(--surface-2);
+    }
+    .work-row:hover .w-name {
+      color: var(--accent);
+      transform: translateX(6px);
+    }
+    .work-row.islink:hover .w-arrow {
+      color: var(--accent);
+      transform: translate(4px, -4px);
+    }
+  }
+  /* Touch / no-hover: no cursor preview, so show the description inline. */
+  @media (hover: none) {
+    .w-desc {
+      display: block;
+    }
+  }
+
+  .more {
+    margin-top: 2.5rem;
+  }
+
+  /* ── Cursor-following preview ─────────────────────────────────── */
+  .work-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: 22rem;
+    max-width: 72vw;
+    padding: 1rem 1.15rem 1.15rem;
+    border-radius: 12px;
+    background: var(--surface);
     border: 1px solid var(--border);
-    color: var(--muted);
+    border-top: 3px solid var(--wp-color, var(--accent));
+    box-shadow: var(--shadow-hover);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+    pointer-events: none;
   }
-  .badge.public {
-    color: #16a34a;
-    border-color: color-mix(in srgb, #16a34a 45%, var(--border));
-    background: color-mix(in srgb, #16a34a 10%, transparent);
+  .work-preview.show {
+    opacity: 1;
+    transform: none;
   }
-  .desc {
-    margin: 0.6rem 0 0;
-    font-size: 0.92rem;
-    color: var(--muted);
-    flex: 1;
-  }
-  .topics {
+  .wp-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    margin-top: 0.7rem;
+    margin-bottom: 0.55rem;
   }
-  .topic {
-    font-size: 0.72rem;
+  .wp-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
     color: var(--accent);
     background: var(--accent-soft);
-    padding: 0.08rem 0.5rem;
+    padding: 0.1rem 0.5rem;
     border-radius: 999px;
   }
-  .foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    margin-top: 0.95rem;
-    font-size: 0.85rem;
-  }
-  .lang {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
+  .wp-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
     color: var(--fg);
   }
-  .links {
-    display: inline-flex;
-    gap: 1rem;
-    font-weight: 500;
+  @media (hover: none) {
+    .work-preview {
+      display: none;
+    }
   }
-  .more {
-    margin-top: 2rem;
+  @media (prefers-reduced-motion: reduce) {
+    .work-row,
+    .w-name,
+    .w-arrow,
+    .work-preview {
+      transition: none;
+    }
   }
 </style>
