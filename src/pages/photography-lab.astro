@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Lightbox from "../components/Lightbox.astro";
 import { collections, singles, type Photo } from "../data/photos";
 import { getImage } from "astro:assets";
 
@@ -11,24 +12,40 @@ async function toItem(p: Photo) {
   const mod = p.src ? files[`../photos/${p.src}`] : undefined;
   if (!mod) return null;
   const meta = mod.default;
-  const thumb = await getImage({ src: meta, width: Math.min(1000, meta.width), format: "webp" });
+  const thumb = await getImage({ src: meta, width: Math.min(1100, meta.width), format: "webp" });
+  const full = await getImage({ src: meta, width: Math.min(2400, meta.width), format: "webp" });
   return {
     title: p.title ?? "",
+    caption: p.caption ?? "",
     alt: p.alt || p.title || "Photo",
-    src: thumb.src,
+    placeholder: false,
     ar: meta.width / meta.height,
+    thumb: thumb.src,
+    full: full.src,
   };
 }
 
-// Same photos as the main gallery, flattened into one spatial wall.
 const all: Photo[] = [...collections.flatMap((c) => c.photos), ...singles];
 const items = (await Promise.all(all.map(toItem))).filter(Boolean) as NonNullable<
   Awaited<ReturnType<typeof toItem>>
 >[];
 
-// Deterministic per-tile depth so the wall has real dimensionality.
-const depths = [-90, 40, -30, 110, -60, 70, 0, -120, 50, 20, -70, 90, 10, -40, 130];
-const dz = (i: number) => depths[i % depths.length];
+// Scattered positions in the 3D space: x%, y%, depth (px), width (rem), float delay.
+const spots = [
+  { x: 18, y: 30, z: -240, w: 20, d: 0 },
+  { x: 72, y: 20, z: 120, w: 17, d: 1.6 },
+  { x: 44, y: 62, z: -520, w: 24, d: 0.8 },
+  { x: 86, y: 58, z: -60, w: 15, d: 2.4 },
+  { x: 9, y: 68, z: 60, w: 18, d: 1.2 },
+  { x: 58, y: 32, z: -720, w: 26, d: 3.0 },
+  { x: 30, y: 84, z: 200, w: 15, d: 0.5 },
+  { x: 90, y: 40, z: -360, w: 17, d: 2.0 },
+  { x: 64, y: 82, z: -150, w: 19, d: 1.0 },
+  { x: 12, y: 46, z: -420, w: 16, d: 2.7 },
+  { x: 50, y: 14, z: -120, w: 18, d: 1.4 },
+  { x: 78, y: 74, z: 40, w: 16, d: 0.3 },
+];
+const spot = (i: number) => spots[i % spots.length];
 ---
 
 <BaseLayout title="Photography · Lab" description="An experimental 3D view of the gallery." wide>
@@ -36,25 +53,56 @@ const dz = (i: number) => depths[i % depths.length];
     <span class="eyebrow">EXPERIMENT</span>
     <h1>Gallery, in space</h1>
     <p class="muted lede">
-      A prototype 3D view of the same photos. Move your cursor — the wall tilts,
-      and the frames float at different depths. (The
+      A prototype: the same photos floating in a 3D space. Move your cursor to
+      look around; click any photo to open it (scroll to zoom, drag to pan,
+      ← / → to move through them). The
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/photography`}>standard gallery</a>
-      is still the main one.)
+      is still the main one.
     </p>
   </div>
 
-  <div class="scene" id="scene">
-    <div class="stage" id="stage">
-      {
-        items.map((it, i) => (
-          <figure class="tile" style={`--z:${dz(i)}px; aspect-ratio:${it.ar.toFixed(3)}`}>
-            <img src={it.src} alt={it.alt} loading="lazy" draggable="false" />
-            {it.title && <figcaption>{it.title}</figcaption>}
-          </figure>
-        ))
-      }
+  <div class="scene-clip">
+    <div class="scene" id="scene">
+      <div class="stage" id="stage">
+        {
+          items.map((it, i) => {
+            const s = spot(i);
+            return (
+              <button
+                class="tile"
+                data-group="lab"
+                data-index={i}
+                style={`left:${s.x}%;top:${s.y}%;--z:${s.z}px;--w:${s.w}rem;--delay:${s.d}s;aspect-ratio:${it.ar.toFixed(3)}`}
+                aria-label={it.title || "Open photo"}
+              >
+                <span class="floaty">
+                  <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
+                </span>
+              </button>
+            );
+          })
+        }
+      </div>
     </div>
   </div>
+
+  <script
+    is:inline
+    set:html={`window.__GALLERY__ = [${JSON.stringify({
+      key: "lab",
+      title: "Photos",
+      items: items.map((it) => ({
+        title: it.title,
+        caption: it.caption,
+        alt: it.alt,
+        placeholder: it.placeholder,
+        thumb: it.thumb,
+        full: it.full,
+      })),
+    })}];`}
+  />
+
+  <Lightbox />
 </BaseLayout>
 
 <script>
@@ -65,16 +113,16 @@ const dz = (i: number) => depths[i % depths.length];
 
   if (scene && stage && !reduce && canHover) {
     let raf = 0;
-    let tx = 0,
-      ty = 0;
+    let ry = 0;
+    let rx = 0;
     const apply = () => {
       raf = 0;
-      stage.style.transform = `rotateX(${ty}deg) rotateY(${tx}deg)`;
+      stage.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
     };
     scene.addEventListener("pointermove", (e) => {
       const r = scene.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 14;
-      ty = -((e.clientY - r.top) / r.height - 0.5) * 12;
+      ry = ((e.clientX - r.left) / r.width - 0.5) * 24;
+      rx = -((e.clientY - r.top) / r.height - 0.5) * 18;
       if (!raf) raf = requestAnimationFrame(apply);
     });
     scene.addEventListener("pointerleave", () => {
@@ -86,7 +134,7 @@ const dz = (i: number) => depths[i % depths.length];
 <style>
   .lab-head {
     max-width: var(--max-width-wide);
-    margin: 0 auto 2rem;
+    margin: 0 auto 1.5rem;
     padding: 0 1.5rem;
   }
   .eyebrow {
@@ -99,37 +147,48 @@ const dz = (i: number) => depths[i % depths.length];
     margin: 0.5rem 0 0.4rem;
   }
   .lede {
-    max-width: 42rem;
+    max-width: 44rem;
     margin: 0;
   }
 
+  /* Clip layer keeps stray tiles from causing scrollbars WITHOUT flattening
+     the 3D context (perspective/preserve-3d live on the inner elements). */
+  .scene-clip {
+    overflow: hidden;
+  }
   .scene {
+    position: relative;
+    height: 78vh;
+    min-height: 30rem;
     perspective: 1500px;
-    perspective-origin: 50% 40%;
-    padding: 2rem 1.5rem 6rem;
-    overflow: visible;
+    perspective-origin: 50% 45%;
   }
   .stage {
-    max-width: 84rem;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.75rem;
+    position: absolute;
+    inset: 0;
     transform-style: preserve-3d;
     transition: transform 0.2s ease-out;
     will-change: transform;
   }
   .tile {
-    margin: 0;
-    position: relative;
+    position: absolute;
+    width: var(--w, 18rem);
+    transform: translate(-50%, -50%) translateZ(var(--z, 0));
     transform-style: preserve-3d;
-    transform: translateZ(var(--z, 0));
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  .floaty {
+    display: block;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.5);
+    animation: drift 9s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.35s ease;
-    cursor: pointer;
   }
   .tile img {
     width: 100%;
@@ -138,27 +197,30 @@ const dz = (i: number) => depths[i % depths.length];
     display: block;
   }
   .tile:hover {
-    transform: translateZ(calc(var(--z, 0px) + 80px)) scale(1.02);
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-    z-index: 2;
+    z-index: 3;
   }
-  .tile figcaption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 1.4rem 0.7rem 0.6rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
-    opacity: 0;
-    transition: opacity 0.25s ease;
+  .tile:hover .floaty {
+    transform: scale(1.06) translateZ(60px);
+    box-shadow: 0 45px 90px rgba(0, 0, 0, 0.65);
   }
-  .tile:hover figcaption {
-    opacity: 1;
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0) translateZ(0);
+    }
+    50% {
+      transform: translateY(-16px) translateZ(24px);
+    }
   }
 
+  @media (max-width: 640px) {
+    .scene {
+      height: 62vh;
+    }
+    .tile {
+      width: calc(var(--w, 18rem) * 0.72);
+    }
+  }
   @media (hover: none) {
     .stage {
       transform: none !important;
@@ -166,7 +228,9 @@ const dz = (i: number) => depths[i % depths.length];
   }
   @media (prefers-reduced-motion: reduce) {
     .stage,
-    .tile {
+    .floaty,
+    .tile .floaty {
+      animation: none;
       transition: none;
     }
   }

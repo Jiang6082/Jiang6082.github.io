@@ -1,0 +1,320 @@
+---
+// Shared fullscreen lightbox. A page provides the data on
+// `window.__GALLERY__` (array of { key, title, items:[{title,caption,alt,
+// placeholder,thumb,full}] }) and renders clickable elements carrying
+// `data-group` + `data-index`. Click → open; scroll → zoom; drag → pan;
+// ← / → → navigate; Esc / backdrop → close.
+---
+
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-btn lb-close" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" aria-label="Previous photo">&#8249;</button>
+  <button class="lb-btn lb-next" aria-label="Next photo">&#8250;</button>
+  <figure class="lb-figure">
+    <div class="lb-media"></div>
+    <figcaption class="lb-cap">
+      <h3 class="lb-title"></h3>
+      <p class="lb-caption muted"></p>
+      <span class="lb-counter muted small"></span>
+    </figcaption>
+  </figure>
+</div>
+
+<script>
+  interface Item {
+    title: string;
+    caption: string;
+    alt: string;
+    placeholder: boolean;
+    thumb: string;
+    full: string;
+  }
+  interface Group {
+    key: string;
+    title: string;
+    items: Item[];
+  }
+
+  const groups: Group[] = (window as any).__GALLERY__ ?? [];
+  const byKey = new Map(groups.map((g) => [g.key, g]));
+
+  const lb = document.getElementById("lightbox")!;
+  const media = lb.querySelector<HTMLElement>(".lb-media")!;
+  const elTitle = lb.querySelector<HTMLElement>(".lb-title")!;
+  const elCaption = lb.querySelector<HTMLElement>(".lb-caption")!;
+  const elCounter = lb.querySelector<HTMLElement>(".lb-counter")!;
+  const btnPrev = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
+  const btnNext = lb.querySelector<HTMLButtonElement>(".lb-next")!;
+  const btnClose = lb.querySelector<HTMLButtonElement>(".lb-close")!;
+
+  let current: Item[] = [];
+  let index = 0;
+  let lastFocus: HTMLElement | null = null;
+
+  let scale = 1;
+  let tx = 0;
+  let ty = 0;
+  let curImg: HTMLImageElement | null = null;
+  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, hi));
+
+  function applyTransform() {
+    if (!curImg) return;
+    curImg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    curImg.style.cursor = scale > 1 ? "grab" : "zoom-in";
+  }
+  function resetZoom() {
+    scale = 1;
+    tx = 0;
+    ty = 0;
+  }
+
+  function render() {
+    const item = current[index];
+    if (!item) return;
+    media.innerHTML = "";
+    resetZoom();
+    curImg = null;
+    if (item.placeholder) {
+      const ph = document.createElement("div");
+      ph.style.cssText =
+        "width:min(70vw,640px);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;border-radius:6px;color:rgba(255,255,255,.75);background:linear-gradient(135deg,#3a3a44,#55556a);";
+      ph.textContent = item.title || "Photo";
+      media.appendChild(ph);
+    } else {
+      const img = document.createElement("img");
+      img.src = item.full;
+      img.alt = item.alt;
+      img.draggable = false;
+      img.style.cssText =
+        "display:block;max-width:94vw;max-height:84vh;width:auto;height:auto;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform-origin:center center;transition:transform .08s ease-out;user-select:none;-webkit-user-drag:none;touch-action:none;";
+      media.appendChild(img);
+      curImg = img;
+      applyTransform();
+    }
+    elTitle.textContent = item.title;
+    elTitle.style.display = item.title ? "" : "none";
+    elCaption.textContent = item.caption;
+    elCaption.style.display = item.caption ? "" : "none";
+    const multi = current.length > 1;
+    elCounter.textContent = multi ? `${index + 1} / ${current.length}` : "";
+    btnPrev.style.display = multi ? "" : "none";
+    btnNext.style.display = multi ? "" : "none";
+  }
+
+  function open(groupKey: string, startIndex: number) {
+    const group = byKey.get(groupKey);
+    if (!group) return;
+    current = group.items;
+    index = Math.max(0, Math.min(startIndex, current.length - 1));
+    lastFocus = document.activeElement as HTMLElement;
+    lb.hidden = false;
+    document.body.style.overflow = "hidden";
+    render();
+    btnClose.focus();
+  }
+  function close() {
+    lb.hidden = true;
+    document.body.style.overflow = "";
+    media.innerHTML = "";
+    lastFocus?.focus();
+  }
+  const next = () => {
+    index = (index + 1) % current.length;
+    render();
+  };
+  const prev = () => {
+    index = (index - 1 + current.length) % current.length;
+    render();
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-group]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      open(el.dataset.group!, Number(el.dataset.index || 0));
+    });
+  });
+
+  btnNext.addEventListener("click", next);
+  btnPrev.addEventListener("click", prev);
+  btnClose.addEventListener("click", close);
+  lb.addEventListener("click", (e) => {
+    if (e.target === lb || e.target === lb.querySelector(".lb-figure")) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight" && current.length > 1) next();
+    else if (e.key === "ArrowLeft" && current.length > 1) prev();
+  });
+
+  // Zoom (scroll) & pan (drag)
+  function zoomAt(clientX: number, clientY: number, factor: number) {
+    if (!curImg) return;
+    const newScale = clamp(scale * factor, 1, 6);
+    if (newScale === scale) return;
+    const rect = curImg.getBoundingClientRect();
+    const c0x = rect.left + rect.width / 2 - tx;
+    const c0y = rect.top + rect.height / 2 - ty;
+    const vx = clientX - c0x;
+    const vy = clientY - c0y;
+    const ratio = newScale / scale;
+    tx = vx - (vx - tx) * ratio;
+    ty = vy - (vy - ty) * ratio;
+    scale = newScale;
+    if (scale <= 1.001) resetZoom();
+    applyTransform();
+  }
+  lb.addEventListener(
+    "wheel",
+    (e) => {
+      if (lb.hidden || !curImg) return;
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+    },
+    { passive: false }
+  );
+  let dragging = false;
+  let sx = 0, sy = 0, stx = 0, sty = 0;
+  media.addEventListener("pointerdown", (e) => {
+    if (!curImg || scale <= 1) return;
+    dragging = true;
+    sx = e.clientX;
+    sy = e.clientY;
+    stx = tx;
+    sty = ty;
+    curImg.style.transition = "none";
+    curImg.style.cursor = "grabbing";
+    media.setPointerCapture?.(e.pointerId);
+  });
+  media.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    tx = stx + (e.clientX - sx);
+    ty = sty + (e.clientY - sy);
+    applyTransform();
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    if (curImg) curImg.style.transition = "transform .08s ease-out";
+    applyTransform();
+  };
+  media.addEventListener("pointerup", endDrag);
+  media.addEventListener("pointercancel", endDrag);
+  media.addEventListener("dblclick", (e) => {
+    if (!curImg) return;
+    if (scale > 1) resetZoom();
+    else {
+      zoomAt(e.clientX, e.clientY, 2.4);
+      return;
+    }
+    applyTransform();
+  });
+</script>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(6px);
+    padding: 1.5rem;
+    overflow: hidden;
+    animation: lb-in 0.2s ease;
+  }
+  .lightbox[hidden] {
+    display: none;
+  }
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+    }
+  }
+  .lb-figure {
+    margin: 0;
+    max-width: 94vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lb-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .lb-cap {
+    text-align: center;
+    color: #fff;
+    max-width: 40rem;
+  }
+  .lb-title {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #fff;
+  }
+  .lb-caption {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+  .lb-counter {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.55) !important;
+  }
+  .lb-btn {
+    position: absolute;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    cursor: pointer;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .lb-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+  .lb-close {
+    top: 1.1rem;
+    right: 1.1rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .lb-prev,
+  .lb-next {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .lb-prev:hover,
+  .lb-next:hover {
+    transform: translateY(-50%) scale(1.06);
+  }
+  .lb-prev {
+    left: 1.1rem;
+  }
+  .lb-next {
+    right: 1.1rem;
+  }
+  @media (max-width: 560px) {
+    .lb-prev {
+      left: 0.4rem;
+    }
+    .lb-next {
+      right: 0.4rem;
+    }
+  }
+</style>
