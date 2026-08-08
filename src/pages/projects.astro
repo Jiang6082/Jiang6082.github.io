@@ -15,8 +15,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       <span class="eyebrow">SELECTED WORK</span>
       <h1>Projects</h1>
       <p class="muted lede">
-        Mostly quantitative finance, research, and automation. Hover a project
-        for a quick description.
+        Mostly quantitative finance, research, and automation.
       </p>
     </header>
 
@@ -32,20 +31,27 @@ const pad = (n: number) => String(n).padStart(2, "0");
                 target={href ? "_blank" : undefined}
                 rel={href ? "noopener" : undefined}
                 aria-disabled={href ? undefined : "true"}
-                data-desc={p.description ?? ""}
-                data-tags={(p.topics ?? []).join(",")}
-                data-color={langColor(p.language)}
+                style={`--accent-line:${langColor(p.language)}`}
               >
                 <span class="w-idx">{pad(i + 1)}</span>
-                <span class="w-name">{p.name}</span>
-                <span class="w-tail">
-                  <span class="w-meta">
-                    {p.language}
-                    {p.visibility === "private" ? " · private" : ""}
-                  </span>
-                  <span class="w-arrow" aria-hidden="true">{href ? "↗" : "—"}</span>
-                </span>
-                <span class="w-desc">{p.description}</span>
+                <div class="w-main">
+                  <div class="w-head">
+                    <span class="w-name">{p.name}</span>
+                    <span class="w-meta">
+                      {p.language}
+                      {p.visibility === "private" ? " · private" : ""}
+                      <span class="w-arrow" aria-hidden="true">{href ? " ↗" : ""}</span>
+                    </span>
+                  </div>
+                  {p.description && <p class="w-desc">{p.description}</p>}
+                  {p.topics && p.topics.length > 0 && (
+                    <div class="w-tags">
+                      {p.topics.slice(0, 6).map((t) => (
+                        <span class="w-tag">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </a>
             </li>
           );
@@ -58,63 +64,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       <a href={`https://github.com/${GITHUB.username}`} target="_blank" rel="noopener">GitHub</a>.
     </p>
   </div>
-
-  <div class="work-preview" aria-hidden="true">
-    <span class="wp-tags"></span>
-    <p class="wp-desc"></p>
-  </div>
 </BaseLayout>
-
-<script>
-  const preview = document.querySelector<HTMLElement>(".work-preview");
-  const wpDesc = preview?.querySelector<HTMLElement>(".wp-desc");
-  const wpTags = preview?.querySelector<HTMLElement>(".wp-tags");
-  const rows = document.querySelectorAll<HTMLElement>(".work-row");
-  const canHover = window.matchMedia("(hover: hover)").matches;
-
-  if (preview && wpDesc && wpTags && canHover) {
-    let mx = 0,
-      my = 0,
-      raf = 0;
-    const place = () => {
-      raf = 0;
-      const pad = 18;
-      const w = preview.offsetWidth;
-      const h = preview.offsetHeight;
-      let x = mx + 24;
-      let y = my + 20;
-      if (x + w + pad > window.innerWidth) x = mx - w - 24;
-      if (y + h + pad > window.innerHeight) y = window.innerHeight - h - pad;
-      if (y < pad) y = pad;
-      preview.style.left = `${x}px`;
-      preview.style.top = `${y}px`;
-    };
-    rows.forEach((row) => {
-      row.addEventListener("pointerenter", () => {
-        wpDesc.textContent = row.dataset.desc || "";
-        wpTags.innerHTML = "";
-        (row.dataset.tags || "")
-          .split(",")
-          .filter(Boolean)
-          .slice(0, 6)
-          .forEach((t) => {
-            const s = document.createElement("span");
-            s.className = "wp-tag";
-            s.textContent = t;
-            wpTags.appendChild(s);
-          });
-        preview.style.setProperty("--wp-color", row.dataset.color || "");
-        preview.classList.add("show");
-      });
-      row.addEventListener("pointerleave", () => preview.classList.remove("show"));
-      row.addEventListener("pointermove", (e) => {
-        mx = e.clientX;
-        my = e.clientY;
-        if (!raf) raf = requestAnimationFrame(place);
-      });
-    });
-  }
-</script>
 
 <style>
   .proj {
@@ -125,7 +75,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
   }
 
   .work-head {
-    margin-bottom: 2.75rem;
+    margin-bottom: 2.5rem;
   }
   .eyebrow {
     font-family: var(--font-mono);
@@ -141,7 +91,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
     margin: 0;
   }
 
-  /* ── The list ─────────────────────────────────────────────────── */
   .work-list {
     list-style: none;
     margin: 0;
@@ -150,14 +99,26 @@ const pad = (n: number) => String(n).padStart(2, "0");
   }
   .work-row {
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: baseline;
+    grid-template-columns: auto 1fr;
     column-gap: 1.5rem;
     padding: 1.6rem 0.25rem;
     border-bottom: 1px solid var(--border);
     color: var(--fg);
     position: relative;
     transition: padding 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.28s ease;
+  }
+  /* Accent bar that grows on hover (uses the project's language color). */
+  .work-row::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-line, var(--accent));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
   a.work-row:hover {
     text-decoration: none;
@@ -169,119 +130,74 @@ const pad = (n: number) => String(n).padStart(2, "0");
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--muted);
-    padding-top: 0.35rem;
+    padding-top: 0.4rem;
+  }
+  .w-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
   .w-name {
-    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-size: clamp(1.4rem, 3.2vw, 2rem);
     font-weight: 650;
     letter-spacing: -0.02em;
-    line-height: 1.05;
-    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
-  }
-  .w-tail {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    white-space: nowrap;
-    align-self: center;
+    line-height: 1.1;
+    transition: color 0.2s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .w-meta {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--muted);
-  }
-  .w-arrow {
-    color: var(--muted);
-    font-size: 1.1rem;
-    transition: transform 0.28s ease, color 0.2s ease;
+    white-space: nowrap;
   }
   .w-desc {
-    display: none;
-    grid-column: 2 / -1;
+    margin: 0.65rem 0 0;
     color: var(--muted);
-    font-size: 0.95rem;
-    margin-top: 0.5rem;
+    font-size: 0.96rem;
+    line-height: 1.6;
+    max-width: 46rem;
+  }
+  .w-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+  }
+  .w-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
   }
 
   @media (hover: hover) {
     .work-row:hover {
-      padding-left: 1.1rem;
-      padding-right: 1.1rem;
+      padding-left: 1.35rem;
       background: var(--surface-2);
     }
-    .work-row:hover .w-name {
-      color: var(--accent);
-      transform: translateX(6px);
+    .work-row:hover::before {
+      transform: scaleY(1);
     }
-    .work-row.islink:hover .w-arrow {
+    .work-row.islink:hover .w-name {
       color: var(--accent);
-      transform: translate(4px, -4px);
     }
-  }
-  /* Touch / no-hover: no cursor preview, so show the description inline. */
-  @media (hover: none) {
-    .w-desc {
-      display: block;
+    .work-row.islink:hover .w-tag {
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+      color: var(--accent);
     }
   }
 
   .more {
     margin-top: 2.5rem;
   }
-
-  /* ── Cursor-following preview ─────────────────────────────────── */
-  .work-preview {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 50;
-    width: 22rem;
-    max-width: 72vw;
-    padding: 1rem 1.15rem 1.15rem;
-    border-radius: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--wp-color, var(--accent));
-    box-shadow: var(--shadow-hover);
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.16s ease, transform 0.16s ease;
-    pointer-events: none;
-  }
-  .work-preview.show {
-    opacity: 1;
-    transform: none;
-  }
-  .wp-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-bottom: 0.55rem;
-  }
-  .wp-tag {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--accent);
-    background: var(--accent-soft);
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
-  }
-  .wp-desc {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: var(--fg);
-  }
-  @media (hover: none) {
-    .work-preview {
-      display: none;
-    }
-  }
   @media (prefers-reduced-motion: reduce) {
     .work-row,
-    .w-name,
-    .w-arrow,
-    .work-preview {
+    .work-row::before,
+    .w-name {
       transition: none;
     }
   }
