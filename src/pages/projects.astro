@@ -87,16 +87,21 @@ const N = projects.length;
       const progress = scrollable > 0 ? scrolled / scrollable : 0;
       const pos = progress * N - 0.5; // -0.5 .. N-0.5
 
+      // Alternate projects between a top and bottom row. Because consecutive
+      // projects sit in opposite rows AND are offset along the scroll, the two
+      // on screen at once always appear diagonally — never in the same column.
+      const jitter = [0, -4, 3, -2, 5];
       cards.forEach((card, i) => {
         const local = pos - i; // <0 = incoming (right); >0 = outgoing (left)
         const a = Math.abs(local);
         const x = -local * 60; // vw: right → centre → left
+        const ty = (i % 2 === 0 ? -19 : 19) + jitter[i % jitter.length]; // vh: two rows
         const ry = local * 26; // deg: arc around the viewer
         const s = 1 - Math.min(a, 1) * 0.16;
         const tz = -Math.min(a, 1) * 300;
         const op = a < 0.35 ? 1 : Math.max(0, 1 - (a - 0.35) / 0.5);
         card.style.opacity = String(op);
-        card.style.transform = `translate(-50%, -50%) translateX(${x}vw) translateZ(${tz}px) rotateY(${ry}deg) scale(${s})`;
+        card.style.transform = `translate(-50%, -50%) translateX(${x}vw) translateY(${ty}vh) translateZ(${tz}px) rotateY(${ry}deg) scale(${s})`;
         card.style.zIndex = String(100 - Math.round(a * 20));
         card.style.pointerEvents = op > 0.75 ? "auto" : "none";
       });
@@ -176,12 +181,12 @@ const N = projects.length;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(90vw, 52rem);
+    width: min(88vw, 44rem);
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 1.25rem;
     align-items: center;
-    padding: 1.75rem;
+    padding: 1.4rem;
     border: 1px solid var(--border);
     border-radius: 18px;
     background: color-mix(in srgb, var(--surface) 88%, transparent);
