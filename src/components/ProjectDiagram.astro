@@ -1,6 +1,6 @@
 ---
-// A small animated, thematic diagram standing in for each project (they're
-// code repos, not visual products). `kind` picks which one.
+// A clear, representative figure for each project (they're code repos, not
+// visual products). `kind` selects which one.
 interface Props {
   kind: string;
 }
@@ -9,63 +9,68 @@ const { kind } = Astro.props;
 
 <div class="diagram" data-kind={kind}>
   {
-    kind === "distribution" && (
-      <svg viewBox="0 0 240 150" role="img" aria-label="Factor distribution">
-        <line class="axis" x1="18" y1="122" x2="222" y2="122" />
-        <path class="curve" d="M22,122 Q120,10 218,122" />
-        <circle class="dot" cx="60" cy="112" r="3.5" />
-        <circle class="dot" cx="88" cy="104" r="3.5" />
-        <circle class="dot" cx="150" cy="100" r="3.5" />
-        <circle class="dot" cx="178" cy="110" r="3.5" />
-        <circle class="dot" cx="104" cy="96" r="3.5" />
-        <circle class="dot" cx="134" cy="98" r="3.5" />
-        <circle class="hit" cx="120" cy="54" r="7" />
+    kind === "funnel" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Many candidate factors filtered down to a few survivors">
+        <text class="cap" x="120" y="12" text-anchor="middle">~1000 candidate factors</text>
+        {Array.from({ length: 11 }).map((_, i) => (
+          <circle class="dot" cx={26 + i * 19} cy="24" r="3" />
+        ))}
+        <path class="funnel" d="M30,36 L210,36 L146,96 L94,96 Z" />
+        <text class="cap mid" x="120" y="70" text-anchor="middle">FDR · gates</text>
+        <circle class="hit" cx="108" cy="118" r="5" />
+        <circle class="hit" cx="120" cy="122" r="5" />
+        <circle class="hit" cx="132" cy="118" r="5" />
+        <text class="cap" x="120" y="142" text-anchor="middle">survivors</text>
       </svg>
     )
   }
   {
-    kind === "candles" && (
-      <svg viewBox="0 0 240 150" role="img" aria-label="Price candles">
-        <line class="axis" x1="18" y1="130" x2="222" y2="130" />
-        <g class="up"><line x1="46" y1="40" x2="46" y2="112" /><rect x="38" y="58" width="16" height="42" rx="2" /></g>
-        <g class="down"><line x1="86" y1="52" x2="86" y2="124" /><rect x="78" y="70" width="16" height="40" rx="2" /></g>
-        <g class="up"><line x1="126" y1="30" x2="126" y2="100" /><rect x="118" y="46" width="16" height="44" rx="2" /></g>
-        <g class="up"><line x1="166" y1="24" x2="166" y2="86" /><rect x="158" y="36" width="16" height="38" rx="2" /></g>
-        <g class="down"><line x1="206" y1="40" x2="206" y2="108" /><rect x="198" y="56" width="16" height="36" rx="2" /></g>
+    kind === "equity" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Backtest equity curve">
+        <line class="axis" x1="28" y1="18" x2="28" y2="122" />
+        <line class="axis" x1="28" y1="122" x2="222" y2="122" />
+        <path class="area" d="M28,104 L64,86 L96,94 L128,66 L160,74 L196,40 L216,30 L216,122 L28,122 Z" />
+        <path class="curve" d="M28,104 L64,86 L96,94 L128,66 L160,74 L196,40 L216,30" />
+        <text class="cap" x="34" y="16">equity</text>
       </svg>
     )
   }
   {
-    kind === "volatility" && (
-      <svg viewBox="0 0 240 150" role="img" aria-label="Volatility forecast">
-        <line class="axis" x1="18" y1="128" x2="222" y2="128" />
-        <path class="area" d="M20,110 L44,70 L68,96 L92,40 L116,84 L140,52 L164,100 L188,64 L214,88 L214,128 L20,128 Z" />
-        <path class="vline" d="M20,110 L44,70 L68,96 L92,40 L116,84 L140,52 L164,100 L188,64 L214,88" />
+    kind === "predactual" && (
+      <svg viewBox="0 0 240 150" role="img" aria-label="Predicted versus actual volatility">
+        <line class="axis" x1="24" y1="122" x2="222" y2="122" />
+        <path class="actual" d="M26,96 L52,58 L78,88 L104,42 L130,78 L156,50 L182,92 L208,60" />
+        <path class="pred" d="M26,90 L52,66 L78,82 L104,52 L130,72 L156,58 L182,84 L208,66" />
+        <g class="legend">
+          <line class="actual" x1="150" y1="14" x2="166" y2="14" />
+          <text class="cap" x="170" y="17">actual</text>
+          <line class="pred" x1="150" y1="28" x2="166" y2="28" />
+          <text class="cap" x="170" y="31">forecast</text>
+        </g>
       </svg>
     )
   }
   {
     kind === "options" && (
       <svg viewBox="0 0 240 150" role="img" aria-label="Option payoff">
-        <line class="axis" x1="30" y1="120" x2="222" y2="120" />
-        <line class="axis" x1="30" y1="18" x2="30" y2="120" />
-        <line class="strike" x1="120" y1="24" x2="120" y2="126" />
-        <path class="payoff" d="M34,100 L120,100 L210,32" />
-        <circle class="hit" cx="120" cy="100" r="5" />
+        <line class="axis" x1="30" y1="76" x2="222" y2="76" />
+        <line class="axis" x1="120" y1="20" x2="120" y2="128" />
+        <path class="payoff" d="M36,104 L120,104 L206,34" />
+        <circle class="hit" cx="120" cy="104" r="4.5" />
+        <text class="cap" x="126" y="122">strike</text>
+        <text class="cap" x="200" y="30" text-anchor="end">profit</text>
       </svg>
     )
   }
   {
-    kind === "scan" && (
-      <svg viewBox="0 0 240 150" role="img" aria-label="Role scanner">
-        {Array.from({ length: 18 }).map((_, i) => {
-          const cx = 34 + (i % 6) * 34;
-          const cy = 34 + Math.floor(i / 6) * 38;
-          const hot = i === 3 || i === 9 || i === 14;
-          return <circle class={hot ? "hit" : "dot"} cx={cx} cy={cy} r={hot ? 6 : 4} />;
-        })}
-        <rect class="scanline" x="18" y="18" width="204" height="3" rx="1.5" />
-      </svg>
+    kind === "scanlist" && (
+      <ul class="scan">
+        <li><span class="s-dot on" /><span class="s-co">Optiver</span><span class="s-role">Quant Intern · 2027</span></li>
+        <li><span class="s-dot on" /><span class="s-co">Jane Street</span><span class="s-role">Quant Trader Intern</span></li>
+        <li><span class="s-dot" /><span class="s-co">Citadel</span><span class="s-role">SWE Intern · new</span></li>
+        <li><span class="s-dot on" /><span class="s-co">Virtu</span><span class="s-role">Quant Trading · 2027</span></li>
+        <li><span class="s-dot" /><span class="s-co">Akuna</span><span class="s-role">Research Intern</span></li>
+      </ul>
     )
   }
 </div>
@@ -86,103 +91,123 @@ const { kind } = Astro.props;
     stroke-width: 2;
     stroke-linecap: round;
   }
+  .cap {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+  .cap.mid {
+    fill: var(--fg);
+    font-size: 8px;
+  }
   .dot {
     fill: var(--muted);
-    opacity: 0.7;
+    opacity: 0.65;
   }
   .hit {
     fill: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .funnel {
+    fill: color-mix(in srgb, var(--accent) 10%, transparent);
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    opacity: 0.85;
+  }
+  .area {
+    fill: var(--accent);
+    opacity: 0.12;
   }
   .curve {
     fill: none;
     stroke: var(--accent);
     stroke-width: 2.5;
-    opacity: 0.85;
-  }
-  /* candles */
-  .up line,
-  .down line {
-    stroke-width: 2;
+    stroke-linejoin: round;
     stroke-linecap: round;
+    stroke-dasharray: 360;
+    stroke-dashoffset: 360;
+    animation: draw 4.5s ease-in-out infinite;
   }
-  .up line {
-    stroke: var(--accent);
-  }
-  .down line {
-    stroke: var(--muted);
-  }
-  .up rect {
-    fill: var(--accent);
-  }
-  .down rect {
-    fill: var(--muted);
-  }
-  /* volatility */
-  .area {
-    fill: var(--accent);
-    opacity: 0.12;
-  }
-  .vline {
+  .actual {
     fill: none;
     stroke: var(--accent);
     stroke-width: 2.5;
     stroke-linejoin: round;
     stroke-linecap: round;
-    stroke-dasharray: 520;
-    stroke-dashoffset: 520;
-    animation: draw 5s ease-in-out infinite;
   }
-  /* options */
+  .pred {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+    stroke-dasharray: 3 4;
+    stroke-linecap: round;
+  }
   .payoff {
     fill: none;
     stroke: var(--accent);
     stroke-width: 3;
     stroke-linejoin: round;
     stroke-linecap: round;
-    stroke-dasharray: 320;
-    stroke-dashoffset: 320;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
     animation: draw 4.5s ease-in-out infinite;
   }
-  .strike {
-    stroke: var(--muted);
-    stroke-width: 1.5;
-    stroke-dasharray: 4 5;
-    opacity: 0.6;
+
+  /* scan list (QJS) */
+  .scan {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: var(--font-mono);
   }
-  /* scan */
-  .scanline {
-    fill: var(--accent);
-    opacity: 0.55;
-    animation: sweep 3.2s ease-in-out infinite;
+  .scan li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.72rem;
+  }
+  .scan li:last-child {
+    border-bottom: none;
+  }
+  .s-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .s-dot.on {
+    background: var(--accent);
+  }
+  .s-co {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .s-role {
+    color: var(--muted);
+    margin-left: auto;
   }
 
   @keyframes draw {
     0% {
-      stroke-dashoffset: 520;
+      stroke-dashoffset: var(--len, 360);
     }
     55%,
     100% {
       stroke-dashoffset: 0;
     }
   }
-  @keyframes sweep {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(96px);
-    }
-  }
-  .hit {
-    animation: pulse 2.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.6;
+      opacity: 0.65;
       transform: scale(0.9);
     }
     50% {
@@ -191,12 +216,16 @@ const { kind } = Astro.props;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .vline,
+    .curve,
     .payoff,
-    .scanline,
     .hit {
       animation: none;
       stroke-dashoffset: 0;
+    }
+  }
+  @media (max-width: 500px) {
+    .s-role {
+      display: none;
     }
   }
 </style>
