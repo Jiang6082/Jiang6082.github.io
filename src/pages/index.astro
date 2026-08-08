@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import { getImage } from "astro:assets";
 import { SITE, SOCIALS } from "../config";
+import { singles } from "../data/photos";
 
 // Optimized portrait for the hero, resolved from src/photos.
 const photoFiles = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
@@ -12,6 +13,31 @@ const portraitMod = SITE.photo ? photoFiles[`../photos/${SITE.photo}`] : undefin
 const portrait = portraitMod
   ? await getImage({ src: portraitMod.default, width: 700, format: "webp" })
   : null;
+
+// Dimmed floating photos for the ambient 3D background.
+async function bgThumb(p: (typeof singles)[number]) {
+  const mod = p.src ? photoFiles[`../photos/${p.src}`] : undefined;
+  if (!mod) return null;
+  const t = await getImage({ src: mod.default, width: 700, format: "webp" });
+  return { src: t.src, ar: mod.default.width / mod.default.height };
+}
+const bg = (await Promise.all(singles.map(bgThumb))).filter(Boolean) as {
+  src: string;
+  ar: number;
+}[];
+// Scatter spots: x%, y%, depth(px), width(rem).
+const bgSpots = [
+  { x: 16, y: 26, z: -260, w: 17 },
+  { x: 74, y: 18, z: 100, w: 15 },
+  { x: 42, y: 60, z: -520, w: 20 },
+  { x: 88, y: 62, z: -80, w: 14 },
+  { x: 8, y: 70, z: 40, w: 16 },
+  { x: 58, y: 30, z: -700, w: 22 },
+  { x: 32, y: 86, z: 180, w: 13 },
+  { x: 92, y: 42, z: -340, w: 15 },
+  { x: 64, y: 80, z: -160, w: 17 },
+];
+const bgSpot = (i: number) => bgSpots[i % bgSpots.length];
 
 // Roles cycled by the typewriter effect — edit freely.
 const roles = ["Student", "Developer", "Photographer", "Traveler"];
@@ -40,6 +66,25 @@ const stack = [
 ---
 
 <BaseLayout title="About">
+  <div class="bg-space" aria-hidden="true">
+    <div class="bg-stage">
+      {
+        bg.map((b, i) => {
+          const s = bgSpot(i);
+          return (
+            <span
+              class="bg-tile"
+              style={`left:${s.x}%;top:${s.y}%;--z:${s.z}px;--w:${s.w}rem;aspect-ratio:${b.ar.toFixed(3)}`}
+            >
+              <img src={b.src} alt="" loading="lazy" />
+            </span>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div class="about-content">
   <section class="hero reveal">
     <div class="hero-main">
       <p class="eyebrow">HI, I'M</p>
@@ -107,6 +152,7 @@ const stack = [
       {stack.map((t) => <li>{t}</li>)}
     </ul>
   </section>
+  </div>
 </BaseLayout>
 
 <script>
@@ -162,6 +208,50 @@ const stack = [
 </script>
 
 <style>
+  /* ── Ambient 3D photo background ──────────────────────────────── */
+  .about-content {
+    position: relative;
+    z-index: 1;
+  }
+  .bg-space {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    perspective: 1200px;
+    opacity: 0.2;
+  }
+  .bg-stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    animation: bgspin 150s linear infinite;
+  }
+  .bg-tile {
+    position: absolute;
+    width: var(--w, 16rem);
+    transform: translate(-50%, -50%) translateZ(var(--z, 0));
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .bg-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @keyframes bgspin {
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-stage {
+      animation: none;
+    }
+  }
+
   /* ── Hero ─────────────────────────────────────────────────────── */
   .hero {
     position: relative;
