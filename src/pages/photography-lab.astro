@@ -30,33 +30,39 @@ const items = (await Promise.all(all.map(toItem))).filter(Boolean) as NonNullabl
   Awaited<ReturnType<typeof toItem>>
 >[];
 
-const step = items.length ? 360 / items.length : 40;
+// Keep the original index (for the lightbox) while splitting into two rows.
+const indexed = items.map((it, i) => ({ ...it, idx: i }));
+const top = indexed.filter((_, i) => i % 2 === 0);
+const bottom = indexed.filter((_, i) => i % 2 === 1);
+
+// Small deterministic scatter so a row isn't a rigid line.
+const ty = (i: number) => [10, -14, 6, -8, 16, -4][i % 6];
+const rot = (i: number) => [-2.5, 1.5, -1, 2, -1.8, 1][i % 6];
 ---
 
-<BaseLayout title="Photography · Lab" description="An experimental 3D view of the gallery." wide>
-  <div class="ring-head">
+<BaseLayout title="Photography · Lab" description="An experimental scrolling view of the gallery." wide>
+  <div class="lab-head">
     <span class="eyebrow">EXPERIMENT</span>
-    <h1>Standing in the gallery</h1>
+    <h1>Photos, drifting by</h1>
     <p class="muted lede">
-      You're in the middle, photos all around you. <strong>Scroll</strong> to
-      turn and look around the room; <strong>click</strong> a photo to open it
-      (scroll to zoom, drag to pan, ← / → to move). The
+      Two rows of photos floating past. <strong>Hover</strong> a row to pause it,
+      <strong>click</strong> a photo to open it (scroll to zoom, drag to pan,
+      ← / → to move). The
       <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/photography`}>standard gallery</a>
       is still the main one.
     </p>
   </div>
 
-  <div class="lab-clip">
-    <div class="ring-scene" id="scene">
-      <div class="ring" id="ring">
+  <div class="rows">
+    <div class="rowwrap">
+      <div class="marquee" style="--speed:48s">
         {
-          items.map((it, i) => (
+          [...top, ...top].map((it, i) => (
             <button
-              class="ring-item"
+              class="m-item"
               data-group="lab"
-              data-index={i}
-              data-a={(i * step).toFixed(3)}
-              style={`--a:${(i * step).toFixed(3)}deg; width:clamp(13rem, 22vw, 19rem); aspect-ratio:${it.ar.toFixed(3)}`}
+              data-index={it.idx}
+              style={`--ty:${ty(i)}px;--rot:${rot(i)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
               aria-label={it.title || "Open photo"}
             >
               <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
@@ -64,7 +70,24 @@ const step = items.length ? 360 / items.length : 40;
           ))
         }
       </div>
-      <span class="ring-hint" aria-hidden="true">scroll to look around ⟲</span>
+    </div>
+
+    <div class="rowwrap">
+      <div class="marquee rev" style="--speed:56s">
+        {
+          [...bottom, ...bottom].map((it, i) => (
+            <button
+              class="m-item"
+              data-group="lab"
+              data-index={it.idx}
+              style={`--ty:${ty(i + 3)}px;--rot:${rot(i + 2)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
+              aria-label={it.title || "Open photo"}
+            >
+              <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
+            </button>
+          ))
+        }
+      </div>
     </div>
   </div>
 
@@ -87,82 +110,10 @@ const step = items.length ? 360 / items.length : 40;
   <Lightbox />
 </BaseLayout>
 
-<script>
-  const scene = document.getElementById("scene");
-  const ring = document.getElementById("ring");
-  const lb = document.getElementById("lightbox");
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (scene && ring) {
-    const faces = Array.from(ring.querySelectorAll<HTMLElement>(".ring-item"));
-    const angles = faces.map((f) => parseFloat(f.dataset.a || "0"));
-    const FADE = 74; // degrees from center at which a photo fully fades out
-
-    let rot = 0;
-    let target = 0;
-    const norm = (a: number) => ((((a % 360) + 540) % 360) - 180);
-
-    const loop = () => {
-      rot += (target - rot) * 0.09;
-      ring.style.setProperty("--rot", `${rot}deg`);
-      // Fade photos out as they swing to your sides / behind you — this also
-      // hides the extreme scaling CSS produces near the edges of view.
-      for (let i = 0; i < faces.length; i++) {
-        const d = Math.abs(norm(rot + angles[i]));
-        const op = Math.max(0, Math.min(1, 1 - d / FADE));
-        faces[i].style.opacity = String(op);
-        faces[i].style.pointerEvents = op > 0.6 ? "auto" : "none";
-      }
-      requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-
-    scene.addEventListener(
-      "wheel",
-      (e) => {
-        if (lb && !lb.hidden) return;
-        e.preventDefault();
-        target += e.deltaY * 0.16;
-      },
-      { passive: false }
-    );
-
-    // Drag / swipe to turn; suppress the click that opens a photo if dragged.
-    let down = false;
-    let moved = false;
-    let lastX = 0;
-    scene.addEventListener("pointerdown", (e) => {
-      down = true;
-      moved = false;
-      lastX = e.clientX;
-    });
-    scene.addEventListener("pointermove", (e) => {
-      if (!down) return;
-      const dx = e.clientX - lastX;
-      lastX = e.clientX;
-      if (Math.abs(dx) > 2) moved = true;
-      target -= dx * 0.3;
-    });
-    const up = () => (down = false);
-    scene.addEventListener("pointerup", up);
-    scene.addEventListener("pointercancel", up);
-    scene.addEventListener(
-      "click",
-      (e) => {
-        if (moved) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      },
-      true
-    );
-  }
-</script>
-
 <style>
-  .ring-head {
+  .lab-head {
     max-width: var(--max-width-wide);
-    margin: 0 auto 0.5rem;
+    margin: 0 auto 1.5rem;
     padding: 0 1.5rem;
   }
   .eyebrow {
@@ -171,7 +122,7 @@ const step = items.length ? 360 / items.length : 40;
     letter-spacing: 0.22em;
     color: var(--muted);
   }
-  .ring-head h1 {
+  .lab-head h1 {
     margin: 0.5rem 0 0.4rem;
   }
   .lede {
@@ -183,74 +134,67 @@ const step = items.length ? 360 / items.length : 40;
     font-weight: 600;
   }
 
-  .lab-clip {
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 0 3rem;
+  }
+  .rowwrap {
     overflow: hidden;
   }
-  .ring-scene {
-    position: relative;
-    height: min(76vh, 42rem);
-    margin-top: 1rem;
-    /* Small perspective = wide field of view = feels immersive/first-person. */
-    perspective: 900px;
-    perspective-origin: 50% 50%;
-    cursor: grab;
-    touch-action: pan-y;
+  .marquee {
+    display: flex;
+    gap: 1.6rem;
+    width: max-content;
+    padding: 1.5rem 0.8rem;
+    animation: scroll var(--speed, 50s) linear infinite;
   }
-  .ring-scene:active {
-    cursor: grabbing;
+  .marquee.rev {
+    animation-direction: reverse;
   }
-  /* The ring's rotation point is pushed out to the camera, so we sit at the
-     centre of the circle of photos and rotating looks *around* the room. */
-  .ring {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform-style: preserve-3d;
-    transform: translateZ(900px) rotateY(var(--rot, 0deg));
+  .marquee:hover {
+    animation-play-state: paused;
   }
-  .ring-item {
-    position: absolute;
-    left: 0;
-    top: 0;
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .m-item {
+    flex: 0 0 auto;
     padding: 0;
     border: none;
     background: none;
     cursor: pointer;
-    transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(-700px);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
-    backface-visibility: hidden;
-    will-change: opacity;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    transform: translateY(var(--ty, 0)) rotate(var(--rot, 0deg));
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease;
   }
-  .ring-item img {
+  .m-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    filter: brightness(0.88) saturate(0.95);
+    transition: filter 0.3s ease;
+  }
+  .m-item:hover {
+    transform: translateY(calc(var(--ty, 0px) - 14px)) rotate(0deg) scale(1.06);
+    box-shadow: 0 34px 70px rgba(0, 0, 0, 0.6);
+    z-index: 3;
+  }
+  .m-item:hover img {
+    filter: brightness(1.08) saturate(1.05);
   }
 
-  .ring-hint {
-    position: absolute;
-    left: 50%;
-    bottom: 1rem;
-    transform: translateX(-50%);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    color: var(--muted);
-    pointer-events: none;
-  }
-
-  @media (max-width: 640px) {
-    .ring {
-      transform: translateZ(720px) rotateY(var(--rot, 0deg));
-    }
-    .ring-scene {
-      perspective: 720px;
-    }
-    .ring-item {
-      transform: translate(-50%, -50%) rotateY(var(--a)) translateZ(-560px);
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      animation: none;
     }
   }
 </style>

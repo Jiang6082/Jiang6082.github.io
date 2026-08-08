@@ -74,7 +74,7 @@ const stack = [
           return (
             <span
               class="bg-tile"
-              style={`left:${s.x}%;top:${s.y}%;--z:${s.z}px;--w:${s.w}rem;aspect-ratio:${b.ar.toFixed(3)}`}
+              style={`left:${s.x}%;top:${s.y}%;--z:${s.z}px;--w:${s.w}rem;--delay:${(i * 0.7).toFixed(2)}s;--dur:${7 + (i % 4)}s;aspect-ratio:${b.ar.toFixed(3)}`}
             >
               <img src={b.src} alt="" loading="lazy" />
             </span>
@@ -217,37 +217,59 @@ const stack = [
     position: fixed;
     inset: 0;
     z-index: 0;
-    pointer-events: none;
+    pointer-events: none; /* gaps pass through; tiles re-enable below */
     overflow: hidden;
     perspective: 1200px;
-    opacity: 0.2;
   }
   .bg-stage {
     position: absolute;
     inset: 0;
     transform-style: preserve-3d;
-    animation: bgspin 150s linear infinite;
   }
+  /* Each photo floats gently in place (no more global rotation) and reacts
+     to the cursor: grey + dim at rest, full colour + lift on hover. */
   .bg-tile {
     position: absolute;
     width: var(--w, 16rem);
-    transform: translate(-50%, -50%) translateZ(var(--z, 0));
+    transform: translate(-50%, -50%) translateZ(var(--z, 0)) scale(var(--s, 1));
     border-radius: 12px;
     overflow: hidden;
+    opacity: 0.24;
+    pointer-events: auto;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s ease;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0);
   }
   .bg-tile img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    filter: grayscale(0.55) brightness(0.7);
+    transition: filter 0.4s ease, transform 0.4s ease;
+    animation: floaty var(--dur, 8s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
   }
-  @keyframes bgspin {
-    to {
-      transform: rotateY(360deg);
+  .bg-tile:hover {
+    --s: 1.12;
+    opacity: 1;
+    z-index: 5;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  }
+  .bg-tile:hover img {
+    filter: grayscale(0) brightness(1.05);
+  }
+  @keyframes floaty {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-16px);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .bg-stage {
+    .bg-tile img {
       animation: none;
     }
   }
