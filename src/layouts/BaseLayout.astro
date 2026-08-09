@@ -19,20 +19,21 @@ const desc = description ?? SITE.tagline;
 ---
 
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en" class="no-js" data-theme="dark">
   <head>
     <script is:inline>
-      // Mark JS available (so reveal content is safely hidden only with JS),
-      // and apply the saved theme before first paint to avoid a flash.
+      // Mark JS available (so reveal content is safely hidden only with JS).
       (function () {
         document.documentElement.classList.remove("no-js");
         document.documentElement.classList.add("js");
-        try {
-          var t = localStorage.getItem("theme");
-          if (t === "dark" || t === "light") {
-            document.documentElement.setAttribute("data-theme", t);
-          }
-        } catch (e) {}
+        // Light mode is temporarily disabled — dark is forced via the
+        // data-theme="dark" attribute on <html>. To re-enable the toggle,
+        // restore the theme button in Header.astro and this saved-theme read:
+        //   try {
+        //     var t = localStorage.getItem("theme");
+        //     if (t === "dark" || t === "light")
+        //       document.documentElement.setAttribute("data-theme", t);
+        //   } catch (e) {}
       })();
     </script>
     <meta charset="UTF-8" />

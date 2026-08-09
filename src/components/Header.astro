@@ -34,33 +34,12 @@ const isActive = (href: string) => {
           ))
         }
       </nav>
-      <button
-        id="theme-toggle"
-        class="theme-toggle"
-        type="button"
-        aria-label="Toggle color theme"
-        title="Toggle light / dark"
-      >
-        <span class="icon-moon"><Icon name="moon" size={17} /></span>
-        <span class="icon-sun"><Icon name="sun" size={17} /></span>
-      </button>
+      {/* Light/dark toggle temporarily disabled (site is dark-only for now).
+          To re-enable: restore the theme button + <script> from git history
+          and the saved-theme read in BaseLayout.astro. */}
     </div>
   </div>
 </header>
-
-<script>
-  const btn = document.getElementById("theme-toggle");
-  btn?.addEventListener("click", () => {
-    const root = document.documentElement;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const current = root.getAttribute("data-theme") || (prefersDark ? "dark" : "light");
-    const next = current === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem("theme", next);
-    } catch (e) {}
-  });
-</script>
 
 <style>
   .site-header {
