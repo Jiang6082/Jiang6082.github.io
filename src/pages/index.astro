@@ -39,9 +39,6 @@ const bgSpots = [
 ];
 const bgSpot = (i: number) => bgSpots[i % bgSpots.length];
 
-// Roles cycled by the typewriter effect — edit freely.
-const roles = ["Student", "Developer", "Photographer", "Traveler"];
-
 // What I'm interested in — edit freely.
 const interests = [
   {
@@ -89,10 +86,6 @@ const stack = [
     <div class="hero-main">
       <p class="eyebrow">HI, I'M</p>
       <h1 class="name">{SITE.name}</h1>
-      <p class="tagline muted">
-        a <span id="typewriter" data-roles={JSON.stringify(roles)}>{roles[0]}</span
-        ><span class="caret" aria-hidden="true"></span>
-      </p>
       <p class="intro">
         I build trading and research tools, write about what I learn, travel,
         and shoot photos on the side.
@@ -157,38 +150,6 @@ const stack = [
 
 <script>
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // ── Typewriter role cycler ──────────────────────────────────────
-  const tw = document.getElementById("typewriter");
-  if (tw) {
-    let roles: string[] = [];
-    try {
-      roles = JSON.parse(tw.dataset.roles || "[]");
-    } catch {}
-    if (roles.length && !reduce) {
-      let wi = 0,
-        ci = 0,
-        deleting = false;
-      const tick = () => {
-        const word = roles[wi];
-        ci += deleting ? -1 : 1;
-        tw.textContent = word.slice(0, ci);
-        let delay = deleting ? 55 : 110;
-        if (!deleting && ci === word.length) {
-          deleting = true;
-          delay = 1500;
-        } else if (deleting && ci === 0) {
-          deleting = false;
-          wi = (wi + 1) % roles.length;
-          delay = 350;
-        }
-        window.setTimeout(tick, delay);
-      };
-      window.setTimeout(tick, 1200);
-    } else if (roles.length) {
-      tw.textContent = roles.join(" · ");
-    }
-  }
 
   // ── Subtle 3D parallax tilt on the portrait ─────────────────────
   const portrait = document.getElementById("portrait");
@@ -296,33 +257,10 @@ const stack = [
     color: var(--fg);
     letter-spacing: -0.02em;
   }
-  .tagline {
-    font-size: 1.15rem;
-    margin: 0.4rem 0 1.1rem;
-    min-height: 1.6em;
-  }
-  #typewriter {
-    color: var(--fg);
-    font-weight: 600;
-  }
-  .caret {
-    display: inline-block;
-    width: 2px;
-    height: 1.05em;
-    margin-left: 2px;
-    background: var(--accent);
-    vertical-align: text-bottom;
-    animation: blink 1s steps(1) infinite;
-  }
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
-  }
   .intro {
     font-size: 1.02rem;
     max-width: 34rem;
-    margin: 0 0 1.5rem;
+    margin: 0.6rem 0 1.5rem;
   }
 
   /* ── Portrait ─────────────────────────────────────────────────── */
