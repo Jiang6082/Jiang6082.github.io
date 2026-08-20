@@ -84,7 +84,6 @@ const stack = [
   <div class="about-content">
   <section class="hero reveal">
     <div class="hero-main">
-      <p class="eyebrow">HI, I'M</p>
       <h1 class="name">{SITE.name}</h1>
       <p class="intro">
         I build trading and research tools, write about what I learn, travel,
@@ -244,23 +243,17 @@ const stack = [
     gap: 2.5rem;
     margin-bottom: 4.5rem;
   }
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
-    color: var(--muted);
-    margin: 0 0 0.5rem;
-  }
   .name {
-    font-size: clamp(2.2rem, 6vw, 3.1rem);
+    font-size: var(--fs-h1);
     margin: 0;
     color: var(--fg);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
   .intro {
-    font-size: 1.02rem;
-    max-width: 34rem;
-    margin: 0.6rem 0 1.5rem;
+    font-size: var(--fs-mid);
+    line-height: 1.45;
+    max-width: 32rem;
+    margin: 0.9rem 0 1.75rem;
   }
 
   /* ── Portrait ─────────────────────────────────────────────────── */
@@ -291,7 +284,7 @@ const stack = [
     gap: 0.6rem;
     background: var(--surface-2);
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: var(--fs-label);
     text-align: center;
     padding: 1rem;
   }
@@ -302,8 +295,8 @@ const stack = [
   }
   .section-label {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
     color: var(--muted);
   }
   .rows {
@@ -321,10 +314,10 @@ const stack = [
   }
   .row-title {
     font-weight: 650;
-    font-size: 1.05rem;
+    font-size: var(--fs-body);
   }
   .row-body {
-    font-size: 0.95rem;
+    font-size: var(--fs-body);
   }
 
   .tools {
@@ -335,7 +328,7 @@ const stack = [
     flex-wrap: wrap;
     gap: 0.55rem 1.5rem;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: var(--fs-label);
     color: var(--muted);
   }
   .tools li {

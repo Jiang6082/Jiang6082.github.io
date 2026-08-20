@@ -42,8 +42,7 @@ const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
 
 <BaseLayout title="Photography" description="A few frames I'm fond of." wide>
   <div class="lab-head">
-    <span class="eyebrow">PHOTOGRAPHY</span>
-    <h1>Selected frames</h1>
+    <h1>Photography</h1>
     <p class="muted lede">
       Two rows of photos drifting by. <strong>Hover</strong> a row to pause it,
       <strong>click</strong> a photo to open it (scroll to zoom, drag to pan,
@@ -63,6 +62,8 @@ const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
               data-index={it.idx}
               style={`--ty:${ty(i)}px;--rot:${rot(i)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
               aria-label={it.title || "Open photo"}
+              aria-hidden={i >= top.length ? "true" : undefined}
+              tabindex={i >= top.length ? -1 : undefined}
             >
               <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
             </button>
@@ -81,6 +82,8 @@ const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
               data-index={it.idx}
               style={`--ty:${ty(i + 3)}px;--rot:${rot(i + 2)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
               aria-label={it.title || "Open photo"}
+              aria-hidden={i >= bottom.length ? "true" : undefined}
+              tabindex={i >= bottom.length ? -1 : undefined}
             >
               <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
             </button>
@@ -114,12 +117,6 @@ const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
     max-width: var(--max-width-wide);
     margin: 0 auto 1.5rem;
     padding: 0 1.5rem;
-  }
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
-    color: var(--muted);
   }
   .lab-head h1 {
     margin: 0.5rem 0 0.4rem;
@@ -193,8 +190,17 @@ const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* Stop the drift, but keep every photo reachable: the row becomes a
+       normal horizontal scroller instead of hiding its overflow. */
     .marquee {
       animation: none;
+    }
+    .rowwrap {
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .m-item {
+      transform: none;
     }
   }
 </style>

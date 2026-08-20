@@ -65,3 +65,30 @@ don't need to resize anything yourself.
 | `npm run dev`     | Start dev server at `localhost:4321`      |
 | `npm run build`   | Build production site to `./dist/`        |
 | `npm run preview` | Preview the build locally                 |
+| `npm run photos`  | Resize `photos-src/` originals into `src/photos/` |
+
+## Design audit
+
+This site is checked against [impeccable](https://github.com/pbakaus/impeccable),
+a set of deterministic detectors for the design anti-patterns that make
+AI-generated frontends look generic. To re-run it:
+
+```bash
+npm run build && npx impeccable detect dist
+```
+
+Design decisions it flags that are **intentional here**:
+
+- `marquee` on the photography page — the drifting rows are the deliberate
+  design. Mitigated: rows pause on hover, duplicate tiles are hidden from the
+  a11y tree, and `prefers-reduced-motion` turns each row into a manual
+  horizontal scroller so no photo is unreachable.
+
+Conventions the audit enforces, worth keeping:
+
+- **Use the type scale** (`--fs-label` / `--fs-body` / `--fs-mid` / `--fs-h2` /
+  `--fs-h1` in `src/styles/global.css`). Each step is ≥1.25× the last; adding
+  in-between sizes reads as flat and templated.
+- **No tracked-caps "eyebrow" label directly above a big headline** — that
+  shape is the default AI hero.
+- **Don't skip heading levels** (`h1` → `h2` → `h3`).
