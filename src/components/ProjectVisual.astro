@@ -1,5 +1,6 @@
 ---
 import PropertyTrace from "./PropertyTrace.astro";
+import ProjectPlayground from "./ProjectPlayground.astro";
 import { walkthroughs } from "../data/research";
 const { project } = Astro.props as { project: string };
 const study = walkthroughs.find((w) => w.project === project);
@@ -67,6 +68,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
 ---
 
 <div class="project-visual" data-project={project}>
+  <ProjectPlayground project={project} />
   {
     first && (
       <div class="metric-chart">

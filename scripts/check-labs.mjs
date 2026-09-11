@@ -24,7 +24,7 @@ for (const sigma of [0.05, 0.25, 0.8])
 assert.equal(callValue(110, 100, 1, 0, 0), 10);
 assert.throws(() => callValue(0, 100, 1, 0.25, 0.04), RangeError);
 const html = (p) => readFileSync(`dist/${p}/index.html`, "utf8");
-const room = html("photo-room"),
+const room = html("travel-world"),
   gallery = html("photography"),
   resume = html("resume");
 const photos = JSON.parse(
@@ -55,7 +55,7 @@ const publicPages = [
 ];
 for (const p of publicPages)
   assert(!/\bQJS\b|\/projects\/qjs/.test(readFileSync(p, "utf8")));
-for (const name of ["photo-room", "options-lab"]) {
+for (const name of ["travel-world", "options-lab"]) {
   const page = html(name);
   assert(
     !/<link[^>]+rel="modulepreload"[^>]+scene\./.test(page),
@@ -63,7 +63,7 @@ for (const name of ["photo-room", "options-lab"]) {
   );
 }
 const files = readdirSync("dist/_astro");
-for (const prefix of ["photo-room.astro_", "options-lab.astro_"]) {
+for (const prefix of ["travel-world.astro_", "options-lab.astro_"]) {
   const script = readFileSync(
     "dist/_astro/" +
       files.find((f) => f.startsWith(prefix) && f.endsWith(".js")),

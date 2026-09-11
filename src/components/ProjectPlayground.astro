@@ -1,0 +1,544 @@
+---
+import { walkthroughs } from "../data/research";
+import {
+  sampleHomes,
+  samplePValues,
+  sampleVolatility,
+  forecastAt,
+  qlike,
+} from "../lib/project-demos.js";
+const { project } = Astro.props as { project: string };
+const kind = (
+  {
+    "idx-exchange": "homes",
+    "project-geld": "costs",
+    "market-volatility-forecasting": "forecast",
+    "project-emberforge": "factors",
+  } as Record<string, string>
+)[project];
+const costStudy = walkthroughs
+  .find((w) => w.slug === "geld")!
+  .sections.find((s) => s.id === "v15")!;
+const costs = costStudy.table!.rows.map((r) => ({
+  cost: r[0],
+  return: Number(r[1].replace("−", "-").replace("%", "")),
+  sharpe: r[2],
+  drawdown: r[3],
+}));
+const titles = {
+  homes: "Try a property search",
+  costs: "How much does execution cost?",
+  forecast: "Step through a volatility shock",
+  factors: "Which factors survive correction?",
+};
+---
+
+{
+  kind && (
+    <section
+      class="playground"
+      id={`demo-${project}`}
+      data-demo={kind}
+      aria-label={titles[kind]}
+    >
+      <>
+        <p class="eyebrow">Try it yourself</p>
+        <h3>{titles[kind]}</h3>
+      </>
+      {kind === "homes" && (
+        <>
+          <p class="demo-note">
+            Eight fictional listings. This browser demo illustrates the
+            project’s filtering and pagination; it does not query a live
+            property feed.
+          </p>
+          <div class="demo-controls" data-enhanced hidden>
+            <label>
+              City
+              <select data-input="city">
+                <option value="">All cities</option>
+                <option>Portland</option>
+                <option>Seattle</option>
+                <option>Chicago</option>
+              </select>
+            </label>
+            <label>
+              Maximum price
+              <select data-input="price">
+                <option value="1000000">$1,000,000</option>
+                <option value="700000">$700,000</option>
+                <option value="500000">$500,000</option>
+                <option value="300000">$300,000</option>
+              </select>
+            </label>
+            <label>
+              Bedrooms
+              <select data-input="beds">
+                <option value="0">Any</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </label>
+            <label>
+              Price order
+              <select data-input="sort">
+                <option value="asc">Low to high</option>
+                <option value="desc">High to low</option>
+              </select>
+            </label>
+          </div>
+          <div class="home-results" data-results>
+            {sampleHomes.map((h) => (
+              <article>
+                <span class="house-shape" aria-hidden="true">
+                  ⌂
+                </span>
+                <p>
+                  Sample {h.id} · {h.city}
+                </p>
+                <strong>${h.price.toLocaleString("en-US")}</strong>
+                <p>
+                  {h.beds} bedrooms · {h.sqft.toLocaleString("en-US")} sq ft
+                </p>
+              </article>
+            ))}
+          </div>
+          <div class="demo-actions" data-enhanced hidden>
+            <button data-action="prev">← Previous</button>
+            <output data-status aria-live="polite" />
+            <button data-action="next">Next →</button>
+            <button data-action="reset">Reset filters</button>
+          </div>
+        </>
+      )}
+      {kind === "costs" && (
+        <>
+          <p class="demo-note">
+            Recorded V15 matched-IEX scenarios. Stock-overlay cost stays at 8
+            bps; select the SPY cost per side. Returns cover the whole study
+            period, not one year.
+          </p>
+          <div class="demo-controls" data-enhanced hidden>
+            <label>
+              Recorded cost scenario
+              <select data-input="cost">
+                {costs.map((c, i) => (
+                  <option value={i} selected={i === 2}>
+                    {c.cost} per side
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Illustrative starting balance ($)
+              <input
+                data-input="capital"
+                type="number"
+                min="100"
+                max="10000000"
+                step="100"
+                value="10000"
+              />
+            </label>
+          </div>
+          <svg
+            viewBox="0 0 620 230"
+            role="img"
+            aria-label="Recorded total return falls from positive 4.80 percent at 0.5 basis points to negative 2.91 percent at 8 basis points."
+          >
+            <line x1="55" y1="145" x2="575" y2="145" stroke="#aaa99b" />
+            <polyline
+              points={costs
+                .map((c, i) => `${65 + i * 125},${145 - c.return * 20}`)
+                .join(" ")}
+              fill="none"
+              stroke="#b43d28"
+              stroke-width="3"
+            />
+            {costs.map((c, i) => (
+              <g>
+                <circle
+                  data-cost-dot={i}
+                  cx={65 + i * 125}
+                  cy={145 - c.return * 20}
+                  r={i === 2 ? 7 : 4}
+                  fill="#b43d28"
+                />
+                <text x={65 + i * 125} y="225" text-anchor="middle">
+                  {c.cost}
+                </text>
+                <text
+                  x={65 + i * 125}
+                  y={130 - c.return * 20}
+                  text-anchor="middle"
+                >
+                  {c.return}%
+                </text>
+              </g>
+            ))}
+          </svg>
+          <output class="demo-reading" data-reading aria-live="polite">
+            At 2 bps: 3.21% total return · $10,000 → $10,321
+          </output>
+          <p class="demo-note">
+            Scenario points are equally spaced; the cost increments differ.
+            Balance scales the recorded percentage and is not a new backtest.
+          </p>
+          <a class="text-link" href={costStudy.sources[0].url}>
+            Recorded scenarios ↗
+          </a>
+          <script
+            type="application/json"
+            data-values
+            set:html={JSON.stringify(costs)}
+          />
+        </>
+      )}
+      {kind === "forecast" && (
+        <>
+          <p class="demo-note">
+            A fictional 42-day volatility path. Compare a one-day, five-day, or
+            twenty-day variance estimate. Each forecast uses only earlier
+            observations; these are teaching baselines, not the project’s fitted
+            models.
+          </p>
+          <div class="demo-controls" data-enhanced hidden>
+            <label>
+              Forecast rule
+              <select data-input="window">
+                <option value="1">Previous day</option>
+                <option value="5" selected>
+                  5-day mean variance
+                </option>
+                <option value="20">20-day mean variance</option>
+              </select>
+            </label>
+            <label>
+              Reveal through day <output data-day>22</output>
+              <input
+                data-input="day"
+                type="range"
+                min="20"
+                max="41"
+                value="21"
+                step="1"
+              />
+            </label>
+          </div>
+          <svg
+            viewBox="0 0 620 235"
+            role="img"
+            aria-label="Illustrative volatility shock and forecast using previous observations"
+          >
+            <line x1="35" y1="200" x2="590" y2="200" stroke="#aaa99b" />
+            <polyline
+              data-actual
+              points={sampleVolatility
+                .slice(0, 22)
+                .map((v, i) => `${35 + i * 13.5},${200 - v * 3.5}`)
+                .join(" ")}
+              fill="none"
+              stroke="#252822"
+              stroke-width="2.5"
+            />
+            <polyline
+              data-forecast
+              points={sampleVolatility
+                .slice(1, 22)
+                .map(
+                  (_, i) =>
+                    `${35 + (i + 1) * 13.5},${200 - forecastAt(sampleVolatility, i + 1, 5) * 3.5}`,
+                )
+                .join(" ")}
+              fill="none"
+              stroke="#b43d28"
+              stroke-width="2.5"
+              stroke-dasharray="6 4"
+            />
+            <line
+              data-cursor
+              x1="318.5"
+              x2="318.5"
+              y1="30"
+              y2="200"
+              stroke="#a9a797"
+            />
+            <text x="35" y="225">
+              Day 1
+            </text>
+            <text x="554" y="225">
+              Day 42
+            </text>
+            <text x="35" y="20">
+              Annualized volatility (%)
+            </text>
+          </svg>
+          <p class="legend">
+            <span>— Observed</span>
+            <span>– – Forecast from prior days</span>
+          </p>
+          <output class="demo-reading" data-reading aria-live="polite">
+            Day 22: observed {sampleVolatility[21]}% · forecast{" "}
+            {forecastAt(sampleVolatility, 21, 5).toFixed(2)}%
+          </output>
+          <p class="demo-note">
+            Move through the shock to see how longer windows react more slowly.
+            QLIKE compares variances; lower is better.
+          </p>
+          <details>
+            <summary>Values at the selected day</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Observed vol.</th>
+                  <th>Forecast vol.</th>
+                  <th>QLIKE</th>
+                </tr>
+              </thead>
+              <tbody data-table>
+                {[19, 20, 21].map((d) => (
+                  <tr>
+                    <td>{d + 1}</td>
+                    <td>{sampleVolatility[d]}%</td>
+                    <td>{forecastAt(sampleVolatility, d, 5).toFixed(2)}%</td>
+                    <td>
+                      {qlike(
+                        sampleVolatility[d],
+                        forecastAt(sampleVolatility, d, 5),
+                      ).toFixed(3)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        </>
+      )}
+      {kind === "factors" && (
+        <>
+          <p class="demo-note">
+            Eight invented p-values. Treating every test separately can admit
+            more candidates than controlling the false discovery rate across the
+            group.
+          </p>
+          <div class="demo-controls" data-enhanced hidden>
+            <label>
+              Selection rule
+              <select data-input="method">
+                <option value="bh">Benjamini–Hochberg</option>
+                <option value="raw">Unadjusted threshold</option>
+              </select>
+            </label>
+            <label>
+              Threshold <output data-alpha>5%</output>
+              <input
+                data-input="alpha"
+                type="range"
+                min="1"
+                max="10"
+                step="1"
+                value="5"
+              />
+            </label>
+          </div>
+          <div class="factor-samples">
+            {samplePValues.map((p, i) => (
+              <div data-factor={i} data-pass={i < 2}>
+                <span>Factor {i + 1}</span>
+                <strong>p = {p.toFixed(3)}</strong>
+                <span data-verdict>{i < 2 ? "Pass" : "Hold"}</span>
+              </div>
+            ))}
+          </div>
+          <output class="demo-reading" data-reading aria-live="polite">
+            2 of 8 pass at a 5% false discovery rate threshold.
+          </output>
+          <p class="demo-note">
+            BH sorts p-values and finds the largest rank k with p(k) ≤ k ×
+            threshold / 8, retaining that rank and all smaller ones. This
+            controls an expected proportion under its assumptions; it does not
+            prove that a factor works.
+          </p>
+        </>
+      )}
+    </section>
+  )
+}
+<script>
+  import { initializeDemos } from "../scripts/project-demos";
+  initializeDemos();
+</script>
+<style>
+  .playground {
+    margin: 2rem 0;
+    padding: 1.7rem;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .playground h3 {
+    font-size: 1.35rem;
+    font-weight: 500;
+    margin: 0.6rem 0 1rem;
+  }
+  .demo-note {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 48rem;
+  }
+  .demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.3rem 0;
+  }
+  .demo-controls label {
+    display: grid;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 135px;
+    font-size: 0.78rem;
+  }
+  .playground select,
+  .playground input[type="number"] {
+    padding: 0.65rem;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    font: inherit;
+    width: 100%;
+  }
+  .playground input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .playground [hidden] {
+    display: none !important;
+  }
+  .playground button {
+    font: inherit;
+    font-size: 0.8rem;
+    padding: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .playground button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .demo-actions {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .demo-actions output {
+    font-size: 0.8rem;
+  }
+  .demo-reading {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .home-results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .home-results :global(article) {
+    background: var(--bg);
+    padding: 1rem;
+    min-width: 0;
+  }
+  .home-results :global(p) {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+  .home-results :global(strong) {
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .home-results :global(.house-shape) {
+    display: block;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem 0;
+  }
+  svg text {
+    font: 11px Arial;
+    fill: var(--muted);
+  }
+  .legend {
+    font-size: 0.8rem;
+    display: flex;
+    gap: 1.5rem;
+  }
+  .legend span:last-child {
+    color: var(--accent);
+  }
+  .factor-samples {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+  .factor-samples > div {
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    background: var(--bg);
+  }
+  .factor-samples strong {
+    font-weight: 500;
+  }
+  .factor-samples [data-pass="true"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  [data-verdict] {
+    color: var(--muted);
+  }
+  details {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+  summary {
+    cursor: pointer;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  td,
+  th {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (max-width: 650px) {
+    .playground {
+      padding: 1rem;
+    }
+    .home-results {
+      grid-template-columns: 1fr;
+    }
+    .factor-samples {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

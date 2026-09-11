@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PropertyTrace from "../../components/PropertyTrace.astro";
+import ProjectPlayground from "../../components/ProjectPlayground.astro";
 import { walkthroughs } from "../../data/research";
 export function getStaticPaths() {
   return walkthroughs.map((project) => ({
@@ -16,6 +17,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <div class="reading-layout">
     <nav class="contents" aria-label="Walkthrough sections">
       <span class="eyebrow">On this page</span>
+      <a href={`#demo-${p.project}`}>Try the interactive demo</a>
       {
         p.sections.map((s, i) => (
           <a href={`#${s.id}`}>
@@ -51,6 +53,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           }
         </dl>
       </header>
+      <ProjectPlayground project={p.project} />
       {
         p.sections.map((s) => (
           <section id={s.id}>

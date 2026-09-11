@@ -41,11 +41,17 @@ Emberforge visualizes the recorded synthetic demo; Geld and volatility charts us
 
 ## Optional 3D views
 
-`/photo-room` uses the same visible photo catalog as the filmstrip. Previous/Next visits frames, Step closer approaches the selected image, and Open photograph opens a full-size accessible viewer. The room loads textures for nearby frames only; adding, moving, or hiding photos in the local manager also updates this room on the next build.
+`/travel-world` is a fictional miniature island with five clickable destinations, a working oval railway, and an aircraft flight. Destination buttons provide the same navigation without pointing at the 3D scene. Related photos open below the island and can be viewed full size, without visible captions. The scene uses procedural geometry, not photograph walls. `/photo-room` forwards to the replacement.
+
+The island shares the visible catalog with the filmstrip. Subject assignments for existing photos are in `src/data/travel.ts`; newly uploaded photos appear under All photographs until assigned to a destination there. The airfield intentionally has no photographs yet. No actual shooting locations are inferred.
 
 `/options-lab` shows an illustrative Black–Scholes European call surface, with stock price, time, and volatility controls. Strike is $100, annual rate is 4%, and dividends are zero. This is not an Olsen result. The model is in `src/lib/black-scholes.js`; the static preview, numerical calculator, and sample table provide alternatives to WebGL.
 
-Both views load Three.js only after their entry button is pressed. They render on interaction rather than running an idle animation loop; neither auto-rotates. Rotation/navigation buttons complement pointer gestures. Small screens use a wider effective camera view for the surface. Run `node scripts/check-labs.mjs` after building to validate the pricing model, gallery data, lazy loading, and public content removals.
+Both views load Three.js only after their entry button is pressed. The island animates only for user-started train/plane motion or camera travel, and suspends its animation while offscreen or in a hidden tab. Run/Pause train and Fly/Land plane control motion. Reduced-motion preferences skip camera flights. Neither view auto-rotates. Rotation buttons complement pointer gestures. Run `node scripts/check-labs.mjs` after building to validate the pricing model, gallery data, lazy loading, and public content removals.
+
+## Project demos
+
+`ProjectPlayground.astro` adds four small demos to the project cards and walkthroughs. IDX filters eight fictional listings with three results per page. Geld selects exact recorded V15 cost scenarios, without interpolating or rerunning a strategy. Volatility demonstrates strictly past-only forecasts on a fictional shock path. Emberforge compares unadjusted and Benjamini–Hochberg thresholds for invented p-values. Demo inputs, results, and limitations are labeled. The existing options payoff and 3D surface remain available under Olsen.
 
 ## Deployment
 
