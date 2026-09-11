@@ -139,6 +139,22 @@ export const walkthroughs: Walkthrough[] = [
         ],
       },
       {
+        id: "what-didnt-work",
+        title: "What didn’t work: another formula, the same signal",
+        paragraphs: [
+          "The synthetic demo includes momentum_20_dup, a different expression that the implementation report identifies as a duplicate of momentum_20. Adding it to the candidate set did not supply an independent research idea.",
+          "The pipeline keeps the attempt in the registry and checks both expression identity and correlation between factor scores. In the linked implementation, stronger candidates are considered first so a weaker copy does not displace them. The documented 24-attempt demo exports one survivor.",
+          "The lesson is to count independent signals rather than formulas. This result tests duplicate handling on synthetic data; it does not show that the surviving factor will work in a market.",
+        ],
+        sources: [
+          ember("docs/IMPLEMENTATION_REPORT.md", "Documented duplicate factor"),
+          ember(
+            "src/emberforge/research/pipeline.py",
+            "Candidate ordering and duplicate checks",
+          ),
+        ],
+      },
+      {
         id: "interpretation",
         title: "What this demonstrates",
         paragraphs: [
@@ -307,6 +323,21 @@ export const walkthroughs: Walkthrough[] = [
         ],
       },
       {
+        id: "what-didnt-work",
+        title: "What didn’t work: more intraday entries",
+        paragraphs: [
+          "V15 tested re-reading the opening-trend signal at 13:00 and 14:30 instead of acting only at 10:30. The additional entries used the same sizing and chop gate, but increased turnover and weakened the recorded result.",
+          "In that specific comparison, the 10:30-only rule returned 3.89% overall with +0.36% validation return and 16.2× turnover. Adding 13:00 reduced overall return to 2.55%, flipped validation to −0.26%, and raised turnover to 17.2×. A third entry at 14:30 produced 2.51%, −0.04%, and 18.4× respectively.",
+          "The optional multiple-entry setting was left off and the single 10:30 signal retained. More opportunities to trade did not improve this strategy. These figures belong to the later signal-timing experiment, separate from the cost-sensitivity table below.",
+        ],
+        sources: [
+          geld(
+            "docs/research/INTRADAY_V15_RESEARCH.md",
+            "Evaluated and not adopted: multiple intraday entries",
+          ),
+        ],
+      },
+      {
         id: "v15",
         title: "V15: more activity, with a narrow cost budget",
         paragraphs: [
@@ -437,6 +468,22 @@ export const walkthroughs: Walkthrough[] = [
         ],
       },
       {
+        id: "what-didnt-work",
+        title: "What didn’t work: treating one metric as the whole result",
+        paragraphs: [
+          "The ensemble’s lower QLIKE did not translate into lower RMSE. Its recorded QLIKE was 0.285704 versus persistence’s 0.473535, but RMSE was 0.002207 versus 0.000320. Ridge and MLP also had relatively good QLIKE alongside much larger RMSE.",
+          "The comparison therefore keeps both metrics and the simpler baselines visible. QLIKE rewards relative variance accuracy; RMSE exposes large absolute misses. At the 21-day horizon, HAR also slightly outperformed the ensemble on QLIKE, so the one-day winner cannot simply be carried over to every horizon.",
+          "This remains a limitation of the saved results, not a solved model defect. Inspecting the largest errors and testing any changes on fresh data would be the next step; those improvements are not claimed here.",
+        ],
+        sources: [
+          vol(
+            "reports/tables/metrics_overall.csv",
+            "QLIKE and RMSE comparison",
+          ),
+          vol("RESULTS.md", "Forecast-horizon comparison"),
+        ],
+      },
+      {
         id: "uncertainty",
         title: "How much confidence to put in the ranking",
         paragraphs: [
@@ -548,6 +595,22 @@ export const walkthroughs: Walkthrough[] = [
           idx(
             "backend/src/utils/propertyTransforms.js",
             "Property serialization",
+          ),
+        ],
+      },
+      {
+        id: "what-didnt-work",
+        title: "What still needs work: equivalent searches miss the cache",
+        paragraphs: [
+          "The cache key is built with JSON.stringify(query). Two equivalent searches can therefore get different keys when their parameters arrive in a different order. For example, city=Portland&beds=3 and beds=3&city=Portland describe the same filters but can occupy separate cache entries.",
+          "The existing 10- or 15-second expiry limits how long those entries remain useful, but does not make the keys equivalent. This is a source-level limitation, not a measured production incident or a documented performance regression.",
+          "A proposed fix is to build the key from validated, normalized parameters in a fixed order, including defaults, sorting, pagination, and map bounds. Tests should verify that equivalent searches share a key while different pages and filters remain distinct. That change has not been implemented in the linked revision.",
+        ],
+        sources: [
+          idx("backend/src/utils/cache.js", "Current cache-key construction"),
+          idx(
+            "backend/src/routes/properties.js",
+            "Query inputs and cache lookup",
           ),
         ],
       },
