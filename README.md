@@ -40,3 +40,5 @@ Project diagrams are conceptual illustrations, not measured results.
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`. This redesign is prepared on a separate local branch for review; it does not change the live website until published. No new application dependencies were required.
+
+In the filmstrip, vertical mouse-wheel or trackpad input moves photographs horizontally while the pointer is over the gallery. At either edge the gesture returns to page scrolling. Horizontal gestures and browser zoom stay native. Run `node scripts/check-filmstrip-wheel.mjs` to check input routing and boundary behavior.

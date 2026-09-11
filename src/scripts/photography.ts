@@ -1,3 +1,4 @@
+import { attachFilmstripWheel } from "../lib/filmstrip-wheel.js";
 const collection = document.querySelector<HTMLElement>(".photo-collection");
 const albumSwitch = document.querySelector<HTMLElement>(".album-switch");
 const viewSwitch = document.querySelector<HTMLElement>(".view-switch");
@@ -28,6 +29,7 @@ if (
     depthEnabled = true,
     pending = false;
   const visible = () => figures.filter((f) => !f.hidden);
+  const resetWheel = attachFilmstripWheel(collection, () => view === "strip");
   function update() {
     pending = false;
     const photos = visible();
@@ -66,6 +68,7 @@ if (
     }
   }
   function centerPhoto(index: number, smooth = true) {
+    resetWheel();
     const photos = visible();
     selected = Math.max(0, Math.min(index, photos.length - 1));
     const figure = photos[selected];
@@ -96,6 +99,7 @@ if (
   // offsetLeft is measured against this element, independent of page gutters.
   collection.style.position = "relative";
   function setView(value: string) {
+    resetWheel();
     view = value;
     collection!.classList.toggle("filmstrip", view === "strip");
     controls!.hidden = view !== "strip";

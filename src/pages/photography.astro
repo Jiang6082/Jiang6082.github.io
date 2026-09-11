@@ -107,12 +107,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       <button type="button" data-view="strip" aria-pressed="false"
         >3D filmstrip</button
       ><button type="button" data-view="sheet" aria-pressed="true"
-        >Contact sheet</button>
+        >Contact sheet</button
+      >
     </div>
   </div>
   <div class="album-summary page-shell">
     <p id="album-description">All photographs</p><a
-      href={`${base}/photography-classic`}>Classic view ↗</a>
+      href={`${base}/photography-classic`}>Classic view ↗</a
+    >
   </div>
   <div class="strip-shell page-shell">
     <section
@@ -187,15 +189,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         type="button"
         id="next-photo"
         aria-label="Next photograph"
-        aria-controls="photo-collection">→</button>
+        aria-controls="photo-collection">→</button
+      >
     </div><p id="gallery-help">
-      Swipe or use the arrow keys. Click a photo to open it.
+      Scroll up or down to browse. You can also swipe or use the arrow keys.
     </p><button class="depth-toggle" type="button" aria-pressed="true"
-      >Depth on</button>
+      >Depth on</button
+    >
   </div>
   <p class="gallery-end page-shell">
     That’s the collection, for now. <a href={`mailto:${SITE.email}`}
-      >Say hello ↗</a>
+      >Say hello ↗</a
+    >
   </p>
   <script
     is:inline
@@ -368,6 +373,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     flex: 0 0 var(--frame-width);
     scroll-snap-align: center;
     scroll-snap-stop: normal;
+  }
+  .filmstrip.wheel-browsing {
+    scroll-snap-type: none;
   }
   .filmstrip .photo-open img {
     height: clamp(240px, 48svh, 520px);
