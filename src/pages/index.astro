@@ -39,22 +39,21 @@ const frames = await Promise.all(
   wide
   bodyClass="home"
 >
-  <section class="opening" aria-labelledby="name">
+  <section class="opening" aria-labelledby="home-heading">
     <div class="opening-stage">
       <div class="opening-top eyebrow">
         <span>A personal collection</span><span
           >Code, photographs & other observations</span
         ><button class="motion-toggle" type="button" aria-pressed="false" hidden
-          >Motion off</button>
+          >Motion off</button
+        >
       </div>
       <div class="hero-copy">
-        <p class="eyebrow hello">Hello, I’m</p><h1 id="name">
-          Charles<br /><em>Jiang.</em>
-        </h1><p class="intro">
-          I build trading & research tools.<br />Sometimes, I put the laptop
-          down<br />and pick up a camera.
+        <h1 id="home-heading">Projects &<br />photographs.</h1><p class="intro">
+          Trading tools, research projects, and photos from my travels.
         </p><a class="text-link" href="#selected-work"
-          >Explore my work <span aria-hidden="true">↘</span></a>
+          >Explore my work <span aria-hidden="true">↘</span></a
+        >
       </div>
       <div class="photo-window">
         {
@@ -82,13 +81,14 @@ const frames = await Promise.all(
       </div>
       <div class="opening-bottom eyebrow">
         <span>Student / Developer / Photographer</span><a href="#selected-work"
-          >Scroll to look around ↓</a>
+          >Scroll to look around ↓</a
+        >
       </div>
     </div>
   </section>
   <section class="home-about page-shell" id="about">
     <p class="eyebrow">01 / A little context</p><div>
-      <h2>A few things<br />I spend time on.</h2><p>
+      <h2>Interests</h2><p>
         I’m interested in how markets behave, how useful software gets made, and
         what catches my eye when I’m somewhere new.
       </p><p>Here’s some of what I’ve been working on.</p>
@@ -98,7 +98,8 @@ const frames = await Promise.all(
     <div class="section-heading">
       <p class="eyebrow">02 / Selected work</p><a
         class="text-link"
-        href={`${base}/projects`}>All projects ↗</a>
+        href={`${base}/projects`}>All projects ↗</a
+      >
     </div>
     <a class="work-row" href={`${base}/projects#project-emberforge`}
       ><span class="work-number">01</span><div>
@@ -132,20 +133,22 @@ const frames = await Promise.all(
         height="1200"
         alt={frames[1].alt}
         loading="lazy"
-      /><span>Through the lens <span aria-hidden="true">↗</span></span></a
+      /><span>Photography <span aria-hidden="true">↗</span></span></a
     ><div class="photo-note">
       <p class="eyebrow">03 / Away from the screen</p><p>
-        A few frames I’m fond of.<br />Travel, light, and whatever’s in between.
+        Photos from my travels.
       </p><a class="text-link" href={`${base}/photography`}
-        >Open the photo collection ↗</a>
+        >Open the photo collection ↗</a
+      >
     </div>
   </section>
   <section class="closing page-shell">
-    <p class="eyebrow">Keep in touch</p><h2>Have something<br />in mind?</h2><a
+    <p class="eyebrow">Keep in touch</p><h2>Get in touch</h2><a
       class="text-link"
       href={`mailto:${SITE.email}`}>Say hello ↗</a
     ><a class="journal-link" href={`${base}/blog`}
-      >Or read what I’m learning →</a>
+      >Or read what I’m learning →</a
+    >
   </section>
 </BaseLayout>
 <style>
@@ -186,21 +189,12 @@ const frames = await Promise.all(
     z-index: 2;
     width: 56%;
   }
-  .hello {
-    margin-bottom: 18px;
-  }
   h1 {
-    font-size: clamp(5rem, 10.5vw, 10.5rem);
-    line-height: 0.96;
-    letter-spacing: -0.075em;
+    font-size: clamp(2.3rem, 4.5vw, 4.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
     font-weight: 500;
     margin: 0 0 1.7rem;
-  }
-  h1 em {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    letter-spacing: -0.055em;
-    color: var(--accent);
   }
   .intro {
     font-size: clamp(1rem, 1.5vw, 1.3rem);
@@ -250,9 +244,9 @@ const frames = await Promise.all(
     border-top: 1px solid var(--border);
   }
   .home-about h2 {
-    font-size: clamp(2.3rem, 4.7vw, 4.8rem);
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
     font-weight: 400;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.025em;
     line-height: 1.08;
     margin: 0 0 2rem;
   }
@@ -341,9 +335,9 @@ const frames = await Promise.all(
     justify-content: space-between;
   }
   .photo-note p:not(.eyebrow) {
-    font-family: var(--font-serif);
-    font-size: 2rem;
-    line-height: 1.3;
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    line-height: 1.6;
     margin: 2rem 0;
   }
   .closing {
@@ -352,10 +346,10 @@ const frames = await Promise.all(
     border-top: 1px solid var(--border);
   }
   .closing h2 {
-    font-size: clamp(3.5rem, 8vw, 8rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 400;
     line-height: 1;
-    letter-spacing: -0.06em;
+    letter-spacing: -0.025em;
     margin: 2rem 0;
   }
   .journal-link {
@@ -380,7 +374,7 @@ const frames = await Promise.all(
       top: auto;
     }
     h1 {
-      font-size: clamp(4.8rem, 17vw, 8rem);
+      font-size: clamp(2.1rem, 8vw, 3.5rem);
     }
     .photo-window {
       position: relative;

@@ -15,14 +15,13 @@
   --max-width: 48rem;
   --max-width-wide: 86rem;
   --gutter: clamp(1.25rem, 4.5vw, 5rem);
-  --font-sans: "Schibsted Grotesk", Arial, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --fs-label: 0.875rem;
   --fs-body: 1.0625rem;
   --fs-mid: 1.375rem;
   --fs-h2: 2rem;
-  --fs-h1: clamp(3rem, 7vw, 6rem);
+  --fs-h1: clamp(2.5rem, 5vw, 4rem);
 }
 * {
   box-sizing: border-box;
@@ -75,7 +74,7 @@ h2,
 h3 {
   line-height: 1.13;
   font-weight: 500;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.025em;
 }
 h1 {
   font-size: var(--fs-h1);
