@@ -25,7 +25,7 @@ The static check validates local links and assets, project anchors, private repo
 - Home content and opening photo selection: `src/pages/index.astro`.
 - Project records: `src/data/projects.ts`. Public/private visibility is preserved.
 - Photo collection: run `npm run photos:manage` and open http://127.0.0.1:4322. See [PHOTO-MANAGER.md](PHOTO-MANAGER.md).
-- Project walkthroughs: `src/data/walkthroughs.ts`.
+- Project walkthroughs and cited research results: `src/data/research.ts`.
 - Blog posts: Markdown in `src/content/blog/`; keep the existing frontmatter schema.
 - Colors and type: `src/styles/global.css`.
 - Scroll timeline calculations: `src/lib/opening-motion.js`.
