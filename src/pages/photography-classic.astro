@@ -16,17 +16,31 @@ const clampAr = (ar: number) => Math.max(0.5, Math.min(ar, 2.6));
 async function toItem(p: Photo) {
   const mod = p.src ? files[`../photos/${p.src}`] : undefined;
   const base = {
-    title: p.title ?? "",
-    caption: p.caption ?? "",
+    title: "",
+    caption: "",
     alt: p.alt || p.title || "Photo",
   };
   if (!mod) {
-    return { ...base, placeholder: true, ar: clampAr(p.ar ?? 1.5), thumb: "", full: "" };
+    return {
+      ...base,
+      placeholder: true,
+      ar: clampAr(p.ar ?? 1.5),
+      thumb: "",
+      full: "",
+    };
   }
   const meta = mod.default;
-  const thumb = await getImage({ src: meta, width: Math.min(900, meta.width), format: "webp" });
+  const thumb = await getImage({
+    src: meta,
+    width: Math.min(900, meta.width),
+    format: "webp",
+  });
   // Full-size for the lightbox — never upscaled past the original.
-  const full = await getImage({ src: meta, width: Math.min(2400, meta.width), format: "webp" });
+  const full = await getImage({
+    src: meta,
+    width: Math.min(2400, meta.width),
+    format: "webp",
+  });
   return {
     ...base,
     placeholder: false,
@@ -60,8 +74,8 @@ if (singles.length) {
   <header class="pg-head">
     <h1>Photography</h1>
     <p class="muted">
-      Classic grid view. Click any photo to view it full-screen — arrows or
-      ← / → to move through a set, Esc to close.
+      Classic grid view. Click any photo to view it full-screen — arrows or ← /
+      → to move through a set, Esc to close.
     </p>
   </header>
 
@@ -96,7 +110,14 @@ if (singles.length) {
   }
 
   <!-- Lightbox overlay -->
-  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div
+    id="lightbox"
+    class="lightbox"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-label="Photo viewer"
+  >
     <button class="lb-btn lb-close" aria-label="Close">&times;</button>
     <button class="lb-btn lb-prev" aria-label="Previous photo">&#8249;</button>
     <button class="lb-btn lb-next" aria-label="Next photo">&#8250;</button>
@@ -110,7 +131,10 @@ if (singles.length) {
     </figure>
   </div>
 
-  <script is:inline set:html={`window.__GALLERY__ = ${JSON.stringify(groups)};`} />
+  <script
+    is:inline
+    set:html={`window.__GALLERY__ = ${JSON.stringify(groups)};`}
+  />
 </BaseLayout>
 
 <script>
@@ -150,7 +174,8 @@ if (singles.length) {
   let tx = 0;
   let ty = 0;
   let curImg: HTMLImageElement | null = null;
-  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, hi));
+  const clamp = (v: number, lo: number, hi: number) =>
+    Math.max(lo, Math.min(v, hi));
 
   function applyTransform() {
     if (!curImg) return;
@@ -271,11 +296,14 @@ if (singles.length) {
       e.preventDefault();
       zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
     },
-    { passive: false }
+    { passive: false },
   );
 
   let dragging = false;
-  let sx = 0, sy = 0, stx = 0, sty = 0;
+  let sx = 0,
+    sy = 0,
+    stx = 0,
+    sty = 0;
   media.addEventListener("pointerdown", (e) => {
     if (!curImg || scale <= 1) return;
     dragging = true;
@@ -436,7 +464,9 @@ if (singles.length) {
     );
   }
   .cell img {
-    transition: transform 0.3s ease, filter 0.2s ease;
+    transition:
+      transform 0.3s ease,
+      filter 0.2s ease;
   }
   .cell:hover img {
     transform: scale(1.04);
@@ -558,7 +588,9 @@ if (singles.length) {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s ease, transform 0.15s ease;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
   }
   .lb-btn:hover {
     background: rgba(255, 255, 255, 0.22);

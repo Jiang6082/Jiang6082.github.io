@@ -99,10 +99,10 @@
       curImg = img;
       applyTransform();
     }
-    elTitle.textContent = item.title;
-    elTitle.style.display = item.title ? "" : "none";
-    elCaption.textContent = item.caption;
-    elCaption.style.display = item.caption ? "" : "none";
+    elTitle.textContent = "";
+    elTitle.style.display = "none";
+    elCaption.textContent = "";
+    elCaption.style.display = "none";
     const multi = current.length > 1;
     elCounter.textContent = multi ? `${index + 1} / ${current.length}` : "";
     btnPrev.style.display = multi ? "" : "none";

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Photo manager</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p>LOCAL / PRIVATE</p>
+        <h1>Your photographs</h1>
+        <p>
+          Add photos, arrange albums, and choose what appears on your website.
+        </p>
+        <p>Changes update your local website. Publishing is a separate step.</p>
+      </header>
+      <div class="toolbar">
+        <label
+          >Album
+          <select id="albums"></select></label
+        ><button id="new">New album</button
+        ><button id="rename">Rename album</button
+        ><button id="save" disabled>Save changes</button
+        ><button id="reload">Reload collection</button>
+      </div>
+      <label class="upload"
+        >Add photographs
+        <input
+          id="upload"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          multiple
+      /></label>
+      <p>
+        Up to 25 MB per photo. Originals are kept on this computer. Photo
+        descriptions are for accessibility and do not appear as captions.
+      </p>
+      <p id="status" role="status" aria-live="polite"></p>
+      <section id="photos" aria-label="Photos in this album"></section>
+    </main>
+  </body>
+</html>

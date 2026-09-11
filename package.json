@@ -9,11 +9,13 @@
     "build": "astro build",
     "preview": "astro preview",
     "photos": "node scripts/resize-photos.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "photos:manage": "node scripts/photo-manager/server.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.2.5"
+    "astro": "^5.2.5",
+    "sharp": "0.34.5"
   }
 }

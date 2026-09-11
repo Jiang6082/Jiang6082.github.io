@@ -149,24 +149,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   </span>
                 </>
               </a>
-              <figcaption>
-                <>
-                  <div class="caption-title">
-                    <>
-                      <span>{it.title}</span>
-                      <span class="frame-number">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                    </>
-                  </div>
-                  <p>{it.caption}</p>
-                  <div class="caption-meta">
-                    <span>{it.albumTitle}</span>
-                    {it.location && <span>{it.location}</span>}
-                    {it.date && <span>{it.date}</span>}
-                  </div>
-                </>
-              </figcaption>
             </>
           </figure>
         ))

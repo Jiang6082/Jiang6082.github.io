@@ -128,7 +128,7 @@ if (
           album === "all" ? f.dataset.photoIndex! : String(i);
       });
       description!.textContent =
-        button.dataset.description || "All photographs";
+        button.dataset.description || (album === "all" ? "All photographs" : button.textContent?.replace(/\s+\d+\s*$/, "").trim() || "Photographs");
       selected = 0;
       requestAnimationFrame(() => {
         if (view === "strip") centerPhoto(0, false);
