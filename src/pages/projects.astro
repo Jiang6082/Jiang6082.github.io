@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ProjectDiagram from "../components/ProjectDiagram.astro";
+import ProjectVisual from "../components/ProjectVisual.astro";
 import { projects } from "../data/projects";
 import { walkthroughs } from "../data/research";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -10,13 +10,6 @@ const names: Record<string, string> = {
   "market-volatility-forecasting": "Forecasting volatility",
   "Project-Olsen": "Olsen",
   QJS: "QJS",
-};
-const kinds: Record<string, string> = {
-  "project-emberforge": "funnel",
-  "project-geld": "equity",
-  "market-volatility-forecasting": "predactual",
-  "Project-Olsen": "options",
-  QJS: "scanlist",
 };
 ---
 
@@ -65,26 +58,7 @@ const kinds: Record<string, string> = {
                 </div>
                 <h2>{names[p.name] || p.name}</h2>
                 <p class="description">{p.description}</p>
-                <div class="diagram-wrap">
-                  {p.name === "market-volatility-forecasting" ? (
-                    <>
-                      <img
-                        class="result-chart"
-                        src={`${base}/projects/volatility-prediction.png`}
-                        alt="Ensemble predicted variance plotted against realized variance"
-                        loading="lazy"
-                      />
-                      <p class="eyebrow">Actual output from the project</p>
-                    </>
-                  ) : (
-                    <>
-                      <ProjectDiagram kind={kinds[p.name] || "funnel"} />
-                      <p class="eyebrow">
-                        Concept illustration · not measured results
-                      </p>
-                    </>
-                  )}
-                </div>
+                <ProjectVisual project={p.name} />
                 <div class="project-bottom">
                   {walkthroughs.find((w) => w.project === p.name) && (
                     <a

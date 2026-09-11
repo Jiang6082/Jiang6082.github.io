@@ -9,7 +9,7 @@ const depth = document.querySelector<HTMLButtonElement>(".depth-toggle");
 const position = document.querySelector<HTMLElement>("#gallery-position");
 const description = document.querySelector<HTMLElement>("#album-description");
 const reduce = matchMedia("(prefers-reduced-motion: reduce)");
-const fine = matchMedia("(hover: hover) and (pointer: fine)");
+
 if (
   collection &&
   albumSwitch &&
@@ -128,7 +128,11 @@ if (
           album === "all" ? f.dataset.photoIndex! : String(i);
       });
       description!.textContent =
-        button.dataset.description || (album === "all" ? "All photographs" : button.textContent?.replace(/\s+\d+\s*$/, "").trim() || "Photographs");
+        button.dataset.description ||
+        (album === "all"
+          ? "All photographs"
+          : button.textContent?.replace(/\s+\d+\s*$/, "").trim() ||
+            "Photographs");
       selected = 0;
       requestAnimationFrame(() => {
         if (view === "strip") centerPhoto(0, false);
@@ -174,42 +178,8 @@ if (
     const i = visible().findIndex((f) => f.contains(e.target as Node));
     if (i >= 0) centerPhoto(i, false);
   });
-  figures.forEach((figure) => {
-    const link = figure.querySelector<HTMLElement>(".photo-open")!;
-    let x = 0,
-      y = 0,
-      frame = 0;
-    link.addEventListener("pointermove", (e) => {
-      if (reduce.matches || !fine.matches || !depthEnabled) return;
-      const rect = figure.getBoundingClientRect();
-      x = Math.max(
-        -1,
-        Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1),
-      );
-      const imageHeight = link.offsetHeight;
-      y = Math.max(
-        -1,
-        Math.min(
-          1,
-          ((e.clientY - rect.top) / Math.max(1, imageHeight)) * 2 - 1,
-        ),
-      );
-      if (!frame)
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          link.style.setProperty("--tilt-x", `${-y * 2.5}deg`);
-          link.style.setProperty("--tilt-y", `${x * 3}deg`);
-        });
-    });
-    link.addEventListener("pointerleave", () => {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      link.style.removeProperty("--tilt-x");
-      link.style.removeProperty("--tilt-y");
-    });
-  });
   reduce.addEventListener("change", syncDepth);
-  fine.addEventListener("change", syncDepth);
+
   new ResizeObserver(() => {
     if (view === "strip") centerPhoto(selected, false);
   }).observe(collection);

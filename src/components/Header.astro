@@ -4,6 +4,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const nav = [
   { label: "Work", href: `${base}/projects` },
   { label: "Photography", href: `${base}/photography` },
+  { label: "Résumé", href: `${base}/resume` },
   { label: "Notes", href: `${base}/blog` },
 ];
 const current = Astro.url.pathname;
@@ -69,7 +70,7 @@ const current = Astro.url.pathname;
     margin-left: 1.5rem;
     color: var(--fg);
   }
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     .header-inner {
       height: auto;
       min-height: 92px;

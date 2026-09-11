@@ -17,7 +17,7 @@ node scripts/check-site.mjs
 npm run preview
 ```
 
-The static check validates local links and assets, project anchors, private repository link handling, photo counts, and the scroll timeline bounds. It does not replace interactive browser testing.
+The static check validates local links and assets, project anchors, private repository link handling, and photo counts. It does not replace interactive browser testing.
 
 ## Editing
 
@@ -28,15 +28,16 @@ The static check validates local links and assets, project anchors, private repo
 - Project walkthroughs and cited research results: `src/data/research.ts`.
 - Blog posts: Markdown in `src/content/blog/`; keep the existing frontmatter schema.
 - Colors and type: `src/styles/global.css`.
-- Scroll timeline calculations: `src/lib/opening-motion.js`.
+- Web résumé: `src/data/resume.ts`. No phone number or original résumé PDFs are published.
+- Project visuals: `src/components/ProjectVisual.astro`, using result tables in `src/data/research.ts`.
 
-The opening portrait expands and crossfades through three photographs as the visitor scrolls. It uses native scrolling and requestAnimationFrame without taking over wheel or touch input. Motion can be disabled; reduced-motion preferences and smaller viewports use a static composition with a Next control. No JavaScript still leaves the home, projects, writing, and main photo collection readable.
+The homepage uses a static photograph and direct links into project walkthroughs. The photography filmstrip is the main motion feature. No JavaScript still leaves the home, projects, résumé, writing, and main photo collection readable.
 
-The photography page opens in a curved 3D filmstrip with native swipe/scroll, previous/next buttons, and arrow-key navigation. Switch to the contact sheet for an overview. Pointer movement gently tilts photographs; reduced-motion preferences disable both depth and tilt, and the Depth control can flatten the filmstrip. Albums filter both views and the zoomable lightbox. The classic gallery route remains available.
+The photography page opens in a curved 3D filmstrip with native swipe/scroll, previous/next buttons, and arrow-key navigation. Switch to the contact sheet for an overview. Reduced-motion preferences disable depth, and the Depth control can flatten the filmstrip. Pointer tilt has been removed. Albums filter both views and the zoomable lightbox. The classic gallery route remains available.
 
 The private local manager supports uploads, albums, ordering, moving, hiding, and restoring photographs. It saves `src/data/photos.json`; `src/data/photos.ts` filters hidden entries for the public site. Public photo titles and captions are suppressed; accessible image descriptions remain. The gallery behavior lives in `src/scripts/photography.ts`. Run `node scripts/check-photo-manager.mjs` to check saving, uploads, backups, and request protections in an isolated temporary collection.
 
-Project diagrams are conceptual illustrations, not measured results.
+Emberforge visualizes the recorded synthetic demo; Geld and volatility charts use the walkthrough's sourced result tables; QJS shows dated scan counts and a process diagram. Olsen's slider explains an illustrative long-call expiry payoff and is explicitly not an Olsen result. Numerical tables remain readable without JavaScript. The résumé is an HTML page with a print stylesheet and browser Print / save PDF action.
 
 ## Deployment
 

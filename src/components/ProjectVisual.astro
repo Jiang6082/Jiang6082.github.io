@@ -1,0 +1,737 @@
+---
+import { walkthroughs } from "../data/research";
+const { project } = Astro.props as { project: string };
+const study = walkthroughs.find((w) => w.project === project);
+type Dataset = {
+  name: string;
+  unit: string;
+  note: string;
+  labels: string[];
+  values: number[];
+  display: string[];
+  source: string;
+};
+let datasets: Dataset[] = [];
+if (project === "project-geld") {
+  const daily = study!.sections.find((s) => s.id === "daily-results")!;
+  const costs = study!.sections.find((s) => s.id === "v15")!;
+  datasets = [
+    {
+      name: "Daily V4 / CAGR",
+      unit: "CAGR (%)",
+      note: daily.table!.caption,
+      labels: daily.table!.rows.map((r) => r[0]),
+      values: daily.table!.rows.map((r) => parseFloat(r[1])),
+      display: daily.table!.rows.map((r) => r[1]),
+      source: daily.sources[0].url,
+    },
+    {
+      name: "Intraday V15 / costs",
+      unit: "Total return (%)",
+      note:
+        costs.table!.caption +
+        " · SPY cost per side; stock overlay held at 8 bps.",
+      labels: costs.table!.rows.map((r) => r[0]),
+      values: costs.table!.rows.map((r) => parseFloat(r[1].replace("−", "-"))),
+      display: costs.table!.rows.map((r) => r[1]),
+      source: costs.sources[0].url,
+    },
+  ];
+}
+if (project === "market-volatility-forecasting") {
+  const result = study!.sections.find((s) => s.id === "results")!;
+  datasets = [
+    {
+      name: "QLIKE",
+      unit: "QLIKE · lower is better",
+      note: "2020–2025 · 21,098 ETF-days · recorded forecasts",
+      labels: result.table!.rows.map((r) => r[0]),
+      values: result.table!.rows.map((r) => Number(r[1])),
+      display: result.table!.rows.map((r) => Number(r[1]).toFixed(4)),
+      source: result.sources[0].url,
+    },
+    {
+      name: "RMSE",
+      unit: "RMSE · lower is better",
+      note: "Same observations, different loss: the ranking changes. Each view uses its own linear scale.",
+      labels: result.table!.rows.map((r) => r[0]),
+      values: result.table!.rows.map((r) => Number(r[2])),
+      display: result.table!.rows.map((r) => r[2]),
+      source: result.sources[0].url,
+    },
+  ];
+}
+const first = datasets[0];
+const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
+---
+
+<div class="project-visual" data-project={project}>
+  {
+    first && (
+      <div class="metric-chart">
+        <div class="visual-heading">
+          <>
+            <p class="eyebrow">Recorded results</p>
+            <div
+              class="chart-switch"
+              role="group"
+              aria-label="Choose result comparison"
+              hidden
+            >
+              {datasets.map((d, i) => (
+                <button type="button" data-dataset={i} aria-pressed={i === 0}>
+                  {d.name}
+                </button>
+              ))}
+            </div>
+          </>
+        </div>
+        <>
+          <p class="chart-note" aria-live="polite">
+            {first.note}
+          </p>
+          <p class="chart-unit">{first.unit}</p>
+        </>
+        <div class="bars" role="list" aria-label={first.unit}>
+          {first.labels.map((label, i) => (
+            <div class="bar-row" role="listitem">
+              <span class="bar-label">{label}</span>
+              <div class="bar-track" aria-hidden="true">
+                <span
+                  class="bar-fill"
+                  style={`width:${(first.values[i] / max) * 100}%`}
+                />
+              </div>
+              <strong>{first.display[i]}</strong>
+            </div>
+          ))}
+        </div>
+        <>
+          <p class="chart-scale">Bars use a linear scale starting at zero.</p>
+          <a class="chart-source" href={first.source}>
+            View recorded data ↗
+          </a>
+        </>
+        <script
+          type="application/json"
+          class="chart-data"
+          set:html={JSON.stringify(datasets).replace(/</g, "\\u003c")}
+        />
+        <details>
+          <summary>Data tables</summary>
+          {datasets.map((d) => (
+            <div class="data-table">
+              <table>
+                <caption>
+                  {d.name} · {d.unit}
+                </caption>
+                <tbody>
+                  {d.labels.map((label, i) => (
+                    <tr>
+                      <th scope="row">{label}</th>
+                      <td>{d.display[i]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </details>
+      </div>
+    )
+  }
+  {
+    project === "project-emberforge" && (
+      <div>
+        <div class="visual-heading">
+          <>
+            <p class="eyebrow">Synthetic demo / seed 7</p>
+            <span class="record-label">24 attempts → 1 survivor</span>
+          </>
+        </div>
+        <div class="factor-layout">
+          <>
+            <div
+              class="factor-field"
+              role="img"
+              aria-label="24 recorded candidate attempts, with one documented survivor highlighted"
+            >
+              {Array.from({ length: 24 }, (_, i) => (
+                <span
+                  class:list={["factor", { survivor: i === 0 }]}
+                  aria-hidden="true"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              ))}
+            </div>
+            <div class="survivor-result">
+              <>
+                <p class="eyebrow">Recorded survivor</p>
+                <h3>momentum_20</h3>
+                <code>ts_returns(close, 20)</code>
+                <dl>
+                  <>
+                    <div>
+                      <>
+                        <dt>Mean IC</dt>
+                        <dd>0.073</dd>
+                      </>
+                    </div>
+                    <div>
+                      <>
+                        <dt>IC t-statistic</dt>
+                        <dd>4.68</dd>
+                      </>
+                    </div>
+                    <div>
+                      <>
+                        <dt>Diagnostic Sharpe</dt>
+                        <dd>2.53</dd>
+                      </>
+                    </div>
+                  </>
+                </dl>
+              </>
+            </div>
+          </>
+        </div>
+        <>
+          <p class="chart-note">
+            A known momentum effect planted in synthetic data. The other 23
+            attempts include weak candidates and duplicates; their individual
+            outcomes are not encoded here.
+          </p>
+          <a
+            class="chart-source"
+            href={
+              study!.sections.find((s) => s.id === "results")!.sources[0].url
+            }
+          >
+            Read the demo results ↗
+          </a>
+        </>
+      </div>
+    )
+  }
+  {
+    project === "QJS" && (
+      <div>
+        <div class="visual-heading">
+          <>
+            <p class="eyebrow">September 10, 2026 snapshot</p>
+            <span class="record-label">Coverage & change detection</span>
+          </>
+        </div>
+        <dl class="scan-stats">
+          {study!.facts.map((f) => (
+            <div>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div class="scan-trace">
+          <>
+            <p class="eyebrow">How a role becomes confirmed</p>
+            <ol>
+              <>
+                <li>
+                  <>
+                    <span>01</span>
+                    <strong>First sighting</strong>
+                    <p>A source returns a new job URL.</p>
+                  </>
+                </li>
+                <li>
+                  <>
+                    <span>02</span>
+                    <strong>Seen again</strong>
+                    <p>A second scan finds the same role.</p>
+                  </>
+                </li>
+                <li>
+                  <>
+                    <span>03</span>
+                    <strong>Confirmed</strong>
+                    <p>The stable record and reports update.</p>
+                  </>
+                </li>
+              </>
+            </ol>
+          </>
+        </div>
+        <>
+          <p class="chart-note">
+            209 companies could not be fully verified. The counts describe
+            search activity and retained roles, not complete market coverage.
+          </p>
+          <a
+            class="chart-source"
+            href={
+              study!.sections.find((s) => s.id === "results")!.sources[0].url
+            }
+          >
+            Open the dated scan report ↗
+          </a>
+        </>
+      </div>
+    )
+  }
+  {
+    project === "Project-Olsen" && (
+      <div class="payoff-explorer">
+        <div class="visual-heading">
+          <>
+            <p class="eyebrow">Options mechanics</p>
+            <span class="record-label">Illustrative long call</span>
+          </>
+        </div>
+        <p class="chart-note">
+          Explore a call at expiry: strike $100, premium $8 per share. This
+          explains an options concept; it is not an Olsen strategy or result.
+        </p>
+        <svg
+          class="payoff-svg"
+          viewBox="0 0 600 250"
+          role="img"
+          aria-label="Long call profit at expiry: loss of 8 dollars per share up to the 100 dollar strike; break-even at 108 dollars, then rising profit."
+        >
+          <>
+            <line x1="60" y1="185" x2="560" y2="185" class="axis" />
+            <line x1="60" y1="25" x2="60" y2="225" class="axis" />
+          </>
+          <>
+            <line x1="274.3" y1="25" x2="274.3" y2="225" class="guide" />
+            <line x1="331.4" y1="25" x2="331.4" y2="225" class="guide" />
+          </>
+          <path d="M60,217 L274.3,217 L560,57" class="payoff-line" />
+          <>
+            <text x="8" y="32">
+              $40
+            </text>
+            <text x="25" y="189">
+              $0
+            </text>
+            <text x="12" y="222">
+              −$8
+            </text>
+          </>
+          <>
+            <text x="60" y="246" text-anchor="middle">
+              $70
+            </text>
+            <text x="274.3" y="246" text-anchor="middle">
+              $100
+            </text>
+            <text x="560" y="246" text-anchor="middle">
+              $140
+            </text>
+          </>
+          <>
+            <text x="284" y="40">
+              strike
+            </text>
+            <text x="341" y="60">
+              break-even $108
+            </text>
+            <circle class="payoff-point" cx="345.7" cy="177" r="6" />
+          </>
+        </svg>
+        <div class="payoff-controls" hidden>
+          <>
+            <label>
+              Underlying price at expiry{" "}
+              <input
+                type="range"
+                min="70"
+                max="140"
+                value="110"
+                step="1"
+                aria-label="Underlying price at expiry in dollars"
+              />
+            </label>
+            <output aria-live="polite">At $110: +$2 per share</output>
+          </>
+        </div>
+        <p class="chart-scale">
+          Profit = max(underlying price − $100, 0) − $8. Excludes fees; all
+          values are per share.
+        </p>
+      </div>
+    )
+  }
+</div>
+<script>
+  import { longCallProfit } from "../lib/payoff.js";
+  document.querySelectorAll<HTMLElement>(".metric-chart").forEach((chart) => {
+    const datasets = JSON.parse(
+      chart.querySelector(".chart-data")!.textContent!,
+    );
+    const buttons = chart.querySelectorAll<HTMLButtonElement>("[data-dataset]");
+    (chart.querySelector(".chart-switch") as HTMLElement).hidden = false;
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        const d = datasets[Number(button.dataset.dataset)];
+        const max = Math.max(...d.values.map(Math.abs));
+        const signed = d.values.some((v: number) => v < 0);
+        chart.querySelector(".chart-note")!.textContent = d.note;
+        chart.querySelector(".chart-unit")!.textContent = d.unit;
+        const bars = chart.querySelector(".bars")!;
+        bars.setAttribute("aria-label", d.unit);
+        bars.replaceChildren();
+        d.labels.forEach((label: string, i: number) => {
+          const row = document.createElement("div");
+          row.className = "bar-row";
+          row.setAttribute("role", "listitem");
+          const name = document.createElement("span");
+          name.className = "bar-label";
+          name.textContent = label;
+          const track = document.createElement("div");
+          track.className = "bar-track" + (signed ? " signed" : "");
+          track.setAttribute("aria-hidden", "true");
+          const fill = document.createElement("span");
+          fill.className = "bar-fill" + (d.values[i] < 0 ? " negative" : "");
+          fill.style.width = `${(Math.abs(d.values[i]) / max) * (signed ? 50 : 100)}%`;
+          track.append(fill);
+          const value = document.createElement("strong");
+          value.textContent = d.display[i];
+          row.append(name, track, value);
+          bars.append(row);
+        });
+        chart.querySelector(".chart-scale")!.textContent = signed
+          ? "Zero is at the center. Losses extend left; gains extend right."
+          : "Bars use a linear scale starting at zero.";
+        (chart.querySelector(".chart-source") as HTMLAnchorElement).href =
+          d.source;
+        buttons.forEach((b) =>
+          b.setAttribute("aria-pressed", String(b === button)),
+        );
+      }),
+    );
+  });
+  document
+    .querySelectorAll<HTMLElement>(".payoff-explorer")
+    .forEach((chart) => {
+      const input = chart.querySelector("input")!;
+      const output = chart.querySelector("output")!;
+      const point = chart.querySelector("circle")!;
+      (chart.querySelector(".payoff-controls") as HTMLElement).hidden = false;
+      input.addEventListener("input", () => {
+        const spot = Number(input.value),
+          profit = longCallProfit(spot, 100, 8);
+        output.textContent = `At $${spot}: ${profit >= 0 ? "+" : "−"}$${Math.abs(profit)} per share`;
+        point.setAttribute("cx", String(60 + ((spot - 70) / 70) * 500));
+        point.setAttribute("cy", String(185 - profit * 4));
+      });
+    });
+</script>
+<style>
+  .project-visual {
+    padding: clamp(1.2rem, 3vw, 2.4rem);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin: 2rem 0;
+    overflow: hidden;
+  }
+  .visual-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .visual-heading p {
+    margin: 0;
+  }
+  .record-label,
+  .chart-unit,
+  .chart-source,
+  .chart-scale {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .chart-note {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .chart-switch {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .chart-switch button {
+    font: inherit;
+    font-size: 0.75rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .chart-switch button[aria-pressed="true"] {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  :global(.bar-row) {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) 4.5rem;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.55rem 0;
+    font-size: 0.8rem;
+  }
+  :global(.bar-label) {
+    line-height: 1.4;
+  }
+  :global(.bar-track) {
+    height: 16px;
+    position: relative;
+    background: var(--surface-2);
+  }
+  :global(.bar-fill) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--accent);
+  }
+  :global(.bar-track):global(.signed):after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    bottom: -4px;
+    border-left: 1px solid var(--muted);
+  }
+  :global(.signed) :global(.bar-fill) {
+    left: 50%;
+  }
+  :global(.signed) :global(.negative) {
+    left: auto;
+    right: 50%;
+    background: #626d78;
+  }
+  :global(.bar-row strong) {
+    font: 0.8rem var(--font-mono);
+    text-align: right;
+  }
+  .chart-scale {
+    line-height: 1.6;
+    margin-top: 1.2rem;
+  }
+  .chart-source {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  details {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .data-table {
+    overflow: auto;
+    margin: 1rem 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  caption {
+    text-align: left;
+    padding: 0.5rem 0;
+    color: var(--muted);
+  }
+  td,
+  th {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-weight: 400;
+  }
+  td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .factor-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  .factor-field {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+  }
+  .factor {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    font: 0.65rem var(--font-mono);
+    color: var(--muted);
+  }
+  .factor.survivor {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .survivor-result h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0.5rem 0;
+  }
+  .survivor-result code {
+    font-size: 0.7rem;
+  }
+  .survivor-result dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .survivor-result dt {
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .scan-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .scan-stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .scan-stats dd {
+    font-size: 2.3rem;
+    letter-spacing: -0.04em;
+  }
+  .scan-stats dt {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .scan-trace {
+    border-block: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+  .scan-trace ol {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    list-style: none;
+    padding: 0;
+    gap: 1.2rem;
+  }
+  .scan-trace li span {
+    display: block;
+    font: 0.7rem var(--font-mono);
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .scan-trace strong {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .scan-trace li p {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .payoff-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .axis {
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+  .guide {
+    stroke: var(--border);
+    stroke-dasharray: 4 5;
+  }
+  .payoff-line {
+    stroke: var(--accent);
+    stroke-width: 3;
+    fill: none;
+  }
+  .payoff-point {
+    fill: var(--fg);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+  .payoff-svg text {
+    font: 11px var(--font-mono);
+    fill: var(--muted);
+  }
+  .payoff-controls {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+  .payoff-controls label {
+    display: grid;
+    gap: 0.6rem;
+    flex: 1;
+    min-width: 180px;
+  }
+  input {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  output {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 600px) {
+    :global(.bar-row) {
+      grid-template-columns: 6rem minmax(0, 1fr) 4rem;
+      gap: 0.6rem;
+      font-size: 0.7rem;
+    }
+    :global(.bar-row strong) {
+      font-size: 0.7rem;
+    }
+    .factor-layout {
+      grid-template-columns: 1fr;
+    }
+    .factor-field {
+      max-width: 300px;
+    }
+    .scan-stats {
+      gap: 0.8rem;
+    }
+    .scan-stats dd {
+      font-size: 1.8rem;
+    }
+    .scan-trace ol {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .scan-trace li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+    }
+    .scan-trace li p {
+      grid-column: 2;
+      margin-top: 0.2rem;
+    }
+  }
+</style>

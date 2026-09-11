@@ -13,7 +13,7 @@ export const SITE = {
   // If deploying to https://<user>.github.io/<repo>, set base to "/<repo>".
   // If using a custom domain or a <user>.github.io repo, leave as "".
   base: "",
-  email: "leung.jor@northeastern.edu",
+  email: "jiang5@uchicago.edu",
   // Your portrait for the About hero — a file under src/photos (optimized
   // by Astro). Leave "" to show a framed placeholder instead.
   photo: "IMG_0339.jpg",
@@ -23,8 +23,12 @@ export const SITE = {
 // Remove any you don't want; add more freely.
 export const SOCIALS = [
   { name: "GitHub", icon: "github", url: "https://github.com/jiang6082" },
-  { name: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/charlesj8450" },
-  { name: "Email", icon: "email", url: `mailto:${"leung.jor@northeastern.edu"}` },
+  {
+    name: "LinkedIn",
+    icon: "linkedin",
+    url: "https://www.linkedin.com/in/charles-jiang5485",
+  },
+  { name: "Email", icon: "email", url: `mailto:${SITE.email}` },
 ];
 
 // ── GitHub ──────────────────────────────────────────────────────
