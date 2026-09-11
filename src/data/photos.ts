@@ -1,68 +1,97 @@
-// ────────────────────────────────────────────────────────────────
-//  Your photography.
-//
-//  Two kinds of things live here:
-//   • collections — grouped sets (albums), shown in their own labeled row.
-//   • singles     — standalone photos, shown in their own labeled row.
-//
-//  Photos are stored as image files under `src/photos/`. Set each entry's
-//  `src` to the path *relative to src/photos*, e.g. "busan/bookshop1.jpg".
-//  Astro reads the real dimensions from the file automatically (so the
-//  justified grid is exact) and generates optimized WebP at build time.
-//
-//  Workflow to add photos:
-//   1. Drop your originals into the `photos-src/` folder (any size — they're
-//      git-ignored and never committed).
-//   2. Run `npm run photos` to resize them into `src/photos/` (web-friendly,
-//      EXIF stripped).
-//   3. Add entries below pointing at the resized files.
-//
-//  Entries with no `src` (or a missing file) render as neutral placeholders,
-//  so the layout is visible before you add real photos. `ar` sets a
-//  placeholder's aspect ratio; real photos derive it from the file.
-// ────────────────────────────────────────────────────────────────
-
+// Add originals to photos-src/, run npm run photos, then register them below.
+// Titles/captions describe visible subjects. Add dates and locations only when known.
 export interface Photo {
-  /** Path relative to src/photos, e.g. "busan/bookshop1.jpg". */
   src?: string;
-  /** Short title shown in the lightbox (and on hover). */
   title?: string;
-  /** Optional longer caption / comment shown under the title. */
   caption?: string;
-  /** Alt text for accessibility (defaults to the title). */
   alt?: string;
-  /** Placeholder-only aspect ratio (w/h). Ignored once `src` is set. */
+  location?: string;
+  date?: string;
   ar?: number;
-  /** Force a neutral placeholder tile. */
   placeholder?: boolean;
 }
-
 export interface Collection {
   id: string;
   title: string;
   description?: string;
   photos: Photo[];
 }
-
-// ── Albums / collections ────────────────────────────────────────
-// None yet. To add an album later, push an entry like:
-//   { id: "busan-2025", title: "Busan, 2025", description: "…",
-//     photos: [{ src: "busan/gamcheon.jpg", title: "Petit Prince" }, …] }
-export const collections: Collection[] = [];
-
-// ── Standalone photos ───────────────────────────────────────────
-// TITLES & CAPTIONS GO HERE — add `title` and/or `caption` to any entry.
-// Both are optional and show in the fullscreen lightbox (title also appears
-// on hover). Example:
-//   { src: "IMG_0047.jpg", title: "Gamcheon Village", caption: "Busan, 2025" }
-export const singles: Photo[] = [
-  { src: "IMG_0047.jpg", title: "", caption: "" },
-  { src: "IMG_0116.jpg", title: "", caption: "" },
-  { src: "IMG_0298.jpg", title: "", caption: "" },
-  { src: "IMG_0334.jpg", title: "", caption: "" },
-  { src: "IMG_0460.jpg", title: "", caption: "" },
-  { src: "IMG_0484.jpg", title: "", caption: "" },
-  { src: "IMG_0534.jpg", title: "", caption: "" },
-  { src: "IMG_0766.jpg", title: "", caption: "" },
-  { src: "IMG_9433-2.jpg", title: "", caption: "" },
+export const collections: Collection[] = [
+  {
+    id: "in-transit",
+    title: "In transit",
+    description: "Trains, tracks, and the streets around them.",
+    photos: [
+      {
+        src: "IMG_0116.jpg",
+        title: "Along the tracks",
+        caption: "A green and yellow train beside the road.",
+        alt: "A green and yellow electric train approaching on tracks beside a road",
+      },
+      {
+        src: "IMG_0460.jpg",
+        title: "Above the market",
+        caption: "A train passes above a crowded shopping street.",
+        alt: "A commuter train above a busy market street surrounded by colorful signs",
+      },
+      {
+        src: "IMG_0484.jpg",
+        title: "Parallel lines",
+        caption: "Several trains sharing the same view.",
+        alt: "High-speed and commuter trains on parallel tracks below city buildings",
+      },
+      {
+        src: "IMG_0766.jpg",
+        title: "Up the hillside",
+        caption: "A tram with the harbor in the background.",
+        alt: "A green tram climbing a wooded hillside above a hazy harbor skyline",
+      },
+    ],
+  },
+  {
+    id: "light-reflections",
+    title: "Light & reflections",
+    description: "Hanging gardens and reflected light.",
+    photos: [
+      {
+        src: "IMG_0298.jpg",
+        title: "Reflected",
+        caption: "A figure among reflections and suspended shapes.",
+        alt: "A person with a camera reflected among dark hanging objects and streaks of light",
+      },
+      {
+        src: "IMG_0334.jpg",
+        title: "Hanging garden",
+        caption: "Orchids suspended at different heights.",
+        alt: "White, yellow, and purple orchids hanging among green leaves",
+      },
+    ],
+  },
+  {
+    id: "open-air",
+    title: "Open air",
+    description: "Coastlines, blossoms, and bamboo.",
+    photos: [
+      {
+        src: "IMG_0047.jpg",
+        title: "Coastal road",
+        caption: "The beach follows the curve of the road.",
+        alt: "A sandy beach curving beside a coastal road and buildings under a blue sky",
+      },
+      {
+        src: "IMG_0534.jpg",
+        title: "Through the blossoms",
+        caption: "A red tower framed by flowering branches.",
+        alt: "A red tower and tiled roof seen through pink blossoms",
+      },
+      {
+        src: "IMG_9433-2.jpg",
+        title: "Among the bamboo",
+        caption: "Small red gates against stone markers.",
+        alt: "Red torii gates resting against stone markers in a bamboo grove",
+      },
+    ],
+  },
 ];
+// Ungrouped photographs appear under their own filter when populated.
+export const singles: Photo[] = [];

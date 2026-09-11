@@ -31,7 +31,11 @@ The static check validates local links and assets, project anchors, private repo
 
 The opening portrait expands and crossfades through three photographs as the visitor scrolls. It uses native scrolling and requestAnimationFrame without taking over wheel or touch input. Motion can be disabled; reduced-motion preferences and smaller viewports use a static composition with a Next control. No JavaScript still leaves the home, projects, writing, and main photo collection readable.
 
-The photography page offers a contact sheet and manual filmstrip, plus the existing zoomable lightbox and classic gallery route. Project diagrams are conceptual illustrations, not measured results.
+The photography page opens in a curved 3D filmstrip with native swipe/scroll, previous/next buttons, and arrow-key navigation. Switch to the contact sheet for an overview. Pointer movement gently tilts photographs; reduced-motion preferences disable both depth and tilt, and the Depth control can flatten the filmstrip. Albums filter both views and the zoomable lightbox. The classic gallery route remains available.
+
+Register photographs inside `collections` in `src/data/photos.ts`, or use `singles` for ungrouped photos. Each record supports `title`, `caption`, `alt`, and optional `location` and `date`. Current captions describe visible subjects; dates and locations have not been guessed. The gallery behavior lives in `src/scripts/photography.ts`.
+
+Project diagrams are conceptual illustrations, not measured results.
 
 ## Deployment
 
