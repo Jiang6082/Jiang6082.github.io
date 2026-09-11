@@ -5,16 +5,22 @@ import { getCollection } from "astro:content";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 ---
 
 <BaseLayout title="Blog" description="Writing and notes.">
-  <h1>Blog</h1>
-  <p class="muted">Thoughts, notes, and things I'm working on.</p>
+  <p class="eyebrow">The notebook</p>
+  <h1>Notes &<br /><em>observations.</em></h1>
+  <p class="muted">What I’m learning, and things I want to write down.</p>
 
   {posts.length === 0 && <p class="muted">No posts yet — check back soon.</p>}
 
@@ -27,7 +33,9 @@ const fmt = (d: Date) =>
               {fmt(post.data.date)}
             </time>
             <span class="title">{post.data.title}</span>
-            {post.data.description && <p class="muted excerpt">{post.data.description}</p>}
+            {post.data.description && (
+              <p class="muted excerpt">{post.data.description}</p>
+            )}
             {post.data.tags.length > 0 && (
               <span class="tags">
                 {post.data.tags.map((t) => (
@@ -43,6 +51,15 @@ const fmt = (d: Date) =>
 </BaseLayout>
 
 <style>
+  h1 {
+    margin: 2rem 0;
+    line-height: 1.05;
+  }
+  h1 em {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    color: var(--accent);
+  }
   .post-list {
     list-style: none;
     padding: 0;
@@ -51,20 +68,21 @@ const fmt = (d: Date) =>
     gap: 1rem;
   }
   .card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    transition: transform 0.15s ease, border-color 0.15s ease,
+    border-top: 1px solid var(--border);
+    background: none;
+    transition:
+      transform 0.15s ease,
+      border-color 0.15s ease,
       box-shadow 0.15s ease;
   }
   .card:hover {
-    transform: translateY(-3px);
+    transform: none;
     border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
     box-shadow: var(--shadow-hover);
   }
   .card-link {
     display: block;
-    padding: 1.25rem 1.4rem;
+    padding: 2rem 0;
     color: inherit;
   }
   .card-link:hover {

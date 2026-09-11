@@ -1,53 +1,49 @@
 ---
 import { SITE, SOCIALS } from "../config";
-import Icon from "./Icon.astro";
-const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <div class="container inner">
-    <ul class="social-row socials">
-      {
-        SOCIALS.map((s) => (
-          <li>
-            <a
-              class="social-icon"
-              href={s.url}
-              target={s.url.startsWith("http") ? "_blank" : undefined}
-              rel="noopener"
-              aria-label={s.name}
-              title={s.name}
-            >
-              <Icon name={s.icon} size={18} />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <p class="muted small">© {year} {SITE.name}</p>
-  </div>
+<footer class="site-footer page-shell">
+  <p>© {new Date().getFullYear()} {SITE.name}</p><div>
+    {
+      SOCIALS.map((s) => (
+        <a
+          href={s.url}
+          target={s.url.startsWith("http") ? "_blank" : undefined}
+          rel="noopener noreferrer"
+        >
+          {s.name} ↗
+        </a>
+      ))
+    }
+  </div><a href="#top">Back to top ↑</a>
 </footer>
-
 <style>
   .site-footer {
     border-top: 1px solid var(--border);
-    padding: 1.75rem 0;
-    position: relative;
-    z-index: 1;
-    background: var(--bg);
-  }
-  .inner {
+    padding: 2rem 0;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    max-width: var(--max-width-wide);
+    gap: 1.5rem;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--muted);
   }
-  .socials {
-    gap: 0.25rem;
-  }
-  .site-footer p {
+  p {
     margin: 0;
+  }
+  div {
+    display: flex;
+    gap: 1.5rem;
+  }
+  a {
+    color: inherit;
+  }
+  @media (max-width: 640px) {
+    .site-footer {
+      flex-wrap: wrap;
+    }
+    div {
+      gap: 1rem;
+    }
   }
 </style>

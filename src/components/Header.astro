@@ -1,103 +1,94 @@
 ---
 import { SITE } from "../config";
-import Icon from "./Icon.astro";
-
-const base = import.meta.env.BASE_URL;
-// Join base + path without producing double slashes.
-const link = (p: string) => (base.replace(/\/$/, "") + p) || "/";
-
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const nav = [
-  { label: "About", href: link("/") },
-  { label: "Projects", href: link("/projects") },
-  { label: "Blog", href: link("/blog") },
-  { label: "Photography", href: link("/photography") },
+  { label: "Work", href: `${base}/projects` },
+  { label: "Photography", href: `${base}/photography` },
+  { label: "Notes", href: `${base}/blog` },
 ];
-
-const current = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isActive = (href: string) => {
-  const h = href.replace(/\/$/, "") || "/";
-  if (h === (base.replace(/\/$/, "") || "/")) return current === h;
-  return current === h || current.startsWith(h + "/");
-};
+const current = Astro.url.pathname;
 ---
 
 <header class="site-header">
-  <div class="container inner">
-    <a class="brand" href={link("/")}>{SITE.name}</a>
-    <div class="right">
-      <nav>
-        {
-          nav.map((item) => (
-            <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
-              {item.label}
-            </a>
-          ))
-        }
-      </nav>
-      {/* Light/dark toggle temporarily disabled (site is dark-only for now).
-          To re-enable: restore the theme button + <script> from git history
-          and the saved-theme read in BaseLayout.astro. */}
-    </div>
+  <div class="header-inner">
+    <a class="brand" href={`${base}/`} aria-label={`${SITE.name}, home`}
+      >charles jiang<span aria-hidden="true">.</span></a
+    ><nav aria-label="Main navigation">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={current.startsWith(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }<a class="contact" href={`mailto:${SITE.email}`}>Say hello ↗</a>
+    </nav>
   </div>
 </header>
-
 <style>
   .site-header {
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter: blur(10px);
-    z-index: 10;
+    position: relative;
+    z-index: 20;
+    background: var(--bg);
   }
-  .inner {
+  .header-inner {
+    margin: 0 var(--gutter);
+    height: 88px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid var(--border);
     gap: 1rem;
-    height: 3.75rem;
-    max-width: var(--max-width-wide);
   }
   .brand {
-    font-weight: 700;
     color: var(--fg);
-    font-size: var(--fs-body);
-    letter-spacing: -0.01em;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    white-space: nowrap;
   }
-  .brand:hover {
-    text-decoration: none;
+  .brand span {
     color: var(--accent);
-  }
-  .right {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
   }
   nav {
     display: flex;
-    gap: 1.1rem;
+    gap: 2rem;
+    align-items: center;
   }
   nav a {
     color: var(--muted);
-    font-size: var(--fs-label);
+    font-size: 0.875rem;
+    padding: 12px 0;
   }
-  nav a:hover {
+  nav a[aria-current] {
+    color: var(--accent);
+  }
+  .contact {
+    margin-left: 1.5rem;
     color: var(--fg);
-    text-decoration: none;
   }
-  nav a.active {
-    color: var(--fg);
-    font-weight: 600;
-  }
-  @media (max-width: 560px) {
-    .right {
-      gap: 0.85rem;
+  @media (max-width: 600px) {
+    .header-inner {
+      height: auto;
+      min-height: 92px;
+      flex-wrap: wrap;
+      gap: 0;
+      padding: 12px 0;
+    }
+    .brand {
+      font-size: 1.15rem;
     }
     nav {
-      gap: 0.85rem;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
     nav a {
-      font-size: var(--fs-label);
+      font-size: 0.875rem;
+    }
+    .contact {
+      display: none;
     }
   }
 </style>

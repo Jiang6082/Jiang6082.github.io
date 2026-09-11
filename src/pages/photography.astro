@@ -1,206 +1,305 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
-import { collections, singles, type Photo } from "../data/photos";
+import { collections, singles } from "../data/photos";
 import { getImage } from "astro:assets";
-
 const files = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
   eager: true,
 }) as Record<string, { default: ImageMetadata }>;
-
-async function toItem(p: Photo) {
-  const mod = p.src ? files[`../photos/${p.src}`] : undefined;
-  if (!mod) return null;
-  const meta = mod.default;
-  const thumb = await getImage({ src: meta, width: Math.min(1100, meta.width), format: "webp" });
-  const full = await getImage({ src: meta, width: Math.min(2400, meta.width), format: "webp" });
-  return {
-    title: p.title ?? "",
-    caption: p.caption ?? "",
-    alt: p.alt || p.title || "Photo",
-    placeholder: false,
-    ar: meta.width / meta.height,
-    thumb: thumb.src,
-    full: full.src,
-  };
-}
-
-const all: Photo[] = [...collections.flatMap((c) => c.photos), ...singles];
-const items = (await Promise.all(all.map(toItem))).filter(Boolean) as NonNullable<
-  Awaited<ReturnType<typeof toItem>>
->[];
-
-// Keep the original index (for the lightbox) while splitting into two rows.
-const indexed = items.map((it, i) => ({ ...it, idx: i }));
-const top = indexed.filter((_, i) => i % 2 === 0);
-const bottom = indexed.filter((_, i) => i % 2 === 1);
-
-// Deterministic scatter so a row reads as loose/individual, not a rigid line.
-const ty = (i: number) => [26, -34, 14, -20, 40, -10, 30, -26][i % 8];
-const rot = (i: number) => [-3.5, 2, -1.5, 3, -2.5, 1.5, -2, 2.5][i % 8];
+const all = [...collections.flatMap((c) => c.photos), ...singles];
+const items = (
+  await Promise.all(
+    all.map(async (p, i) => {
+      const meta = p.src ? files[`../photos/${p.src}`]?.default : undefined;
+      if (!meta) return null;
+      const thumb = await getImage({
+        src: meta,
+        width: Math.min(1100, meta.width),
+        format: "webp",
+      });
+      const full = await getImage({
+        src: meta,
+        width: Math.min(2400, meta.width),
+        format: "webp",
+      });
+      return {
+        title: p.title || "",
+        caption: p.caption || "",
+        alt: p.alt || p.title || `Photograph ${i + 1} by Charles Jiang`,
+        placeholder: false,
+        thumb: thumb.src,
+        full: full.src,
+        width: meta.width,
+        height: meta.height,
+      };
+    }),
+  )
+).filter(Boolean) as {
+  title: string;
+  caption: string;
+  alt: string;
+  placeholder: boolean;
+  thumb: string;
+  full: string;
+  width: number;
+  height: number;
+}[];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
-<BaseLayout title="Photography" description="A few frames I'm fond of." wide>
-  <div class="lab-head">
-    <h1>Photography</h1>
-    <p class="muted lede">
-      Two rows of photos drifting by. <strong>Hover</strong> a row to pause it,
-      <strong>click</strong> a photo to open it (scroll to zoom, drag to pan,
-      ← / → to move). Prefer a plain grid?
-      <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/photography-classic`}>Classic view</a>.
-    </p>
-  </div>
-
-  <div class="rows">
-    <div class="rowwrap">
-      <div class="marquee" style="--speed:78s">
-        {
-          [...top, ...top].map((it, i) => (
-            <button
-              class="m-item"
-              data-group="lab"
-              data-index={it.idx}
-              style={`--ty:${ty(i)}px;--rot:${rot(i)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
-              aria-label={it.title || "Open photo"}
-              aria-hidden={i >= top.length ? "true" : undefined}
-              tabindex={i >= top.length ? -1 : undefined}
-            >
-              <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
-            </button>
-          ))
-        }
-      </div>
+<BaseLayout
+  title="Photography"
+  description="A personal collection of photographs by Charles Jiang."
+  wide
+>
+  <header class="gallery-heading page-shell">
+    <p class="eyebrow">
+      Away from the screen / {String(items.length).padStart(2, "0")} frames
+    </p><div>
+      <h1>Looking a little<br /><em>closer.</em></h1><p>
+        Travel, light, and the things<br />I wanted to remember.
+      </p>
     </div>
-
-    <div class="rowwrap">
-      <div class="marquee rev" style="--speed:92s">
-        {
-          [...bottom, ...bottom].map((it, i) => (
-            <button
-              class="m-item"
-              data-group="lab"
-              data-index={it.idx}
-              style={`--ty:${ty(i + 3)}px;--rot:${rot(i + 2)}deg;width:clamp(13rem,22vw,18rem);aspect-ratio:${it.ar.toFixed(3)}`}
-              aria-label={it.title || "Open photo"}
-              aria-hidden={i >= bottom.length ? "true" : undefined}
-              tabindex={i >= bottom.length ? -1 : undefined}
-            >
-              <img src={it.thumb} alt={it.alt} loading="lazy" draggable="false" />
-            </button>
-          ))
-        }
-      </div>
-    </div>
+  </header>
+  <div class="gallery-toolbar page-shell">
+    <span class="eyebrow">The photo collection</span><div
+      class="view-switch"
+      hidden
+    >
+      <button type="button" data-view="sheet" aria-pressed="true"
+        >Contact sheet</button
+      ><button type="button" data-view="strip" aria-pressed="false"
+        >Filmstrip ↔</button>
+    </div><a class="classic" href={`${base}/photography-classic`}
+      >Classic view ↗</a>
   </div>
-
+  <section class="photo-collection page-shell" aria-label="Photographs">
+    {
+      items.map((it, i) => (
+        <figure>
+          <>
+            <a
+              href={it.full}
+              class="photo-open"
+              data-group="photographs"
+              data-index={i}
+              aria-label={`Open photograph ${i + 1}${it.title ? `: ${it.title}` : ""}`}
+            >
+              <>
+                <img
+                  src={it.thumb}
+                  alt={it.alt}
+                  width={it.width}
+                  height={it.height}
+                  loading={i < 2 ? "eager" : "lazy"}
+                />
+                <span class="open-hint" aria-hidden="true">
+                  View photograph ↗
+                </span>
+              </>
+            </a>
+            <figcaption>
+              <>
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <span>{it.title || "From my camera roll"}</span>
+              </>
+            </figcaption>
+          </>
+        </figure>
+      ))
+    }
+  </section>
+  <p class="gallery-end page-shell">
+    That’s the collection, for now. <a
+      href={`mailto:${"leung.jor@northeastern.edu"}`}>Say hello ↗</a>
+  </p>
   <script
     is:inline
-    set:html={`window.__GALLERY__ = [${JSON.stringify({
-      key: "lab",
-      title: "Photos",
-      items: items.map((it) => ({
-        title: it.title,
-        caption: it.caption,
-        alt: it.alt,
-        placeholder: it.placeholder,
-        thumb: it.thumb,
-        full: it.full,
-      })),
-    })}];`}
-  />
-
-  <Lightbox />
+    set:html={`window.__GALLERY__ = ${JSON.stringify([{ key: "photographs", title: "Photographs", items }]).replace(/</g, "\\u003c")};`}
+  /><Lightbox />
 </BaseLayout>
-
+<script>
+  const controls = document.querySelector<HTMLElement>(".view-switch");
+  const collection = document.querySelector<HTMLElement>(".photo-collection");
+  if (controls && collection) {
+    controls.hidden = false;
+    controls.querySelectorAll<HTMLButtonElement>("button").forEach((button) =>
+      button.addEventListener("click", () => {
+        collection.classList.toggle(
+          "filmstrip",
+          button.dataset.view === "strip",
+        );
+        controls
+          .querySelectorAll("button")
+          .forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+      }),
+    );
+  }
+</script>
 <style>
-  .lab-head {
-    max-width: var(--max-width-wide);
-    margin: 0 auto 1.5rem;
-    padding: 0 1.5rem;
+  .gallery-heading {
+    padding: 1rem 0 4rem;
   }
-  .lab-head h1 {
-    margin: 0.5rem 0 0.4rem;
-  }
-  .lede {
-    max-width: 44rem;
-    margin: 0;
-  }
-  .lede strong {
-    color: var(--fg);
-    font-weight: 600;
-  }
-
-  .rows {
+  .gallery-heading > div {
     display: flex;
-    flex-direction: column;
-    gap: 2.75rem;
-    padding: 1.5rem 0 3rem;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: end;
   }
-  .rowwrap {
-    overflow: hidden;
+  .gallery-heading h1 {
+    font-size: clamp(3.5rem, 8vw, 8rem);
+    margin: 1.8rem 0 0;
+    line-height: 1.02;
+    letter-spacing: -0.065em;
   }
-  .marquee {
+  .gallery-heading em {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .gallery-heading > div > p {
+    font-size: 1.15rem;
+    color: var(--muted);
+  }
+  .gallery-toolbar {
     display: flex;
-    gap: 3rem;
-    width: max-content;
-    padding: 2.5rem 0.8rem;
     align-items: center;
-    animation: scroll var(--speed, 50s) linear infinite;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding: 1.2rem 0;
   }
-  .marquee.rev {
-    animation-direction: reverse;
+  .view-switch {
+    display: flex;
+    gap: 1rem;
   }
-  .marquee:hover {
-    animation-play-state: paused;
+  .view-switch[hidden] {
+    display: none;
   }
-  @keyframes scroll {
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  .m-item {
-    flex: 0 0 auto;
-    padding: 0;
-    border: none;
+  .view-switch button {
     background: none;
-    cursor: pointer;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
-    transform: translateY(var(--ty, 0)) rotate(var(--rot, 0deg));
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.3s ease;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    padding: 0.6rem 0;
+    color: var(--muted);
+    font-size: 0.875rem;
   }
-  .m-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .view-switch button[aria-pressed="true"] {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .classic {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .photo-collection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem 3rem;
+    padding-top: 2rem;
+  }
+  .photo-collection figure {
+    margin: 0;
+    min-width: 0;
+  }
+  .photo-collection figure:nth-child(3n + 2) {
+    padding-top: 6rem;
+  }
+  .photo-open {
     display: block;
-    filter: brightness(0.88) saturate(0.95);
-    transition: filter 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
   }
-  .m-item:hover {
-    transform: translateY(calc(var(--ty, 0px) - 14px)) rotate(0deg) scale(1.06);
-    box-shadow: 0 34px 70px rgba(0, 0, 0, 0.6);
-    z-index: 3;
+  .photo-open img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s;
   }
-  .m-item:hover img {
-    filter: brightness(1.08) saturate(1.05);
+  .photo-open:hover img {
+    transform: scale(1.025);
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    /* Stop the drift, but keep every photo reachable: the row becomes a
-       normal horizontal scroller instead of hiding its overflow. */
-    .marquee {
-      animation: none;
+  .open-hint {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    color: white;
+    background: #222c;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .photo-open:hover .open-hint,
+  .photo-open:focus-visible .open-hint {
+    opacity: 1;
+  }
+  figcaption {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+    color: var(--muted);
+    font: 0.8125rem/1.5 var(--font-mono);
+    padding-top: 0.8rem;
+  }
+  .filmstrip {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 2rem;
+  }
+  .filmstrip figure,
+  .filmstrip figure:nth-child(3n + 2) {
+    padding-top: 0;
+    flex: 0 0 min(70vw, 800px);
+    scroll-snap-align: start;
+  }
+  .filmstrip .photo-open img {
+    height: 60svh;
+    object-fit: contain;
+  }
+  .gallery-end {
+    padding-top: 5rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  @media (max-width: 700px) {
+    .gallery-heading > div {
+      display: block;
     }
-    .rowwrap {
-      overflow-x: auto;
-      scrollbar-width: thin;
+    .gallery-heading > div > p {
+      margin-top: 1.5rem;
     }
-    .m-item {
-      transform: none;
+    .photo-collection {
+      gap: 2rem 1rem;
+    }
+    .photo-collection figure:nth-child(3n + 2) {
+      padding-top: 2rem;
+    }
+    figcaption {
+      font-size: 0.75rem;
+      gap: 0.5rem;
+    }
+    figcaption span:last-child {
+      display: none;
+    }
+    .gallery-toolbar > .eyebrow {
+      width: 100%;
+    }
+    .gallery-end {
+      flex-wrap: wrap;
+    }
+  }
+  @media (max-width: 420px) {
+    .photo-collection:not(.filmstrip) {
+      grid-template-columns: 1fr;
+    }
+    .photo-collection figure:nth-child(3n + 2) {
+      padding-top: 0;
     }
   }
 </style>
