@@ -41,7 +41,7 @@ Emberforge visualizes the recorded synthetic demo; Geld and volatility charts us
 
 ## Optional 3D views
 
-`/travel-world` is a fictional miniature island with five clickable destinations, a working oval railway, and an aircraft flight. Destination buttons provide the same navigation without pointing at the 3D scene. Related photos open below the island and can be viewed full size, without visible captions. The scene uses procedural geometry, not photograph walls. `/photo-room` forwards to the replacement.
+`/travel-world` is a fictional miniature island with five clickable destinations, a working oval railway, and an aircraft flight. Actual photo textures float above their destinations in the 3D scene. Visiting a stop expands its collection; clicking a photograph opens the full-size viewer without visible captions. Destination buttons and the gallery below provide an accessible alternative. Photo textures load on demand and are shared across repeated appearances. `/photo-room` forwards to the replacement.
 
 The island shares the visible catalog with the filmstrip. Subject assignments for existing photos are in `src/data/travel.ts`; newly uploaded photos appear under All photographs until assigned to a destination there. The airfield intentionally has no photographs yet. No actual shooting locations are inferred.
 

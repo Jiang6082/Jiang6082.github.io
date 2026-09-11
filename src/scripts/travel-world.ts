@@ -1,8 +1,11 @@
 import { createScene, THREE, textLabel } from "./scene";
 import { destinations } from "../data/travel";
+type WorldPhoto = { texture: string; aspect: number; destinations: string[] };
 export function createTravelWorld(
   host: HTMLElement,
   onSelect: (id: string) => void,
+  photos: WorldPhoto[],
+  onOpenPhoto: (index: number) => void,
 ) {
   const view = createScene(
     host,
@@ -292,6 +295,109 @@ export function createTravelWorld(
       t.rotation.y = Math.atan2(-10 * Math.sin(a), 6.65 * Math.cos(a));
     });
   moveTrain();
+  // Camera-facing photographs are actual scene objects anchored to each stop.
+  const photoCards: {
+    image: THREE.Sprite;
+    frame: THREE.Sprite;
+    index: number;
+    stop: string;
+    order: number;
+  }[] = [];
+  const textureCache = new Map<string, Promise<THREE.Texture>>();
+  const loader = new THREE.TextureLoader();
+  for (const destination of destinations) {
+    photos
+      .map((photo, index) => ({ photo, index }))
+      .filter(({ photo }) => photo.destinations.includes(destination.id))
+      .forEach(({ index }, order) => {
+        const frame = new THREE.Sprite(
+          new THREE.SpriteMaterial({ color: 0xf9f5eb }),
+        );
+        const image = new THREE.Sprite(
+          new THREE.SpriteMaterial({ color: 0xd8d2c5 }),
+        );
+        frame.userData.photo = index;
+        image.userData.photo = index;
+        frame.userData.photoStop = destination.id;
+        image.userData.photoStop = destination.id;
+        scene.add(frame, image);
+        photoCards.push({ image, frame, index, stop: destination.id, order });
+      });
+  }
+  let selectedStop = "all";
+  const displayPhotos = (stop: string) => {
+    selectedStop = stop;
+    photoCards.forEach((card) => {
+      const active = stop === card.stop;
+      card.image.visible = card.frame.visible =
+        active || (stop === "all" && card.order === 0);
+      if (!card.image.visible) return;
+      const d = destinations.find((d) => d.id === card.stop)!;
+      const members = photoCards.filter((c) => c.stop === card.stop).length;
+      const column = members === 1 ? 0 : ((card.order % 2) - 0.5) * 4.3;
+      const row = Math.floor(card.order / 2);
+      card.frame.position.set(
+        d.x + (active ? column * 0.832 : 0),
+        active ? 7 - row * 3.5 : 5.7,
+        d.z + (active ? -column * 0.555 : 0),
+      );
+      // Shift the image toward the camera to avoid z-fighting with its border.
+      card.image.position.copy(card.frame.position);
+      const aspect = photos[card.index].aspect;
+      const height = Math.min(active ? 3 : 2, (active ? 3.8 : 2.8) / aspect),
+        width = height * aspect;
+      card.image.scale.set(width, height, 1);
+      card.frame.scale.set(width + 0.16, height + 0.16, 1);
+      if (!card.image.material.map) {
+        const url = photos[card.index].texture;
+        if (!textureCache.has(url))
+          textureCache.set(
+            url,
+            loader.loadAsync(url).then((texture) => {
+              texture.colorSpace = THREE.SRGBColorSpace;
+              return texture;
+            }),
+          );
+        textureCache
+          .get(url)!
+          .then((texture) => {
+            if (view.disposed) {
+              texture.dispose();
+              return;
+            }
+            card.image.material.map = texture;
+            card.image.material.color.setHex(0xffffff);
+            card.image.material.needsUpdate = true;
+            alignCards();
+            draw();
+          })
+          .catch(() => {
+            textureCache.delete(url);
+            document.querySelector("#room-status")!.textContent =
+              "A photograph could not load in 3D. You can still open it from the photographs below.";
+          });
+      }
+    });
+    alignCards();
+  };
+  const alignCards = () =>
+    photoCards.forEach((card) => {
+      if (card.image.visible)
+        card.image.position
+          .copy(card.frame.position)
+          .add(
+            camera.position
+              .clone()
+              .sub(card.frame.position)
+              .normalize()
+              .multiplyScalar(0.035),
+          );
+    });
+  controls.addEventListener("change", () => {
+    alignCards();
+    draw();
+  });
+  displayPhotos("all");
   controls.minDistance = 9;
   controls.maxDistance = 65;
   controls.minPolarAngle = 0.2;
@@ -360,10 +466,12 @@ export function createTravelWorld(
     }
   };
   const visit = (id: string) => {
+    displayPhotos(id);
     const d = destinations.find((d) => d.id === id);
-    const target = new THREE.Vector3(d?.x || 0, 0, d?.z || 0),
+    const hasPhotos = photoCards.some((c) => c.stop === id);
+    const target = new THREE.Vector3(d?.x || 0, hasPhotos ? 4.7 : 0, d?.z || 0),
       pos = d
-        ? target.clone().add(new THREE.Vector3(8, 10, 12))
+        ? target.clone().add(new THREE.Vector3(8, hasPhotos ? 6 : 10, 12))
         : new THREE.Vector3(22, 25, 29);
     if (reduced.matches) {
       camera.position.copy(pos);
@@ -444,10 +552,24 @@ export function createTravelWorld(
       camera,
     );
     for (const hit of raycaster.intersectObjects(
-      [...groups.values(), airplane, ...trains],
+      [
+        ...groups.values(),
+        airplane,
+        ...trains,
+        ...photoCards.flatMap((c) =>
+          c.image.visible ? [c.image, c.frame] : [],
+        ),
+      ],
       true,
     )) {
       let obj: THREE.Object3D | null = hit.object;
+      if (typeof obj.userData.photo === "number") {
+        if (selectedStop !== obj.userData.photoStop) {
+          onSelect(obj.userData.photoStop);
+          visit(obj.userData.photoStop);
+        } else onOpenPhoto(obj.userData.photo);
+        break;
+      }
       while (obj && !obj.userData.stop) obj = obj.parent;
       if (obj) {
         onSelect(obj.userData.stop);

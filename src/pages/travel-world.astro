@@ -155,15 +155,16 @@ const items = await Promise.all(
         </div><button class="all-photos" data-stop="all" aria-pressed="true"
           >All photographs</button
         ><p class="world-note">
-          Drag to orbit. Click a landmark to visit it. The train and plane move
-          only when you start them.
+          Drag to orbit. Visit a stop to see its photos in the world, then click
+          a photo to open it. The train and plane move only when you start them.
         </p>
       </aside>
     </div>
     <section class="world-album" aria-labelledby="world-album-title">
       <div class="album-heading">
         <h2 id="world-album-title">All photographs</h2><span id="world-count"
-          >{items.length} photographs</span>
+          >{items.length} photographs</span
+        >
       </div><p id="world-empty" hidden>
         No plane photographs yet. Take a flight around the island, or explore
         another stop.
@@ -229,11 +230,15 @@ const items = await Promise.all(
     document.querySelector<HTMLElement>("#world-empty")!.hidden = count > 0;
     status.textContent =
       id === "all"
-        ? "Explore the whole island."
-        : destinations.find((d) => d.id === id)?.name +
-          ": " +
-          count +
-          " photographs below.";
+        ? "Photos mark the island’s destinations. Click a preview to visit its collection."
+        : count === 0
+          ? "No photographs at this stop yet. Explore another destination."
+          : destinations.find((d) => d.id === id)?.name +
+            ": " +
+            count +
+            (world
+              ? " photographs in the scene. Click one to open it."
+              : " photographs below.");
     if (!fromScene) world?.visit(id);
   };
   document
@@ -241,12 +246,15 @@ const items = await Promise.all(
     .forEach((b) => b.addEventListener("click", () => select(b.dataset.stop!)));
   const dialog = document.querySelector<HTMLDialogElement>("#room-dialog")!,
     image = document.querySelector<HTMLImageElement>("#room-full")!;
+  const openPhoto = (i: number) => {
+    image.src = photos[i].full;
+    image.alt = photos[i].alt;
+    dialog.showModal();
+  };
   document.querySelectorAll<HTMLAnchorElement>("[data-photo]").forEach((a, i) =>
     a.addEventListener("click", (e) => {
       e.preventDefault();
-      image.src = photos[i].full;
-      image.alt = photos[i].alt;
-      dialog.showModal();
+      openPhoto(i);
     }),
   );
   document
@@ -261,8 +269,11 @@ const items = await Promise.all(
     status.textContent = "Building the island…";
     try {
       const { createTravelWorld } = await import("../scripts/travel-world");
-      world = createTravelWorld(document.querySelector("#room-stage")!, (id) =>
-        select(id, true),
+      world = createTravelWorld(
+        document.querySelector("#room-stage")!,
+        (id) => select(id, true),
+        photos,
+        openPhoto,
       );
       start.hidden = true;
       document
