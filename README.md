@@ -37,7 +37,15 @@ The photography page opens in a curved 3D filmstrip with native swipe/scroll, pr
 
 The private local manager supports uploads, albums, ordering, moving, hiding, and restoring photographs. It saves `src/data/photos.json`; `src/data/photos.ts` filters hidden entries for the public site. Public photo titles and captions are suppressed; accessible image descriptions remain. The gallery behavior lives in `src/scripts/photography.ts`. Run `node scripts/check-photo-manager.mjs` to check saving, uploads, backups, and request protections in an isolated temporary collection.
 
-Emberforge visualizes the recorded synthetic demo; Geld and volatility charts use the walkthrough's sourced result tables; QJS shows dated scan counts and a process diagram. Olsen's slider explains an illustrative long-call expiry payoff and is explicitly not an Olsen result. Numerical tables remain readable without JavaScript. The résumé is an HTML page with a print stylesheet and browser Print / save PDF action.
+Emberforge visualizes the recorded synthetic demo; Geld and volatility charts use the walkthrough's sourced result tables. IDX Exchange has a request-flow diagram and a source-linked implementation walkthrough. Olsen's slider explains an illustrative long-call expiry payoff and is explicitly not an Olsen result. Numerical tables remain readable without JavaScript. The résumé is an HTML page with a print stylesheet and browser Print / save PDF action.
+
+## Optional 3D views
+
+`/photo-room` uses the same visible photo catalog as the filmstrip. Previous/Next visits frames, Step closer approaches the selected image, and Open photograph opens a full-size accessible viewer. The room loads textures for nearby frames only; adding, moving, or hiding photos in the local manager also updates this room on the next build.
+
+`/options-lab` shows an illustrative Black–Scholes European call surface, with stock price, time, and volatility controls. Strike is $100, annual rate is 4%, and dividends are zero. This is not an Olsen result. The model is in `src/lib/black-scholes.js`; the static preview, numerical calculator, and sample table provide alternatives to WebGL.
+
+Both views load Three.js only after their entry button is pressed. They render on interaction rather than running an idle animation loop; neither auto-rotates. Rotation/navigation buttons complement pointer gestures. Small screens use a wider effective camera view for the surface. Run `node scripts/check-labs.mjs` after building to validate the pricing model, gallery data, lazy loading, and public content removals.
 
 ## Deployment
 

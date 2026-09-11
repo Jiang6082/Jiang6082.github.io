@@ -3,14 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { resume as r } from "../data/resume";
 import { SITE, SOCIALS } from "../config";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const sections = [
-  "Education",
-  "Experience",
-  "Projects",
-  "Leadership",
-  "Skills",
-  "Achievements",
-];
+const sections = ["Education", "Experience", "Projects", "Skills"];
 ---
 
 <BaseLayout
@@ -96,16 +89,7 @@ const sections = [
           ))
         }
       </section>
-      <section id="leadership">
-        <h2>Leadership</h2><div class="entry">
-          <p class="dates">{r.leadership.dates} · {r.leadership.location}</p><h3
-          >
-            {r.leadership.organization}
-          </h3><p class="role">{r.leadership.role}</p><p>
-            {r.leadership.description}
-          </p>
-        </div>
-      </section>
+
       <section id="skills">
         <h2>Skills</h2><dl class="skills">
           {
@@ -120,11 +104,7 @@ const sections = [
           }
         </dl>
       </section>
-      <section id="achievements">
-        <h2>Achievements</h2><ul class="achievements">
-          {r.achievements.map((a) => <li>{a}</li>)}
-        </ul>
-      </section>
+
       <p class="updated">
         Combined from my July engineering and August quantitative résumés. Dates
         marked “Present” reflect those versions.

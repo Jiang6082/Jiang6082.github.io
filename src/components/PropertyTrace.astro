@@ -1,0 +1,98 @@
+---
+const steps = [
+  {
+    title: "Search state",
+    detail: "React filters and URL parameters describe the same search.",
+  },
+  {
+    title: "Validated API",
+    detail: "Express validates the range and allows only known sort columns.",
+  },
+  {
+    title: "MySQL query",
+    detail: "Bound values feed a count query and a LIMIT/OFFSET page query.",
+  },
+  {
+    title: "Listings + map",
+    detail: "Normalized records feed cards, map markers, and pagination.",
+  },
+];
+---
+
+<div class="property-trace">
+  <p class="eyebrow">Follow a search / illustrative request</p>
+  <code>city=Portland&amp;minPrice=300000&amp;beds=3&amp;limit=20</code>
+  <ol>
+    {
+      steps.map((s, i) => (
+        <li>
+          <>
+            <span>{String(i + 1).padStart(2, "0")}</span>
+            <strong>{s.title}</strong>
+            <p>{s.detail}</p>
+          </>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="trace-note">
+    The same filters reach the count and result queries. Cache hits can return
+    before either query runs.
+  </p>
+</div>
+<style>
+  code {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 0.78rem;
+    margin: 1.2rem 0 2rem;
+    color: var(--accent);
+  }
+  ol {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.4rem;
+    margin: 0;
+  }
+  li {
+    border-top: 2px solid var(--border);
+    padding-top: 1rem;
+    position: relative;
+  }
+  li:last-child {
+    border-color: var(--accent);
+  }
+  li:not(:last-child):after {
+    content: "→";
+    position: absolute;
+    right: 0;
+    top: 0.8rem;
+    color: var(--muted);
+  }
+  span {
+    display: block;
+    font: 0.7rem var(--font-mono);
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  strong {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  li p,
+  .trace-note {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .trace-note {
+    margin: 1.8rem 0 0;
+  }
+  @media (max-width: 650px) {
+    ol {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

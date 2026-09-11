@@ -42,8 +42,13 @@ const vol = (path: string, label: string) =>
     path,
     label,
   );
-const qjs = (path: string, label: string) =>
-  source("QJS", "fde53000840f5125f3a38243772346a94e4a711b", path, label);
+const idx = (path: string, label: string) =>
+  source(
+    "idx-exchange",
+    "224170cd9e175e29da99d0dd97bcb794e5adbabe",
+    path,
+    label,
+  );
 
 export const walkthroughs: Walkthrough[] = [
   {
@@ -452,87 +457,111 @@ export const walkthroughs: Walkthrough[] = [
     ],
   },
   {
-    slug: "qjs",
-    project: "QJS",
-    title: "QJS",
+    slug: "idx-exchange",
+    project: "idx-exchange",
+    title: "Property Search Platform",
     intro:
-      "A stateful internship scanner that turns heterogeneous career feeds into a reproducible record of role changes.",
+      "A React interface and Express API that turn property records into searchable listings, map results, and comparison views.",
     scope:
-      "September 10, 2026 snapshot from commit fde5300 on agent/fix-missed-role-detection. The default branch contains an older scan; these are dated snapshot counts.",
+      "Implementation review of IDX Exchange at commit 224170c. The figures below are configuration limits, not measured throughput or production usage.",
     facts: [
-      { value: "369", label: "Companies searched" },
-      { value: "513", label: "Career pages checked" },
-      { value: "528", label: "Retained roles in the snapshot" },
+      { value: "5", label: "Allowed sort fields" },
+      { value: "20", label: "Default API page size" },
+      { value: "10 / 15 s", label: "Map / listing cache TTL" },
     ],
-    source: "https://github.com/Jiang6082/QJS",
+    source: "https://github.com/Jiang6082/idx-exchange",
     sections: [
       {
-        id: "ingestion",
-        title: "Discover the feed behind the page",
+        id: "request-path",
+        title: "From a search to a query",
         paragraphs: [
-          "The scanner combines career-page discovery with adapters for different applicant-tracking systems. A page with no job links is not necessarily an empty board: postings can arrive through embedded components or client-side APIs.",
-          "The September source repair adds direct handling for Balyasny’s Salesforce Experience Cloud feed, Goldman Sachs’ Higher campus GraphQL API, and Scientech’s nested Ashby board. These adapters normalize records into shared company, title, location, URL, and source fields before downstream reporting.",
+          "The React listings page keeps filters, sorting, and pagination in UI state and synchronizes that state with URL search parameters. The API client serializes the request for Express; the backend queries MySQL and normalizes raw listing fields into a consistent response.",
+          "A page number becomes offset = (page − 1) × itemsPerPage. The backend runs a count query and a separate LIMIT/OFFSET query using the same WHERE conditions, so the interface can render both the result page and pagination controls.",
         ],
+        code: "React filters + URL state → GET /api/properties\n  → validate query → cache lookup\n  → COUNT(*) + SELECT … LIMIT ? OFFSET ?\n  → serializePropertySummary → cards / map",
         sources: [
-          qjs(
-            "scripts/expand_quant_internship_search.mjs",
-            "Source discovery and direct adapters",
+          idx(
+            "frontend/src/pages/ListingsPage.js",
+            "Listing state and pagination",
           ),
+          idx("frontend/src/api/client.js", "API client"),
+          idx("backend/src/routes/properties.js", "Search route"),
         ],
       },
       {
-        id: "identity",
-        title: "Role identity and state transitions",
+        id: "query-contract",
+        title: "A bounded query contract",
         paragraphs: [
-          "The stable URL key strips fragments and known tracking parameters, sorts the remaining query parameters, and keeps job identifiers such as gh_jid and jobId. Dropping every query parameter would collapse distinct jobs that share the same career-page path.",
-          "Normal additions require presence in consecutive scans; closures require absence in both the current and previous scan. The confirmed-present set is committed in data/stable_quant_roles.json so another checkout can continue from the same state. A confirmed-rerun path reports the baseline delta after the separate verification pass.",
-          "Previously surfaced, manually verified roles are seeded into the stable set when an adapter starts finding them automatically. This prevents a source repair from being mislabeled as a newly opened internship.",
-        ],
-        code: "same role:  /job?gh_jid=123&utm_source=email → /job?gh_jid=123\nother role: /job?gh_jid=456                 → /job?gh_jid=456\n\nnormal addition: present now AND present previously AND not stable\nclosure: stable AND absent now AND absent previously",
-        sources: [
-          qjs(
-            "scripts/build_new_quant_roles_report.mjs",
-            "URL canonicalization and stability guard",
-          ),
-        ],
-      },
-      {
-        id: "results",
-        title: "Recorded scan output",
-        paragraphs: [
-          "The September 10 report retains 528 roles after checking 513 career pages across a 369-company search universe. It records three new stable job URLs and seven roles no longer present. These are the report’s recorded transitions; retention, deduplication, and confirmation are separate parts of the workflow.",
+          "Text, city, ZIP, price, beds, and baths become parameterized SQL conditions. Sort columns require a separate allowlist because SQL placeholders bind values, not identifiers. The route allows price, listing date, square footage, bedroom count, and days on market; unsupported fields return HTTP 400.",
+          "The API defaults to 20 rows with offset zero and accepts limits from 1 to 1,000. It rejects inverted price ranges and incomplete map bounds. These are useful guardrails; the parsing still uses parseInt for pagination, and large offsets or broad LIKE searches would need query-plan and load testing before making scale claims.",
         ],
         table: {
-          caption: "Snapshot generated September 10, 2026 at 14:14 UTC",
-          columns: ["Reported measure", "Count"],
+          caption: "Search contract in the repository",
+          columns: ["Input", "Implementation"],
           rows: [
-            ["Companies searched", "369"],
-            ["Career pages checked", "513"],
-            ["Retained roles", "528"],
-            ["Matching-role firms", "50"],
-            ["New stable job URLs", "3"],
-            ["No longer present", "7"],
-            ["Confirmed no open postings", "3"],
-            ["Openings but no matching role", "42"],
-            ["Could not fully verify", "209"],
+            ["City", "Case-insensitive exact match after trimming"],
+            [
+              "Free text",
+              "LIKE across city, address, street, listing and display IDs",
+            ],
+            ["Price / beds / baths", "Bound SQL values"],
+            ["Sort", "Five allowlisted fields; ASC or DESC"],
+            ["Pagination", "COUNT plus LIMIT/OFFSET"],
           ],
         },
-        sources: [qjs("reports/LATEST_QUANT_SCAN.md", "Dated scan report")],
+        sources: [
+          idx(
+            "backend/src/routes/properties.js",
+            "Validation and SQL construction",
+          ),
+        ],
       },
       {
-        id: "limits",
-        title: "Coverage is an output too",
+        id: "map-cache",
+        title: "Map bounds and short-lived caching",
         paragraphs: [
-          "The unresolved count is part of the result: 209 companies could not be fully verified. Companies searched, pages checked, and postings retained measure different things, and none of them alone establishes complete coverage.",
-          "The closure archive stores lastSeenOpenAt and detectedClosedAt. The actual removal occurred somewhere between those observations; detection time is not an employer-supplied closing date. Roles absent from an older application tracker are also reported separately from newly detected roles.",
-          "Markdown reports make the collection readable, CSV supports reuse, and committed scan state keeps the next comparison reproducible. The most useful improvement is reliable change detection even when the underlying sources behave inconsistently.",
+          "Map searches pass north, south, east, and west together. The SQL restricts latitude and longitude with BETWEEN and excludes missing or zero coordinates. A mapOnly response selects fewer columns than a full listing request.",
+          "Search responses are cached for 10 seconds in map mode and 15 seconds otherwise. The cache module attempts Redis when configured and falls back to an in-process Map when unavailable; Redis is an optional dependency, not included in the backend manifest. The key uses the serialized query object, so differently ordered equivalent parameters can create separate entries.",
+          "Optional price analytics are calculated from the returned page of rows, while total comes from all matching rows. The displayed median is the upper middle observation for even page sizes. These page-level summaries should not be presented as whole-market statistics.",
         ],
         sources: [
-          qjs(
-            "scripts/build_new_quant_roles_report.mjs",
-            "Closure history and tracker comparison",
+          idx(
+            "backend/src/routes/properties.js",
+            "Map projection, cache TTL, and analytics",
           ),
-          qjs("reports/LATEST_QUANT_SCAN.md", "Coverage limitations"),
+          idx("backend/src/utils/cache.js", "Redis and memory cache"),
+          idx("backend/package.json", "Installed backend dependencies"),
+        ],
+      },
+      {
+        id: "details",
+        title: "Turning raw records into useful views",
+        paragraphs: [
+          "The detail route adds a timestamp-based listing timeline, city-level aggregate statistics, and up to four related properties in the same city within a ±20% price band. Those related results are sorted by absolute price distance.",
+          "The comparison route accepts at least two IDs, truncates the input to four, and restores requested ordering after the database query. Serialization centralizes property names and formatting so cards, detail pages, and comparisons do not each need to understand the raw database schema.",
+        ],
+        sources: [
+          idx(
+            "backend/src/routes/properties.js",
+            "Details and comparison endpoints",
+          ),
+          idx(
+            "backend/src/utils/propertyTransforms.js",
+            "Property serialization",
+          ),
+        ],
+      },
+      {
+        id: "validation",
+        title: "What the tests establish",
+        paragraphs: [
+          "The repository contains backend tests for invalid prices, unsupported sorting, excessive query text, insufficient comparison IDs, and authenticated routes. Frontend tests exercise API query construction and pagination behavior, including first/last-page boundaries.",
+          "These tests target request contracts and UI behavior. They do not establish production latency, database throughput, user counts, or end-to-end correctness against a live listing feed. The walkthrough therefore reports architecture and implementation details rather than invented benchmark results.",
+        ],
+        sources: [
+          idx("backend/test/app.test.js", "Backend request tests"),
+          idx("frontend/src/api/client.test.js", "API client tests"),
+          idx("frontend/src/components/Pagination.test.js", "Pagination tests"),
         ],
       },
     ],

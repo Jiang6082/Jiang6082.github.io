@@ -38,7 +38,13 @@ export const projects: Project[] = [
     description:
       "Research, backtesting, and Alpaca paper-trading engine for US equities, with out-of-sample and cost checks before any strategy reaches paper trading. It picks up factors discovered in its companion project, project-emberforge. Paper-only.",
     language: "Python",
-    topics: ["python", "quantitative-finance", "algorithmic-trading", "alpaca", "backtesting"],
+    topics: [
+      "python",
+      "quantitative-finance",
+      "algorithmic-trading",
+      "alpaca",
+      "backtesting",
+    ],
     visibility: "public",
     repo: "https://github.com/Jiang6082/project-geld",
   },
@@ -61,19 +67,19 @@ export const projects: Project[] = [
     repo: "https://github.com/Jiang6082/Project-Olsen",
   },
   {
-    name: "QJS",
+    name: "idx-exchange",
     description:
-      "Quant & trading internship scanner — automatically tracks quant, trading, research, and engineering internships across a 300+ firm universe, with GitHub as the shared source of truth.",
+      "A full-stack property search platform with map-based filtering, paginated listings, property comparisons, and a MySQL-backed REST API.",
     language: "JavaScript",
-    topics: ["nodejs", "web-scraping", "internships", "quant", "automation"],
+    topics: ["react", "nodejs", "express", "mysql", "leaflet"],
     visibility: "public",
-    repo: "https://github.com/Jiang6082/QJS",
+    repo: "https://github.com/Jiang6082/idx-exchange",
   },
 ];
 
 /** Count projects per language for the distribution bar. */
 export function languageBreakdown(
-  items: Project[]
+  items: Project[],
 ): { lang: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const p of items) {

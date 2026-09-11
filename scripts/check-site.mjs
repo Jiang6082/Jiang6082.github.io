@@ -46,7 +46,7 @@ for (const id of [
   "project-geld",
   "market-volatility-forecasting",
   "Project-Olsen",
-  "QJS",
+  "idx-exchange",
 ])
   assert(projects.includes(`id="${id}"`));
 assert(!projects.includes('href="https://github.com/Jiang6082/Project-Olsen"'));

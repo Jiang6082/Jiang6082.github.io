@@ -37,10 +37,10 @@ const work = [
     kind: "Machine learning",
   },
   {
-    name: "QJS",
-    slug: "qjs",
-    description: "Tracking internships across hundreds of career sites.",
-    kind: "Automation",
+    name: "Property Search Platform",
+    slug: "idx-exchange",
+    description: "Property search, map filters, and a database-backed API.",
+    kind: "Full-stack engineering",
   },
 ];
 ---
@@ -61,8 +61,8 @@ const work = [
           when I travel.
         </p><div class="hero-links">
           <a class="text-link" href="#selected-work">Explore the projects ↓</a
-          ><a class="text-link" href={`${base}/resume`}
-            >Experience & résumé →</a>
+          ><a class="text-link" href={`${base}/resume`}>Experience & résumé →</a
+          >
         </div>
       </div>
       <a
@@ -81,7 +81,8 @@ const work = [
     <section class="home-work" id="selected-work">
       <div class="section-heading">
         <h2>Projects</h2><a class="text-link" href={`${base}/projects`}
-          >All projects ↗</a>
+          >All projects ↗</a
+        >
       </div>{
         work.map((p, i) => (
           <a class="work-row" href={`${base}/projects/${p.slug}`}>
@@ -103,11 +104,10 @@ const work = [
     <section class="background">
       <h2>Experience</h2><div>
         <p>
-          My work spans clinical-trial data at UChicago’s Pediatric Cancer Data
-          Commons, sequencing analysis in the Murugan Lab, and software
-          internships at IDX Exchange and Nuvora.
+          I have a pretty diverse background across different roles in tech.
         </p><a class="text-link" href={`${base}/resume`}
-          >View my background →</a>
+          >Check out my background →</a
+        >
       </div>
     </section>
     <section class="photo-invitation">
@@ -120,14 +120,17 @@ const work = [
           loading="lazy"
         /></a
       ><div>
-        <h2>Photography</h2><p>Trains, coastlines, gardens, and streets.</p><a
-          class="text-link"
-          href={`${base}/photography`}>Browse the filmstrip ↗</a>
+        <h2>Photography</h2><p>
+          Trains, planes, coastlines, gardens, and streets.
+        </p><a class="text-link" href={`${base}/photography`}
+          >Browse the filmstrip ↗</a
+        >
       </div>
     </section>
     <section class="closing">
       <h2>Get in touch</h2><a class="text-link" href={`mailto:${SITE.email}`}
-        >{SITE.email} ↗</a>
+        >{SITE.email} ↗</a
+      >
     </section>
   </div>
 </BaseLayout>

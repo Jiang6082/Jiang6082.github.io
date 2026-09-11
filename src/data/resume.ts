@@ -2,8 +2,7 @@
 // Phone number and original PDF files are deliberately excluded from the public site.
 export const resume = {
   name: "Bingde (Charles) Jiang",
-  summary:
-    "Mathematics and Computer Science at the University of Chicago. I build research tools, data pipelines, and web applications, and I’m interested in quantitative trading and research internships.",
+  summary: "Mathematics and Computer Science at the University of Chicago.",
   education: {
     school: "The University of Chicago",
     location: "Chicago, IL",
@@ -108,7 +107,12 @@ export const resume = {
       name: "Property Search Platform",
       dates: "January 2026 – April 2026",
       tools: "React · Node.js · Express · MySQL · Docker · Jest",
-      links: [],
+      links: [
+        {
+          label: "Property search walkthrough",
+          href: "/projects/idx-exchange",
+        },
+      ],
       bullets: [
         "Built paginated property browsing, multi-criteria filtering, and results sortable by price, date, size, and bedroom count.",
         "Developed a React frontend with React Router, asynchronous API integration, and automated UI tests using Jest and React Testing Library.",
@@ -125,14 +129,6 @@ export const resume = {
       ],
     },
   ],
-  leadership: {
-    organization: "UChicago Derivatives and Quant Trading Group",
-    role: "Analyst",
-    dates: "September 2024 – Present",
-    location: "Chicago, IL",
-    description:
-      "Led workshops on probability, machine learning, derivatives, and Black–Scholes; implemented and backtested strategies in the Algorithmic Trading Cohort.",
-  },
   skills: [
     {
       group: "Languages",
@@ -175,12 +171,5 @@ export const resume = {
       group: "Infrastructure & storage",
       items: ["AWS Lambda", "Amazon S3", "MySQL", "SQLite", "Docker", "Git"],
     },
-  ],
-  achievements: [
-    "Three-time hackathon winner",
-    "USACO Gold",
-    "Four-time AIME qualifier",
-    "DRW Poker Tournament — second place",
-    "QuestBridge / Odyssey Scholar",
   ],
 };

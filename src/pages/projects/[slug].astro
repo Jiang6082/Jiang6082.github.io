@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PropertyTrace from "../../components/PropertyTrace.astro";
 import { walkthroughs } from "../../data/research";
 export function getStaticPaths() {
   return walkthroughs.map((project) => ({
@@ -54,6 +55,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         p.sections.map((s) => (
           <section id={s.id}>
             <h2>{s.title}</h2>
+            {p.slug === "idx-exchange" && s.id === "request-path" && (
+              <PropertyTrace />
+            )}
             {s.paragraphs.map((text) => (
               <p>{text}</p>
             ))}

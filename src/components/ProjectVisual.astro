@@ -1,4 +1,5 @@
 ---
+import PropertyTrace from "./PropertyTrace.astro";
 import { walkthroughs } from "../data/research";
 const { project } = Astro.props as { project: string };
 const study = walkthroughs.find((w) => w.project === project);
@@ -214,73 +215,13 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
       </div>
     )
   }
-  {
-    project === "QJS" && (
-      <div>
-        <div class="visual-heading">
-          <>
-            <p class="eyebrow">September 10, 2026 snapshot</p>
-            <span class="record-label">Coverage & change detection</span>
-          </>
-        </div>
-        <dl class="scan-stats">
-          {study!.facts.map((f) => (
-            <div>
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
-          ))}
-        </dl>
-        <div class="scan-trace">
-          <>
-            <p class="eyebrow">How a role becomes confirmed</p>
-            <ol>
-              <>
-                <li>
-                  <>
-                    <span>01</span>
-                    <strong>First sighting</strong>
-                    <p>A source returns a new job URL.</p>
-                  </>
-                </li>
-                <li>
-                  <>
-                    <span>02</span>
-                    <strong>Seen again</strong>
-                    <p>A second scan finds the same role.</p>
-                  </>
-                </li>
-                <li>
-                  <>
-                    <span>03</span>
-                    <strong>Confirmed</strong>
-                    <p>The stable record and reports update.</p>
-                  </>
-                </li>
-              </>
-            </ol>
-          </>
-        </div>
-        <>
-          <p class="chart-note">
-            209 companies could not be fully verified. The counts describe
-            search activity and retained roles, not complete market coverage.
-          </p>
-          <a
-            class="chart-source"
-            href={
-              study!.sections.find((s) => s.id === "results")!.sources[0].url
-            }
-          >
-            Open the dated scan report ↗
-          </a>
-        </>
-      </div>
-    )
-  }
+  {project === "idx-exchange" && <PropertyTrace />}
   {
     project === "Project-Olsen" && (
       <div class="payoff-explorer">
+        <a class="text-link" href="/options-lab">
+          Explore the 3D options surface ↗
+        </a>
         <div class="visual-heading">
           <>
             <p class="eyebrow">Options mechanics</p>
