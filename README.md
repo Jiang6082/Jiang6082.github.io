@@ -1,6 +1,10 @@
 # Charles Jiang — personal website
 
-An Astro site for research projects, photography, and writing. Photos are local assets optimized to WebP at build time. The existing GitHub Pages workflow remains in place.
+An Astro site for research projects, photography, and writing. Photos are local assets optimized to WebP at build time. It includes interactive project walkthroughs and a Three.js photography island.
+
+[Live portfolio](https://jiang6082.github.io/) · [Projects](https://jiang6082.github.io/projects/) · [Résumé](https://jiang6082.github.io/resume/) · [Travel world](https://jiang6082.github.io/travel-world/)
+
+**Stack:** Astro, TypeScript, Three.js, and Sharp. Project demos distinguish fictional inputs from recorded research results. The site keeps readable alternatives for its interactive views.
 
 ## Development
 
@@ -55,6 +59,6 @@ Both views load Three.js only after their entry button is pressed. The island an
 
 ## Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`. This redesign is prepared on a separate local branch for review; it does not change the live website until published. The local photo manager uses Sharp for image conversion; the manager itself is excluded from the static public build.
+Pushing to `main` triggers `.github/workflows/deploy.yml`. The live portfolio is published from this repository; the workflow builds and deploys the static site. The local photo manager uses Sharp for image conversion; the manager itself is excluded from the static public build.
 
 In the filmstrip, vertical mouse-wheel or trackpad input moves photographs horizontally while the pointer is over the gallery. At either edge the gesture returns to page scrolling. Horizontal gestures and browser zoom stay native. Run `node scripts/check-filmstrip-wheel.mjs` to check input routing and boundary behavior.
