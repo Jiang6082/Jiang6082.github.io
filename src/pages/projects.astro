@@ -11,6 +11,43 @@ const names: Record<string, string> = {
   "Project-Olsen": "Olsen",
   "idx-exchange": "Property Search Platform",
 };
+const summaries: Record<
+  string,
+  { purpose: string; result: string; context: string }
+> = {
+  "project-emberforge": {
+    purpose:
+      "Find trading factors and test whether they survive statistical checks.",
+    result: "24 candidates → 1 survivor",
+    context: "Documented synthetic demo; not evidence of a live trading edge.",
+  },
+  "project-geld": {
+    purpose:
+      "Backtest equity strategies, account for trading costs, and run them in paper trading.",
+    result: "15.92% annualized return vs. 15.30% for SPY",
+    context:
+      "V4 diagnostic, 2020–July 2026, at 10 bps slippage. Previously inspected history, not a fresh holdout.",
+  },
+  "market-volatility-forecasting": {
+    purpose:
+      "Forecast next-day volatility across 14 ETFs with walk-forward evaluation.",
+    result: "39.7% lower QLIKE loss than persistence",
+    context: "Recorded 2020–2025 ensemble forecasts; lower loss is better.",
+  },
+  "Project-Olsen": {
+    purpose: "Research and backtest options strategies before paper trading.",
+    result: "Explore an option’s payoff and price surface",
+    context:
+      "Illustrative options models; no strategy performance is published.",
+  },
+  "idx-exchange": {
+    purpose:
+      "Search properties on a map, narrow the results, and compare listings.",
+    result: "Map filters → paginated listings → property comparison",
+    context:
+      "Implemented with React, Express, and MySQL. Demo listings are fictional.",
+  },
+};
 ---
 
 <BaseLayout
@@ -57,9 +94,16 @@ const names: Record<string, string> = {
                   </>
                 </div>
                 <h2>{names[p.name] || p.name}</h2>
-                <p class="description">{p.description}</p>
-                <ProjectVisual project={p.name} />
-                <div class="project-bottom">
+                <p class="description">{summaries[p.name].purpose}</p>
+                <p class="result">{summaries[p.name].result}</p>
+                <p class="result-context">{summaries[p.name].context}</p>
+                <div class="project-actions">
+                  <details class="project-demo">
+                    <summary>
+                      Try demo <span aria-hidden="true">+</span>
+                    </summary>
+                    <ProjectVisual project={p.name} />
+                  </details>
                   {walkthroughs.find((w) => w.project === p.name) && (
                     <a
                       class="text-link"
@@ -68,6 +112,8 @@ const names: Record<string, string> = {
                       Read walkthrough →
                     </a>
                   )}
+                </div>
+                <div class="project-bottom">
                   <p class="topics">{p.topics?.join(" / ")}</p>
                   {p.visibility === "public" && p.repo ? (
                     <a
@@ -111,7 +157,7 @@ const names: Record<string, string> = {
   }
   .work-layout {
     display: grid;
-    grid-template-columns: 1fr 2.4fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
     gap: 5rem;
   }
   .work-layout aside {
@@ -137,7 +183,7 @@ const names: Record<string, string> = {
   }
   .project {
     border-top: 1px solid var(--border);
-    padding: 2rem 0 5rem;
+    padding: 2rem 0 3rem;
     scroll-margin-top: 2rem;
   }
   .project-meta {
@@ -148,7 +194,7 @@ const names: Record<string, string> = {
   .project h2 {
     font-size: clamp(1.8rem, 3vw, 2.8rem);
     font-weight: 400;
-    margin: 1.6rem 0;
+    margin: 1rem 0;
     overflow-wrap: anywhere;
   }
   .description {
@@ -156,25 +202,57 @@ const names: Record<string, string> = {
     color: var(--muted);
     max-width: 44rem;
   }
-  .diagram-wrap {
-    background: var(--surface-2);
-    padding: 3rem 2rem 1rem;
-    margin: 2.5rem 0;
+  .result {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.3rem;
   }
-  .diagram-wrap :global(.diagram) {
-    max-width: 460px;
-    margin: auto;
+  .result-context {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    max-width: 43rem;
   }
-  .result-chart {
-    display: block;
-    width: 100%;
-    max-width: 460px;
-    height: auto;
-    margin: auto;
+  .project-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 0 1.5rem;
   }
-  .diagram-wrap > p {
-    font-size: 0.75rem;
-    text-align: center;
+  .project-actions > a {
+    grid-area: 1 / 1;
+    justify-self: end;
+    align-self: start;
+    position: relative;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .project-demo {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+  .project-demo summary {
+    width: max-content;
+    cursor: pointer;
+    list-style: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+  }
+  .project-demo summary::-webkit-details-marker {
+    display: none;
+  }
+  .project-demo[open] summary span {
+    transform: rotate(45deg);
+  }
+  .project-demo :global(.project-visual) {
+    min-width: 0;
+  }
+  .project-bottom {
     margin-top: 1.5rem;
   }
   .project-bottom {
@@ -209,9 +287,6 @@ const names: Record<string, string> = {
       flex-direction: row;
       gap: 0.3rem 1.2rem;
       flex-wrap: wrap;
-    }
-    .diagram-wrap {
-      padding: 2rem 1rem 1rem;
     }
     .project {
       padding-bottom: 3rem;

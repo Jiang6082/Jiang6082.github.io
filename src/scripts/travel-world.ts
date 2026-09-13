@@ -13,12 +13,29 @@ export function createTravelWorld(
     1.3,
   );
   const { scene, camera, controls, renderer, draw } = view;
+  const compact = window.matchMedia("(max-width: 850px), (pointer: coarse)");
+  const cameraButton =
+    document.querySelector<HTMLButtonElement>("#world-camera")!;
+  const setCameraMode = (enabled: boolean) => {
+    controls.enabled = !compact.matches || enabled;
+    // Let ordinary vertical swipes scroll the page until camera movement is requested.
+    renderer.domElement.style.touchAction = controls.enabled ? "none" : "pan-y";
+    cameraButton.hidden = !compact.matches;
+    cameraButton.setAttribute("aria-pressed", String(enabled));
+    cameraButton.textContent = enabled ? "Done · scroll page" : "Move camera";
+  };
+  cameraButton.addEventListener("click", () =>
+    setCameraMode(cameraButton.getAttribute("aria-pressed") !== "true"),
+  );
+  const resetCameraMode = () => setCameraMode(false);
+  compact.addEventListener("change", resetCameraMode);
+  setCameraMode(false);
   const preview = host.querySelector<SVGElement>(".world-preview")!;
   preview.style.display = "none";
   scene.background = new THREE.Color("#b7d1cf");
   scene.fog = new THREE.Fog("#b7d1cf", 65, 140);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   scene.add(new THREE.HemisphereLight(0xfff6e2, 0x718575, 2.5));
   const sun = new THREE.DirectionalLight(0xfff4de, 3);
   sun.position.set(-12, 25, 10);
@@ -471,8 +488,16 @@ export function createTravelWorld(
     const hasPhotos = photoCards.some((c) => c.stop === id);
     const target = new THREE.Vector3(d?.x || 0, hasPhotos ? 4.7 : 0, d?.z || 0),
       pos = d
-        ? target.clone().add(new THREE.Vector3(8, hasPhotos ? 6 : 10, 12))
-        : new THREE.Vector3(22, 25, 29);
+        ? target
+            .clone()
+            .add(
+              new THREE.Vector3(8, hasPhotos ? 6 : 10, 12).multiplyScalar(
+                host.clientWidth < 650 ? 0.72 : 1,
+              ),
+            )
+        : new THREE.Vector3(22, 25, 29).multiplyScalar(
+            host.clientWidth < 650 ? 0.8 : 1,
+          );
     if (reduced.matches) {
       camera.position.copy(pos);
       controls.target.copy(target);
@@ -537,12 +562,22 @@ export function createTravelWorld(
     }
   });
   const raycaster = new THREE.Raycaster();
-  let down = { x: 0, y: 0 };
+  let down: { x: number; y: number; id: number } | null = null;
   renderer.domElement.addEventListener("pointerdown", (e) => {
-    down = { x: e.clientX, y: e.clientY };
+    down = e.isPrimary ? { x: e.clientX, y: e.clientY, id: e.pointerId } : null;
+  });
+  renderer.domElement.addEventListener("pointercancel", () => {
+    down = null;
   });
   renderer.domElement.addEventListener("pointerup", (e) => {
-    if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 7) return;
+    const start = down;
+    down = null;
+    if (
+      !start ||
+      e.pointerId !== start.id ||
+      Math.hypot(e.clientX - start.x, e.clientY - start.y) > 7
+    )
+      return;
     const r = renderer.domElement.getBoundingClientRect();
     raycaster.setFromCamera(
       new THREE.Vector2(
@@ -595,6 +630,7 @@ export function createTravelWorld(
   });
   window.addEventListener("pagehide", (e) => {
     if (!e.persisted) {
+      compact.removeEventListener("change", resetCameraMode);
       observer.disconnect();
       if (raf) cancelAnimationFrame(raf);
     }
