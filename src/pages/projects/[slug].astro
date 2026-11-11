@@ -89,9 +89,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
               <p>{text}</p>
             ))}
             {s.code && (
-              <pre>
-                <code>{s.code}</code>
-              </pre>
+              <pre><code>{s.code}</code></pre>
             )}
             {s.table && (
               <div
