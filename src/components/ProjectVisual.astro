@@ -112,7 +112,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
         <>
           <p class="chart-scale">Bars use a linear scale starting at zero.</p>
           <a class="chart-source" href={first.source}>
-            View recorded data ↗
+            View recorded data <span aria-hidden="true">↗</span>
           </a>
         </>
         <script
@@ -211,7 +211,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
               study!.sections.find((s) => s.id === "results")!.sources[0].url
             }
           >
-            Read the demo results ↗
+            Read the demo results <span aria-hidden="true">↗</span>
           </a>
         </>
       </div>
@@ -222,7 +222,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     project === "Project-Olsen" && (
       <div class="payoff-explorer">
         <a class="text-link" href="/options-lab">
-          Explore the 3D options surface ↗
+          Explore the 3D options surface <span aria-hidden="true">↗</span>
         </a>
         <div class="visual-heading">
           <>
@@ -518,7 +518,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     display: grid;
     place-items: center;
     border: 1px solid var(--border);
-    font: 0.65rem var(--font-mono);
+    font: 0.75rem var(--font-mono);
     color: var(--muted);
   }
   .factor.survivor {
@@ -532,7 +532,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     margin: 0.5rem 0;
   }
   .survivor-result code {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   .survivor-result dl div {
     display: flex;
@@ -581,7 +581,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   }
   .scan-trace li span {
     display: block;
-    font: 0.7rem var(--font-mono);
+    font: 0.75rem var(--font-mono);
     color: var(--accent);
     margin-bottom: 0.5rem;
   }
@@ -647,10 +647,10 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     :global(.bar-row) {
       grid-template-columns: 6rem minmax(0, 1fr) 4rem;
       gap: 0.6rem;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
     }
     :global(.bar-row strong) {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
     }
     .factor-layout {
       grid-template-columns: 1fr;

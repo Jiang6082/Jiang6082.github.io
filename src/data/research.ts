@@ -12,7 +12,15 @@ export interface Walkthrough {
   project: string;
   title: string;
   intro: string;
-  scope: string;
+  /** First-person summary shown at the top of the walkthrough. */
+  summary: {
+    problem: string;
+    built: string;
+    decisions: string[];
+    next: string;
+  };
+  /** The single caveat that applies to the whole walkthrough. */
+  caveat: string;
   facts: { value: string; label: string }[];
   sections: Section[];
   source: string;
@@ -45,7 +53,7 @@ const vol = (path: string, label: string) =>
 const idx = (path: string, label: string) =>
   source(
     "idx-exchange",
-    "224170cd9e175e29da99d0dd97bcb794e5adbabe",
+    "7816589f07607889912181f9cb035c9143057312",
     path,
     label,
   );
@@ -57,8 +65,20 @@ export const walkthroughs: Walkthrough[] = [
     title: "Emberforge",
     intro:
       "Factor research with causal computation, a persistent experiment registry, and explicit tests for selection bias.",
-    scope:
-      "Recorded synthetic demonstration. Methods checked against the linked source revision; demo metrics come from the implementation report.",
+    summary: {
+      problem:
+        "Search enough formulas and some will look profitable by chance. I wanted a factor-research workflow that remembers every attempt, including the failures, and corrects for how many ideas were tried.",
+      built:
+        "A declarative factor language with look-ahead checks, a SQLite registry that records every attempt, and a statistics layer (IC, quintile long–short, Benjamini–Hochberg and Holm, Deflated Sharpe) that decides which candidates survive and exports them to Geld.",
+      decisions: [
+        "Factors are expressions rather than Python, so they can be hashed, checked for look-ahead, and deduplicated.",
+        "Failed and duplicate attempts stay in the registry, and Deflated Sharpe counts all of them.",
+        "Candidates are ranked before correlation-based deduplication, so a weaker copy can’t displace the original.",
+      ],
+      next: "Run the pipeline on real market data with a held-out period, and pass failed candidates into the BH correction as well as the Deflated Sharpe trial count.",
+    },
+    caveat:
+      "Results come from a synthetic demo with a planted signal: they show the pipeline works, not that the factor makes money.",
     facts: [
       { value: "24", label: "Candidates in the documented demo" },
       { value: "0.073", label: "Survivor mean IC" },
@@ -84,7 +104,7 @@ export const walkthroughs: Walkthrough[] = [
         title: "What the factor statistics measure",
         paragraphs: [
           "Cross-sectional information coefficient (IC) measures whether higher factor scores line up with higher subsequent returns. The diagnostic portfolio sorts stocks into five buckets and subtracts the bottom bucket’s mean forward return from the top bucket’s. Its Sharpe annualizes the mean-to-standard-deviation ratio by √252.",
-          "Turnover here is the fraction of top-quintile names replaced between periods, averaged through time. It is not the annual traded-notional measure used in Geld. Net diagnostic Sharpe subtracts an estimated per-period cost; the separately reported gross Sharpe should not be mistaken for executable performance.",
+          "Turnover here is the fraction of top-quintile names replaced between periods, averaged through time. It is not the annual traded-notional measure used in Geld. Net diagnostic Sharpe subtracts an estimated per-period cost; gross Sharpe is reported separately.",
         ],
         code: "long–short return = mean(top quintile) − mean(bottom quintile)\nannualized Sharpe = √252 × mean(return) / std(return)",
         sources: [
@@ -100,7 +120,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "The current pipeline applies Benjamini–Hochberg and Holm corrections to the evaluated candidates’ IC p-values. Deflated Sharpe uses the full registry family trial count, including failed attempts, to penalize searching many hypotheses. The current code does not pass failed candidates into the BH p-value array.",
           "Promotion checks |mean IC| ≥ 0.01, |IC t-statistic| ≥ 2, turnover ≤ 0.9, rejection under the family BH test, Deflated Sharpe ≥ 0.60 when available, and acceptable novelty. Candidates are ranked by absolute mean IC before correlation-based deduplication, so weaker copies are compared with stronger candidates.",
-          "CSCV and combinatorial-purged PBO, White’s Reality Check, Hansen’s SPA, and bootstrap Sharpe intervals are also calculated. They are reported diagnostics; the current decision function does not use all of them as promotion gates.",
+          "CSCV and combinatorial-purged PBO, White’s Reality Check, Hansen’s SPA, and bootstrap Sharpe intervals are also calculated. I report all of them, but not all of them gate promotion yet.",
         ],
         sources: [
           ember(
@@ -144,7 +164,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "The synthetic demo includes momentum_20_dup, a different expression that the implementation report identifies as a duplicate of momentum_20. Adding it to the candidate set did not supply an independent research idea.",
           "The pipeline keeps the attempt in the registry and checks both expression identity and correlation between factor scores. In the linked implementation, stronger candidates are considered first so a weaker copy does not displace them. The documented 24-attempt demo exports one survivor.",
-          "The lesson is to count independent signals rather than formulas. This result tests duplicate handling on synthetic data; it does not show that the surviving factor will work in a market.",
+          "The lesson: count independent signals, not formulas.",
         ],
         sources: [
           ember("docs/IMPLEMENTATION_REPORT.md", "Documented duplicate factor"),
@@ -158,7 +178,7 @@ export const walkthroughs: Walkthrough[] = [
         id: "interpretation",
         title: "What this demonstrates",
         paragraphs: [
-          "This is a controlled recovery test: the system finds an effect deliberately inserted into the data while keeping failed attempts visible. The Sharpe is evidence that the demo behaves as intended, not evidence of a discovered market strategy.",
+          "This is a controlled recovery test: the system finds an effect I planted in the data while keeping failed attempts visible.",
           "A separate walk-forward evaluator reserves an initial warm-up and measures a fixed factor in sequential windows. It reports mean IC, worst-window IC, and sign consistency; it does not refit or reselect factor parameters inside each fold. A wider search would need its own unseen evaluation.",
           "The exported bundle contains a declarative factor, provenance, statistics, and checksums. It crosses into Geld through a reviewed offline handoff; Emberforge itself has no order-execution path.",
         ],
@@ -178,8 +198,21 @@ export const walkthroughs: Walkthrough[] = [
     title: "Geld",
     intro:
       "Equity and intraday research built around point-in-time universes, execution costs, and reproducible strategy comparisons.",
-    scope:
-      "Recorded historical research. Daily V4, intraday V13, and V15 use different exposures, feeds, and costs; their returns are not directly comparable.",
+    summary: {
+      problem:
+        "Backtests tend to look better than they should because of survivorship, look-ahead, and ignored costs. I wanted an engine that handles all three by default before anything reaches paper trading.",
+      built:
+        "An Alpaca-based research and paper-trading engine with monthly point-in-time universes, next-open fills, slippage stress tests, and versioned strategies: a daily momentum portfolio (V4) and intraday overlays (V13, V15).",
+      decisions: [
+        "V4 separates market exposure from stock selection: a 75% SPY core plus a 25% residual-momentum sleeve.",
+        "Every result is rerun at higher costs. V4’s edge over SPY is gone by 50 bps, so I kept turnover low.",
+        "I ablated each intraday risk filter on its own before combining them in V13.",
+        "I kept V15’s single 10:30 entry after extra midday entries raised turnover and hurt validation.",
+      ],
+      next: "Add an older point-in-time price source so the 2020–2026 period isn’t the only evidence, then finish the V4.1 fundamentals ablation.",
+    },
+    caveat:
+      "All figures are historical backtests on 2020–2026 data that earlier versions had already inspected, so none is a fresh out-of-sample test.",
     facts: [
       { value: "1,092", label: "Historically eligible stocks in V4" },
       { value: "15.92%", label: "Daily V4 diagnostic CAGR" },
@@ -193,7 +226,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "V3 combined stock selection with the decision to stay invested and missed parts of several market advances. V4 separates those decisions: a persistent 75% SPY core supplies market exposure, while a 25% active sleeve selects residual-momentum stocks with trend confirmation, downside-volatility controls, and correlation-aware diversification.",
           "The daily study uses a monthly point-in-time top-500 liquid universe drawn from 1,092 historically eligible stocks, with adjusted SIP bars from January 2016 through July 2026. Targets are formed at the close and filled at the next session’s open. The selected configuration holds up to 40 active stocks, caps each at 2%, rebalances every 21 sessions, and uses a 0.25-percentage-point no-trade band.",
-          "Selection used 2017–2019. The 2020–July 2026 comparison is a later diagnostic, but previous V2/V3 work had already inspected that history. It is not a fresh holdout.",
+          "I selected the configuration on 2017–2019 and used 2020–July 2026 as a later diagnostic; earlier V2/V3 work had already seen that period.",
         ],
         sources: [
           geld(
@@ -242,7 +275,7 @@ export const walkthroughs: Walkthrough[] = [
         title: "V4.1: benchmark-aware weighting and a defensive variant",
         paragraphs: [
           "V4.1 adds filing-dated SEC fundamentals, quality and earnings scores, and benchmark-aware portfolio weights. The recorded real-data quality/earnings ablation is still pending; the completed comparison below is price-only. It uses the same point-in-time universe, 10-bps slippage, next-open execution, and 21-session rebalancing.",
-          "Benchmark-aware weighting improves the already-inspected later period but slightly underperforms the price control during 2017–2019 training. The defensive version keeps 15% cash and trades lower CAGR for shallower drawdown. Neither finding turns the reused 2020–2026 sample into independent evidence.",
+          "Benchmark-aware weighting improves the already-inspected later period but slightly underperforms the price control during 2017–2019 training. The defensive version keeps 15% cash and trades lower CAGR for shallower drawdown.",
         ],
         table: {
           caption:
@@ -309,7 +342,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "At 24 bps one-way slippage, matched SIP total return remains 4.37% with Sharpe 0.756. The matched IEX feed produces 3.13% return and 29 positions, versus 45 on SIP. Positive results on both feeds do not imply identical trades.",
           "The best three positions supply 39.6% of net P&L, and the best three symbols supply 47.6%. Most profit is concentrated in 2021, 2022, and 2026; 2023–2025 are slightly negative. The filters remove 20 V12 positions and add none, so this is primarily risk selection over the original signal.",
-          "A 100,000-draw session bootstrap reports an approximate 95% return interval of 1.34%–10.56%. It does not adjust for choosing V13’s thresholds after inspecting this history. Shortability, borrow costs, recalls, variable spreads, and partial fills are additional gaps in the historical study.",
+          "A 100,000-draw session bootstrap reports an approximate 95% return interval of 1.34%–10.56%. It doesn’t adjust for having chosen V13’s thresholds on this history, and the backtest doesn’t model shortability, borrow costs, recalls, variable spreads, or partial fills.",
         ],
         sources: [
           geld(
@@ -328,7 +361,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "V15 tested re-reading the opening-trend signal at 13:00 and 14:30 instead of acting only at 10:30. The additional entries used the same sizing and chop gate, but increased turnover and weakened the recorded result.",
           "In that specific comparison, the 10:30-only rule returned 3.89% overall with +0.36% validation return and 16.2× turnover. Adding 13:00 reduced overall return to 2.55%, flipped validation to −0.26%, and raised turnover to 17.2×. A third entry at 14:30 produced 2.51%, −0.04%, and 18.4× respectively.",
-          "The optional multiple-entry setting was left off and the single 10:30 signal retained. More opportunities to trade did not improve this strategy. These figures belong to the later signal-timing experiment, separate from the cost-sensitivity table below.",
+          "I left the multiple-entry setting off and kept the single 10:30 signal: more chances to trade didn’t make this strategy better. These figures come from the signal-timing experiment, not the cost table below.",
         ],
         sources: [
           geld(
@@ -342,8 +375,8 @@ export const walkthroughs: Walkthrough[] = [
         title: "V15: more activity, with a narrow cost budget",
         paragraphs: [
           "V15 adds a small SPY opening-trend sleeve to the selective stock-short overlay. The current configuration reads the completed 10:30 ET bar, ramps exposure from a weak-signal floor toward full size between 5 and 15 bps of opening movement, and requires a morning efficiency ratio of at least 0.30. The SPY sleeve flattens at 15:30 and the overlay at 15:45.",
-          "The recorded matched IEX hybrid diagnostic below keeps stock-overlay cost at 8 bps and varies SPY cost. At 2 bps per side it returns 3.21% with Sharpe 0.809; at 8 bps it loses 2.91%. The repository also records a later confidence-sizing/chop-gate variant at 3.89% total return and Sharpe 1.00. That is a separate refinement, not the same run as this cost table.",
-          "Adding midday re-entries worsened the recorded validation result and increased turnover, so the single 10:30 signal was retained. Frequent activity can consume a small edge through implementation costs.",
+          "The recorded matched IEX hybrid diagnostic below keeps stock-overlay cost at 8 bps and varies SPY cost. At 2 bps per side it returns 3.21% with Sharpe 0.809; at 8 bps it loses 2.91%. The repository also records a later confidence-sizing/chop-gate variant at 3.89% total return and Sharpe 1.00. That is a separate refinement, not the run in this cost table.",
+          "Frequent trading can eat a small edge through costs.",
         ],
         table: {
           caption: "Recorded V15 matched IEX hybrid, July 2020–July 2026",
@@ -380,8 +413,20 @@ export const walkthroughs: Walkthrough[] = [
     title: "Forecasting volatility",
     intro:
       "Next-day variance forecasting across 14 US ETFs, evaluated with quarterly walk-forward refits and explicit baseline comparisons.",
-    scope:
-      "Committed forecast results for 2020–2025. These describe the saved research run, not a new model run or realized trading performance.",
+    summary: {
+      problem:
+        "Volatility forecasts are easy to overstate when future information leaks into training or a model is judged only on the metric it wins. I wanted a clean comparison of ML models against standard econometric baselines.",
+      built:
+        "A walk-forward pipeline that forecasts next-day Garman–Klass variance for 14 ETFs, refits every model each quarter from 2020 to 2025, and compares persistence, HAR, GARCH, Ridge, gradient boosting, an MLP, and a geometric-mean ensemble.",
+      decisions: [
+        "Imputation and scaling are fit on each training slice only, and fold boundaries and model hashes are saved.",
+        "QLIKE is the primary loss, but RMSE stays in every table so the trade-off is visible.",
+        "The ensemble is a geometric mean of Ridge, GBRT, and the MLP, computed by averaging log variances.",
+      ],
+      next: "Dig into the largest errors behind the ensemble’s high RMSE, and test any fix on data this run hasn’t seen.",
+    },
+    caveat:
+      "These are the saved 2020–2025 results, and the ensemble was chosen after looking at them.",
     facts: [
       { value: "21,098", label: "ETF-day observations" },
       { value: "0.2857", label: "Ensemble mean QLIKE" },
@@ -473,7 +518,7 @@ export const walkthroughs: Walkthrough[] = [
         paragraphs: [
           "The ensemble’s lower QLIKE did not translate into lower RMSE. Its recorded QLIKE was 0.285704 versus persistence’s 0.473535, but RMSE was 0.002207 versus 0.000320. Ridge and MLP also had relatively good QLIKE alongside much larger RMSE.",
           "The comparison therefore keeps both metrics and the simpler baselines visible. QLIKE rewards relative variance accuracy; RMSE exposes large absolute misses. At the 21-day horizon, HAR also slightly outperformed the ensemble on QLIKE, so the one-day winner cannot simply be carried over to every horizon.",
-          "This remains a limitation of the saved results, not a solved model defect. Inspecting the largest errors and testing any changes on fresh data would be the next step; those improvements are not claimed here.",
+          "I haven’t fixed this yet. The next step is to inspect the largest errors and test any change on fresh data.",
         ],
         sources: [
           vol(
@@ -488,8 +533,8 @@ export const walkthroughs: Walkthrough[] = [
         title: "How much confidence to put in the ranking",
         paragraphs: [
           "The saved 95% bootstrap interval for ensemble mean QLIKE is [0.2664, 0.3066]. The implementation first averages losses across ETFs within each date, then resamples dates independently. This preserves same-date grouping, but does not resample consecutive time blocks or preserve serial dependence.",
-          "The results report an ensemble-only 90% Model Confidence Set. The configured ensemble is explicitly described as post-hoc, however, so this comparison should not be presented as a completely untouched test of a preselected ensemble.",
-          "The ordinary one-step Diebold–Mariano routine uses the sample standard error of the loss differences. A separate HAC version exists for overlapping multi-horizon forecasts. The recorded ranking is evidence from this experiment; further forward evaluation is needed to establish whether it persists.",
+          "The results include an ensemble-only 90% Model Confidence Set. Because I chose the ensemble after seeing results, it isn’t an untouched test of a preselected model.",
+          "The ordinary one-step Diebold–Mariano routine uses the sample standard error of the loss differences. A separate HAC version exists for overlapping multi-horizon forecasts. Forward evaluation would show whether the ranking holds.",
         ],
         sources: [
           vol("src/vol_forecast/evaluation.py", "Bootstrap implementation"),
@@ -509,8 +554,21 @@ export const walkthroughs: Walkthrough[] = [
     title: "Property Search Platform",
     intro:
       "A React interface and Express API that turn property records into searchable listings, map results, and comparison views.",
-    scope:
-      "Implementation review of IDX Exchange at commit 224170c. The figures below are configuration limits, not measured throughput or production usage.",
+    summary: {
+      problem:
+        "Property search has to stay fast and safe while people combine free text, price, bedroom, map, and sort filters in any order.",
+      built:
+        "A React listings interface on an Express and MySQL API with parameterized filters, allowlisted sorting, count-plus-page pagination, map-bounds search, short-lived caching, and comparison views.",
+      decisions: [
+        "Filters are bound SQL values; sort columns come from a five-field allowlist because placeholders can’t bind identifiers.",
+        "Filter and page state lives in the URL, so a search can be shared or reloaded.",
+        "Search responses are cached for 10–15 seconds, in Redis when it’s configured and in memory otherwise.",
+        "Cache keys are built from the validated, normalized search, so equivalent searches share one entry.",
+      ],
+      next: "Load-test deep pagination and broad text searches on a realistic dataset, and replace OFFSET paging if it gets slow.",
+    },
+    caveat:
+      "The numbers below are configuration limits from the code, not measured production traffic.",
     facts: [
       { value: "5", label: "Allowed sort fields" },
       { value: "20", label: "Default API page size" },
@@ -540,7 +598,7 @@ export const walkthroughs: Walkthrough[] = [
         title: "A bounded query contract",
         paragraphs: [
           "Text, city, ZIP, price, beds, and baths become parameterized SQL conditions. Sort columns require a separate allowlist because SQL placeholders bind values, not identifiers. The route allows price, listing date, square footage, bedroom count, and days on market; unsupported fields return HTTP 400.",
-          "The API defaults to 20 rows with offset zero and accepts limits from 1 to 1,000. It rejects inverted price ranges and incomplete map bounds. These are useful guardrails; the parsing still uses parseInt for pagination, and large offsets or broad LIKE searches would need query-plan and load testing before making scale claims.",
+          "The API defaults to 20 rows with offset zero and accepts limits from 1 to 1,000. It rejects inverted price ranges and incomplete map bounds. Pagination still uses parseInt, and I haven’t load-tested large offsets or broad LIKE searches.",
         ],
         table: {
           caption: "Search contract in the repository",
@@ -568,8 +626,8 @@ export const walkthroughs: Walkthrough[] = [
         title: "Map bounds and short-lived caching",
         paragraphs: [
           "Map searches pass north, south, east, and west together. The SQL restricts latitude and longitude with BETWEEN and excludes missing or zero coordinates. A mapOnly response selects fewer columns than a full listing request.",
-          "Search responses are cached for 10 seconds in map mode and 15 seconds otherwise. The cache module attempts Redis when configured and falls back to an in-process Map when unavailable; Redis is an optional dependency, not included in the backend manifest. The key uses the serialized query object, so differently ordered equivalent parameters can create separate entries.",
-          "Optional price analytics are calculated from the returned page of rows, while total comes from all matching rows. The displayed median is the upper middle observation for even page sizes. These page-level summaries should not be presented as whole-market statistics.",
+          "Search responses are cached for 10 seconds in map mode and 15 seconds otherwise. The cache module attempts Redis when configured and falls back to an in-process Map when unavailable; Redis is an optional dependency, not included in the backend manifest. The cache key comes from the normalized search, described below.",
+          "Optional price analytics are calculated from the returned page of rows, while total comes from all matching rows. The displayed median is the upper middle observation for even page sizes, so these summaries describe the page, not the whole market.",
         ],
         sources: [
           idx(
@@ -599,30 +657,30 @@ export const walkthroughs: Walkthrough[] = [
         ],
       },
       {
-        id: "what-didnt-work",
-        title: "What still needs work: equivalent searches miss the cache",
+        id: "cache-fix",
+        title: "What I fixed: equivalent searches now share the cache",
         paragraphs: [
-          "The cache key is built with JSON.stringify(query). Two equivalent searches can therefore get different keys when their parameters arrive in a different order. For example, city=Portland&beds=3 and beds=3&city=Portland describe the same filters but can occupy separate cache entries.",
-          "The existing 10- or 15-second expiry limits how long those entries remain useful, but does not make the keys equivalent. This is a source-level limitation, not a measured production incident or a documented performance regression.",
-          "A proposed fix is to build the key from validated, normalized parameters in a fixed order, including defaults, sorting, pagination, and map bounds. Tests should verify that equivalent searches share a key while different pages and filters remain distinct. That change has not been implemented in the linked revision.",
+          "The cache key used to be JSON.stringify(req.query), so two URLs for the same search, such as city=Portland&beds=3 and beds=3&city=Portland, landed in separate cache entries.",
+          "The key is now built from the validated search. Each value is normalized the way the SQL uses it: city is trimmed and lower-cased, free text is lower-cased but not trimmed, prices and bedrooms are parsed as numbers, limit and offset defaults are filled in, and unrelated parameters such as cache-busters are ignored. getCacheKey also sorts object keys, so key order never matters.",
+          "New tests check that equivalent searches share a key, that different filters, sorts, pages, and map bounds don’t, and that a reordered search is served from the cache without another database query. The route-level test fails on the old code and passes with the fix.",
         ],
+        code: "before: getCacheKey(\"properties\", req.query)\nafter:  searchCacheKey(req.query, { limit, offset })\n\n?city=Portland&beds=3            → one cache entry\n?beds=3&city=portland&limit=20   → same entry",
         sources: [
-          idx("backend/src/utils/cache.js", "Current cache-key construction"),
-          idx(
-            "backend/src/routes/properties.js",
-            "Query inputs and cache lookup",
-          ),
+          idx("backend/src/utils/searchCacheKey.js", "Normalized search key"),
+          idx("backend/src/utils/cache.js", "Order-independent getCacheKey"),
+          idx("backend/test/cache.test.js", "Cache-key tests"),
         ],
       },
       {
         id: "validation",
         title: "What the tests establish",
         paragraphs: [
-          "The repository contains backend tests for invalid prices, unsupported sorting, excessive query text, insufficient comparison IDs, and authenticated routes. Frontend tests exercise API query construction and pagination behavior, including first/last-page boundaries.",
-          "These tests target request contracts and UI behavior. They do not establish production latency, database throughput, user counts, or end-to-end correctness against a live listing feed. The walkthrough therefore reports architecture and implementation details rather than invented benchmark results.",
+          "The repository contains backend tests for invalid prices, unsupported sorting, excessive query text, insufficient comparison IDs, authenticated routes, and cache-key equivalence. Frontend tests exercise API query construction and pagination behavior, including first/last-page boundaries.",
+          "They cover request contracts and UI behavior, not production latency or throughput.",
         ],
         sources: [
           idx("backend/test/app.test.js", "Backend request tests"),
+          idx("backend/test/cache.test.js", "Cache tests"),
           idx("frontend/src/api/client.test.js", "API client tests"),
           idx("frontend/src/components/Pagination.test.js", "Pagination tests"),
         ],

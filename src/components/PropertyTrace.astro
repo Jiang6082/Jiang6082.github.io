@@ -66,6 +66,7 @@ const steps = [
   }
   li:not(:last-child):after {
     content: "→";
+    content: "→" / "";
     position: absolute;
     right: 0;
     top: 0.8rem;
@@ -73,7 +74,7 @@ const steps = [
   }
   span {
     display: block;
-    font: 0.7rem var(--font-mono);
+    font: 0.75rem var(--font-mono);
     color: var(--accent);
     margin-bottom: 1rem;
   }

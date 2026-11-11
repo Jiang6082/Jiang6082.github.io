@@ -20,7 +20,9 @@ const fmt = (d: Date) =>
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <article>
-    <a class="back muted small" href={`${base}/blog`}>← All posts</a>
+    <a class="back muted small" href={`${base}/blog`}
+      ><span aria-hidden="true">←</span> All notes</a
+    >
     <h1>{post.data.title}</h1>
     <p class="muted small meta">
       <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>

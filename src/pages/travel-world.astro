@@ -48,7 +48,9 @@ const items = await Promise.all(
   <div class="lab-shell world-shell">
     <header class="world-heading">
       <div>
-        <a class="text-link" href="/photography">← Photography</a><h1>
+        <a class="text-link" href="/photography"
+          ><span aria-hidden="true">←</span> Photography</a
+        ><h1>
           Travel world.
         </h1>
       </div><p>
@@ -126,7 +128,7 @@ const items = await Promise.all(
             >
           </svg>
           <button class="lab-start" id="start-room" hidden
-            >Explore the island ↗</button
+            >Explore the island <span aria-hidden="true">↗</span></button
           >
           <button
             id="world-camera"
@@ -289,7 +291,7 @@ const items = await Promise.all(
       select(selected);
     } catch {
       start.disabled = false;
-      start.textContent = "Try 3D again ↗";
+      start.innerHTML = 'Try 3D again <span aria-hidden="true">↗</span>';
       status.textContent =
         "3D is unavailable in this browser. The destination buttons and photographs still work.";
     }
@@ -356,7 +358,7 @@ const items = await Promise.all(
     padding: 1rem 0.3rem;
   }
   .stop-buttons span:first-child {
-    font: 0.7rem var(--font-mono);
+    font: 0.75rem var(--font-mono);
     color: var(--muted);
   }
   .stop-buttons span:last-child {

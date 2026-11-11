@@ -21,7 +21,8 @@ const cross = Array.from({ length: 13 }, (_, i) =>
 >
   <div class="lab-shell" id="options-lab">
     <header class="lab-header">
-      <a class="text-link" href="/projects#Project-Olsen">← Back to projects</a
+      <a class="text-link" href="/projects#Project-Olsen"
+        ><span aria-hidden="true">←</span> Back to projects</a
       ><p class="eyebrow">An options experiment / 3D</p><h1>
         Options in 3D.
       </h1><p>
@@ -52,7 +53,7 @@ const cross = Array.from({ length: 13 }, (_, i) =>
         >
       </svg>
       <button class="lab-start" id="start-surface" hidden
-        >Explore in 3D ↗</button
+        >Explore in 3D <span aria-hidden="true">↗</span></button
       >
     </div>
     <p class="lab-status" id="surface-status" role="status">

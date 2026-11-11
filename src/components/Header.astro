@@ -2,7 +2,7 @@
 import { SITE } from "../config";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const nav = [
-  { label: "Work", href: `${base}/projects` },
+  { label: "Projects", href: `${base}/projects` },
   { label: "Photography", href: `${base}/photography` },
   { label: "Résumé", href: `${base}/resume` },
   { label: "Notes", href: `${base}/blog` },
@@ -24,7 +24,9 @@ const current = Astro.url.pathname;
             {item.label}
           </a>
         ))
-      }<a class="contact" href={`mailto:${SITE.email}`}>Say hello ↗</a>
+      }<a class="contact" href={`mailto:${SITE.email}`}
+        >Say hello <span aria-hidden="true">↗</span></a
+      >
     </nav>
   </div>
 </header>
@@ -62,6 +64,7 @@ const current = Astro.url.pathname;
     color: var(--muted);
     font-size: 0.875rem;
     padding: 12px 0;
+    white-space: nowrap;
   }
   nav a[aria-current] {
     color: var(--accent);

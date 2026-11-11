@@ -11,11 +11,11 @@ import { SITE, SOCIALS } from "../config";
           target={s.url.startsWith("http") ? "_blank" : undefined}
           rel="noopener noreferrer"
         >
-          {s.name} ↗
+          {s.name} <span aria-hidden="true">↗</span>
         </a>
       ))
     }
-  </div><a href="#top">Back to top ↑</a>
+  </div><a href="#top">Back to top <span aria-hidden="true">↑</span></a>
 </footer>
 <style>
   .site-footer {

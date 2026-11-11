@@ -2,6 +2,8 @@
 import { SITE, ANALYTICS } from "../config";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import "@fontsource-variable/schibsted-grotesk";
+import bodyFont from "@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 
 interface Props {
@@ -9,13 +11,26 @@ interface Props {
   description?: string;
   /** Render content edge-to-edge (no centered container). */
   wide?: boolean;
-  /** Extra class on <body> (e.g. "page-about" for the green background). */
+  /** Extra class on <body>. */
   bodyClass?: string;
+  /** Share image under public/, 1200×630. */
+  image?: string;
+  imageAlt?: string;
 }
 
-const { title, description, wide, bodyClass } = Astro.props;
+const {
+  title,
+  description,
+  wide,
+  bodyClass,
+  image = "/og.jpg",
+  imageAlt = "Charles Jiang — trading research, software engineering, and photography",
+} = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
 const desc = description ?? SITE.tagline;
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site).href;
+const imageUrl = new URL(`${import.meta.env.BASE_URL.replace(/\/$/, "")}${image}`, site).href;
 ---
 
 <!doctype html>
@@ -35,17 +50,36 @@ const desc = description ?? SITE.tagline;
       href={`${import.meta.env.BASE_URL}favicon.svg`}
       type="image/svg+xml"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href={bodyFont}
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
     <title>{pageTitle}</title>
     <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.name} — Notes`}
+      href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/rss.xml`}
+    />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={desc} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={imageUrl} />
     <meta name="generator" content={Astro.generator} />
     {
       ANALYTICS.goatCounter && (

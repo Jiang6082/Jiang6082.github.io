@@ -4,6 +4,7 @@ import { resume as r } from "../data/resume";
 import { SITE, SOCIALS } from "../config";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const sections = ["Education", "Experience", "Projects", "Skills"];
+const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
 ---
 
 <BaseLayout
@@ -13,31 +14,49 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
 >
   <div class="resume-layout">
     <aside>
-      <p class="eyebrow">Résumé / August 2026</p><nav
+      <p class="eyebrow">Résumé / Updated {r.updated}</p><nav
         aria-label="Résumé sections"
       >
         {sections.map((s) => <a href={`#${s.toLowerCase()}`}>{s}</a>)}
-      </nav><button class="print-button" hidden>Print / save PDF ↗</button>
+      </nav><button class="print-button" hidden
+        >Print / save PDF <span aria-hidden="true">↗</span></button
+      >
     </aside>
     <article>
       <header>
         <h1>{r.name}</h1><p class="summary">{r.summary}</p><div class="contact">
           <a href={`mailto:${SITE.email}`}>{SITE.email}</a><a
-            href={SOCIALS.find((s) => s.name === "LinkedIn")!.url}
-            >LinkedIn ↗</a
-          ><a href="https://github.com/Jiang6082">GitHub ↗</a>
+            href={social("LinkedIn")}
+            >LinkedIn <span aria-hidden="true">↗</span></a
+          ><a href={social("GitHub")}
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
         </div>
       </header>
       <section id="education">
-        <h2>Education</h2><div class="entry">
-          <div class="entry-top">
-            <h3>{r.education.school}</h3><span>{r.education.graduation}</span>
-          </div><p>{r.education.degree}</p><p class="meta">
-            {r.education.location} · GPA {r.education.gpa}
-          </p><p>{r.education.abroad}</p><h4>Programs & certificates</h4><ul
-            class="inline-list"
-          >
-            {r.education.programs.map((p) => <li>{p}</li>)}
+        <h2>Education</h2>{
+          r.education.map((ed) => (
+            <div class="entry">
+              <div class="entry-top">
+                <h3>{ed.school}</h3>
+                <span>{ed.dates}</span>
+              </div>
+              <p>{ed.degree}</p>
+              <p class="meta">
+                {ed.location}
+                {ed.gpa && ` · GPA ${ed.gpa}`}
+              </p>
+              <h4>{ed.courseworkLabel}</h4>
+              <ul class="course-list">
+                {ed.coursework.map((c) => (
+                  <li>{c}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }<div class="entry">
+          <h4>Programs & certificates</h4><ul class="inline-list">
+            {r.programs.map((p) => <li>{p}</li>)}
           </ul>
         </div>
       </section>
@@ -46,19 +65,19 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
           {
             r.experience.map((e) => (
               <div class="entry">
-                <>
-                  <p class="dates">
-                    {e.dates} · {e.location}
-                  </p>
-                  <h3>{e.organization}</h3>
-                  <p class="role">{e.role}</p>
+                <p class="dates">
+                  {e.dates} · {e.location}
+                </p>
+                <h3>{e.organization}</h3>
+                <p class="role">{e.role}</p>
+                {e.bullets.length > 0 && (
                   <ul>
                     {e.bullets.map((b) => (
                       <li>{b}</li>
                     ))}
                   </ul>
-                  <p class="meta">{e.tags.join(" / ")}</p>
-                </>
+                )}
+                <p class="meta">{e.tags.join(" / ")}</p>
               </div>
             ))
           }
@@ -68,23 +87,23 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
         <h2>Projects</h2>{
           r.projects.map((p) => (
             <div class="entry">
-              <>
-                <p class="dates">{p.dates}</p>
-                <h3>{p.name}</h3>
-                <p class="meta">{p.tools}</p>
-                <ul>
-                  {p.bullets.map((b) => (
-                    <li>{b}</li>
-                  ))}
-                </ul>
+              <p class="dates">{p.dates}</p>
+              <h3>{p.name}</h3>
+              <p class="meta">{p.tools}</p>
+              <ul>
+                {p.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+              {p.links.length > 0 && (
                 <div class="project-links">
                   {p.links.map((l) => (
                     <a class="text-link" href={`${base}${l.href}`}>
-                      {l.label} →
+                      {l.label} <span aria-hidden="true">→</span>
                     </a>
                   ))}
                 </div>
-              </>
+              )}
             </div>
           ))
         }
@@ -95,20 +114,15 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
           {
             r.skills.map((s) => (
               <div>
-                <>
-                  <dt>{s.group}</dt>
-                  <dd>{s.items.join(" · ")}</dd>
-                </>
+                <dt>{s.group}</dt>
+                <dd>{s.items.join(" · ")}</dd>
               </div>
             ))
           }
         </dl>
       </section>
 
-      <p class="updated">
-        Combined from my July engineering and August quantitative résumés. Dates
-        marked “Present” reflect those versions.
-      </p>
+      <p class="updated">Last updated {r.updated}.</p>
     </article>
   </div>
 </BaseLayout>
@@ -200,6 +214,9 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
   .entry {
     margin-bottom: 2.3rem;
   }
+  .entry h4 {
+    margin-bottom: 0;
+  }
   .entry:last-child {
     margin-bottom: 0;
   }
@@ -272,9 +289,14 @@ const sections = ["Education", "Experience", "Projects", "Skills"];
     font-size: 0.9rem;
     line-height: 1.8;
   }
-  .achievements {
+  .course-list {
     padding-left: 1.2rem;
-    line-height: 2;
+    margin: 0.5rem 0 0;
+  }
+  .entry .course-list li {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin: 0.2rem 0;
   }
   .updated {
     border-top: 1px solid var(--border);

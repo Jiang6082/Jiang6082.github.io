@@ -26,13 +26,16 @@ async function toItem(p: Photo) {
       placeholder: true,
       ar: clampAr(p.ar ?? 1.5),
       thumb: "",
+      srcset: "",
       full: "",
     };
   }
   const meta = mod.default;
+  const thumbWidth = Math.min(900, meta.width);
   const thumb = await getImage({
     src: meta,
-    width: Math.min(900, meta.width),
+    width: thumbWidth,
+    widths: [400, 650, 900].filter((w) => w <= thumbWidth),
     format: "webp",
   });
   // Full-size for the lightbox — never upscaled past the original.
@@ -46,6 +49,7 @@ async function toItem(p: Photo) {
     placeholder: false,
     ar: clampAr(meta.width / meta.height),
     thumb: thumb.src,
+    srcset: thumb.srcSet.attribute,
     full: full.src,
   };
 }
@@ -99,7 +103,13 @@ if (singles.length) {
               {item.placeholder ? (
                 <span class="ph" />
               ) : (
-                <img src={item.thumb} alt={item.alt} loading="lazy" />
+                <img
+                  src={item.thumb}
+                  srcset={item.srcset}
+                  sizes="(max-width: 480px) 100vw, 50vw"
+                  alt={item.alt}
+                  loading="lazy"
+                />
               )}
               {item.title && <span class="cell-title">{item.title}</span>}
             </button>

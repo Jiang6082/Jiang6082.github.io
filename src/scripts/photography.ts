@@ -88,11 +88,6 @@ if (
     depth!.disabled = reduce.matches;
     depth!.setAttribute("aria-pressed", String(on));
     depth!.textContent = on ? "Depth on" : "Depth off";
-    figures.forEach((f) => {
-      const link = f.querySelector<HTMLElement>("a")!;
-      link.style.removeProperty("--tilt-x");
-      link.style.removeProperty("--tilt-y");
-    });
   }
   albumSwitch.hidden = false;
   viewSwitch.hidden = false;

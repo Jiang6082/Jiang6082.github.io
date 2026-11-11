@@ -2,65 +2,21 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectVisual from "../components/ProjectVisual.astro";
 import { projects } from "../data/projects";
-import { walkthroughs } from "../data/research";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const names: Record<string, string> = {
-  "project-emberforge": "Emberforge",
-  "project-geld": "Geld",
-  "market-volatility-forecasting": "Forecasting volatility",
-  "Project-Olsen": "Olsen",
-  "idx-exchange": "Property Search Platform",
-};
-const summaries: Record<
-  string,
-  { purpose: string; result: string; context: string }
-> = {
-  "project-emberforge": {
-    purpose:
-      "Find trading factors and test whether they survive statistical checks.",
-    result: "24 candidates → 1 survivor",
-    context: "Documented synthetic demo; not evidence of a live trading edge.",
-  },
-  "project-geld": {
-    purpose:
-      "Backtest equity strategies, account for trading costs, and run them in paper trading.",
-    result: "15.92% annualized return vs. 15.30% for SPY",
-    context:
-      "V4 diagnostic, 2020–July 2026, at 10 bps slippage. Previously inspected history, not a fresh holdout.",
-  },
-  "market-volatility-forecasting": {
-    purpose:
-      "Forecast next-day volatility across 14 ETFs with walk-forward evaluation.",
-    result: "39.7% lower QLIKE loss than persistence",
-    context: "Recorded 2020–2025 ensemble forecasts; lower loss is better.",
-  },
-  "Project-Olsen": {
-    purpose: "Research and backtest options strategies before paper trading.",
-    result: "Explore an option’s payoff and price surface",
-    context:
-      "Illustrative options models; no strategy performance is published.",
-  },
-  "idx-exchange": {
-    purpose:
-      "Search properties on a map, narrow the results, and compare listings.",
-    result: "Map filters → paginated listings → property comparison",
-    context:
-      "Implemented with React, Express, and MySQL. Demo listings are fictional.",
-  },
-};
+const range = `01—${String(projects.length).padStart(2, "0")}`;
 ---
 
 <BaseLayout
-  title="Work"
-  description="Research tools, trading systems, and useful automation."
+  title="Projects"
+  description="Research tools, trading systems, and full-stack software by Charles Jiang."
   wide
 >
   <div class="page-shell">
     <header class="work-heading">
-      <p class="eyebrow">Selected work / 01—05</p><h1>Projects</h1><p
+      <p class="eyebrow">Selected work / {range}</p><h1>Projects</h1><p
         class="lede"
       >
-        Research tools, trading systems, and useful automation.
+        Research tools, trading systems, and full-stack software.
       </p>
     </header>
     <div class="work-layout">
@@ -68,9 +24,9 @@ const summaries: Record<
         <p class="eyebrow">Project index</p><nav aria-label="Project index">
           {
             projects.map((p, i) => (
-              <a href={`#${p.name}`}>
+              <a href={`#${p.id}`}>
                 <span>{String(i + 1).padStart(2, "0")}</span>
-                {names[p.name] || p.name}
+                {p.title}
               </a>
             ))
           }
@@ -79,61 +35,54 @@ const summaries: Record<
       <div>
         {
           projects.map((p, i) => (
-            <article id={p.name} class="project">
-              <>
-                <div class="project-meta eyebrow">
-                  <>
-                    <span>
-                      {String(i + 1).padStart(2, "0")} / {p.language}
-                    </span>
-                    <span>
-                      {p.visibility === "private"
-                        ? "Private research"
-                        : "Open source"}
-                    </span>
-                  </>
-                </div>
-                <h2>{names[p.name] || p.name}</h2>
-                <p class="description">{summaries[p.name].purpose}</p>
-                <p class="result">{summaries[p.name].result}</p>
-                <p class="result-context">{summaries[p.name].context}</p>
-                <div class="project-actions">
-                  <details class="project-demo">
-                    <summary>
-                      Try demo <span aria-hidden="true">+</span>
-                    </summary>
-                    <ProjectVisual project={p.name} />
-                  </details>
-                  {walkthroughs.find((w) => w.project === p.name) && (
-                    <a
-                      class="text-link"
-                      href={`${base}/projects/${walkthroughs.find((w) => w.project === p.name)!.slug}`}
-                    >
-                      Read walkthrough →
-                    </a>
-                  )}
-                </div>
-                <div class="project-bottom">
-                  <p class="topics">{p.topics?.join(" / ")}</p>
-                  {p.visibility === "public" && p.repo ? (
-                    <a
-                      class="text-link"
-                      href={p.repo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Explore the code ↗
-                    </a>
-                  ) : (
-                    <span class="private-note">Private repository</span>
-                  )}
-                  {p.demo && (
-                    <a class="text-link" href={p.demo}>
-                      View project ↗
-                    </a>
-                  )}
-                </div>
-              </>
+            <article id={p.id} class="project">
+              <div class="project-meta eyebrow">
+                <span>
+                  {String(i + 1).padStart(2, "0")} / {p.language}
+                </span>
+                <span>
+                  {p.visibility === "private"
+                    ? "Private research"
+                    : "Open source"}
+                </span>
+              </div>
+              <h2>{p.title}</h2>
+              <p class="description">{p.purpose}</p>
+              <p class="result">{p.result}</p>
+              <p class="result-context">{p.context}</p>
+              <div class="project-actions">
+                <details class="project-demo">
+                  <summary>
+                    Try demo <span aria-hidden="true">+</span>
+                  </summary>
+                  <ProjectVisual project={p.id} />
+                </details>
+                {p.slug && (
+                  <a class="text-link" href={`${base}/projects/${p.slug}`}>
+                    Read walkthrough <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </div>
+              <div class="project-bottom">
+                <p class="topics">{p.topics.join(" / ")}</p>
+                {p.visibility === "public" && p.repo ? (
+                  <a
+                    class="text-link"
+                    href={p.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Explore the code <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <span class="private-note">Private repository</span>
+                )}
+                {p.demo && (
+                  <a class="text-link" href={p.demo}>
+                    View project <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </div>
             </article>
           ))
         }

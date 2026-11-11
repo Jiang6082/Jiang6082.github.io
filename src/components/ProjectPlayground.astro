@@ -25,7 +25,7 @@ const costs = costStudy.table!.rows.map((r) => ({
   sharpe: r[2],
   drawdown: r[3],
 }));
-const titles = {
+const titles: Record<string, string> = {
   homes: "Try a property search",
   costs: "How much does execution cost?",
   forecast: "Step through a volatility shock",
@@ -105,9 +105,13 @@ const titles = {
             ))}
           </div>
           <div class="demo-actions" data-enhanced hidden>
-            <button data-action="prev">← Previous</button>
+            <button data-action="prev"
+              ><span aria-hidden="true">←</span> Previous</button
+            >
             <output data-status aria-live="polite" />
-            <button data-action="next">Next →</button>
+            <button data-action="next"
+              >Next <span aria-hidden="true">→</span></button
+            >
             <button data-action="reset">Reset filters</button>
           </div>
         </>
@@ -186,7 +190,7 @@ const titles = {
             Balance scales the recorded percentage and is not a new backtest.
           </p>
           <a class="text-link" href={costStudy.sources[0].url}>
-            Recorded scenarios ↗
+            Recorded scenarios <span aria-hidden="true">↗</span>
           </a>
           <script
             type="application/json"

@@ -11,6 +11,8 @@ const htmls = list(root).filter((p) => p.endsWith(".html"));
 let checked = 0;
 for (const file of htmls) {
   const html = readFileSync(file, "utf8");
+  // Astro's redirect pages are a bare meta refresh with no heading.
+  if (/<meta http-equiv="refresh"/i.test(html)) continue;
   assert.equal(
     (html.match(/<h1[\s>]/g) || []).length,
     1,
