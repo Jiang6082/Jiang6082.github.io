@@ -1,1 +1,184 @@
-{}
+{
+  "IMG_0003.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 29,
+    "aperture": 7.1,
+    "shutter": "1/200",
+    "iso": 100,
+    "place": {
+      "name": "London, United Kingdom",
+      "lat": 51.51,
+      "lon": -0.13
+    }
+  },
+  "IMG_0028.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/250",
+    "iso": 125,
+    "place": {
+      "name": "London, United Kingdom",
+      "lat": 51.51,
+      "lon": -0.13
+    }
+  },
+  "IMG_0071.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 31,
+    "aperture": 4,
+    "shutter": "1/15",
+    "iso": 400,
+    "place": {
+      "name": "Shanghai, China",
+      "lat": 31.22,
+      "lon": 121.46
+    }
+  },
+  "IMG_0098.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/320",
+    "iso": 2500,
+    "place": {
+      "name": "Beijing, China",
+      "lat": 39.91,
+      "lon": 116.4
+    }
+  },
+  "IMG_0254.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/320",
+    "iso": 1600,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0389.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/250",
+    "iso": 1600,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0407.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 58,
+    "aperture": 4,
+    "shutter": "1/1250",
+    "iso": 640,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0411.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 70,
+    "aperture": 4,
+    "shutter": "1/200",
+    "iso": 640,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0498.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/30",
+    "iso": 2500,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0499.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 105,
+    "aperture": 4,
+    "shutter": "1/30",
+    "iso": 2500,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0549.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 29,
+    "aperture": 4,
+    "shutter": "1/60",
+    "iso": 640,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0571.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 43,
+    "aperture": 4,
+    "shutter": "1/30",
+    "iso": 800,
+    "place": {
+      "name": "Guangzhou, China",
+      "lat": 23.12,
+      "lon": 113.25
+    }
+  },
+  "IMG_0630.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 43,
+    "aperture": 8,
+    "shutter": "1",
+    "iso": 200,
+    "place": {
+      "name": "Hong Kong",
+      "lat": 22.28,
+      "lon": 114.17
+    }
+  },
+  "IMG_0670-2.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF24-105mm F4 L IS USM",
+    "focalLength": 67,
+    "aperture": 4,
+    "shutter": "1/125",
+    "iso": 25600,
+    "place": {
+      "name": "Hong Kong",
+      "lat": 22.28,
+      "lon": 114.17
+    }
+  }
+}

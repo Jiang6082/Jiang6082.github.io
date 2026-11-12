@@ -3,7 +3,7 @@
     {
       "id": "in-transit",
       "title": "In transit",
-      "description": "Trains, tracks, and the streets around them.",
+      "description": "Trains, ferries, and the streets around them.",
       "photos": [
         {
           "src": "IMG_0116.jpg",
@@ -28,6 +28,18 @@
           "title": "Up the hillside",
           "caption": "A tram with the harbor in the background.",
           "alt": "A green tram climbing a wooded hillside above a hazy harbor skyline"
+        },
+        {
+          "src": "IMG_0028.jpg",
+          "title": "To let",
+          "caption": "Shop and pub signs stacked along a London street.",
+          "alt": "Hanging shop and pub signs, including a golden bell for The Old Bell, along a London street with glass towers behind"
+        },
+        {
+          "src": "IMG_0670-2.jpg",
+          "title": "Star Ferry",
+          "caption": "A Star Ferry crossing the harbour at night.",
+          "alt": "A Star Ferry crossing Victoria Harbour at night in front of Hong Kong Island’s lit skyline"
         }
       ]
     },
@@ -53,7 +65,7 @@
     {
       "id": "open-air",
       "title": "Open air",
-      "description": "Coastlines, blossoms, and bamboo.",
+      "description": "Coastlines, gardens, blossoms, and zoos.",
       "photos": [
         {
           "src": "IMG_0047.jpg",
@@ -72,6 +84,92 @@
           "title": "Among the bamboo",
           "caption": "Small red gates against stone markers.",
           "alt": "Red torii gates resting against stone markers in a bamboo grove"
+        },
+        {
+          "src": "IMG_0254.jpg",
+          "title": "Scarlet ibises",
+          "caption": "Ibises and egrets at the edge of a pond.",
+          "alt": "Scarlet ibises and white egrets wading at the edge of a pond beneath flowering shrubs"
+        },
+        {
+          "src": "IMG_0389.jpg",
+          "title": "Resting panda",
+          "caption": "A panda draped over a boulder.",
+          "alt": "A giant panda sprawled across a white boulder, one paw hanging down"
+        },
+        {
+          "src": "IMG_0407.jpg",
+          "title": "Bronze family",
+          "caption": "Bronze figures in a garden.",
+          "alt": "Bronze statues of a family and an older man gesturing upward, in a garden in front of apartment blocks"
+        }
+      ]
+    },
+    {
+      "id": "after-dark",
+      "title": "After dark",
+      "description": "Skylines and bridges lit up at night.",
+      "photos": [
+        {
+          "src": "IMG_0071.jpg",
+          "title": "Across the Huangpu",
+          "caption": "Lujiazui lit up across the river.",
+          "alt": "Shanghai’s Lujiazui skyline lit up at night across the Huangpu River, with the Oriental Pearl Tower and Shanghai Tower"
+        },
+        {
+          "src": "IMG_0498.jpg",
+          "title": "Canton Tower",
+          "caption": "Canton Tower above the Pearl River.",
+          "alt": "Canton Tower glowing in rainbow light above the Pearl River at night, with an arched bridge below"
+        },
+        {
+          "src": "IMG_0499.jpg",
+          "title": "Rainbow lattice",
+          "caption": "A closer look at the tower’s lights.",
+          "alt": "Close view of Canton Tower’s twisted lattice lit in rainbow colors at night"
+        },
+        {
+          "src": "IMG_0549.jpg",
+          "title": "Kapok on the bridge",
+          "caption": "Kapok blossoms projected across a bridge.",
+          "alt": "Liede Bridge at night, its sail-like panels lit with a painting of red kapok blossoms, a tour boat passing below"
+        },
+        {
+          "src": "IMG_0571.jpg",
+          "title": "Pearl River at night",
+          "caption": "Tower, bridge, and tour boats.",
+          "alt": "Canton Tower and Liede Bridge lit up at night over the Pearl River, with tour boats on the water"
+        },
+        {
+          "src": "IMG_0630.jpg",
+          "title": "Victoria Harbour",
+          "caption": "Hong Kong Island from across the harbour.",
+          "alt": "Hong Kong Island’s skyline at night across Victoria Harbour, with the Bank of China Tower and IFC"
+        }
+      ]
+    },
+    {
+      "id": "halls-corridors",
+      "title": "Halls & corridors",
+      "description": "Gothic courts, painted beams, and carved screens.",
+      "photos": [
+        {
+          "src": "IMG_0003.jpg",
+          "title": "Royal Courts",
+          "caption": "Gothic towers under a grey sky.",
+          "alt": "Gothic stone towers and spires of the Royal Courts of Justice under a grey sky"
+        },
+        {
+          "src": "IMG_0098.jpg",
+          "title": "The long corridor",
+          "caption": "Red pillars and painted beams.",
+          "alt": "A long covered walkway with red pillars and painted beams, people resting along its benches"
+        },
+        {
+          "src": "IMG_0411.jpg",
+          "title": "Through the hall",
+          "caption": "A long hall seen through an arched doorway.",
+          "alt": "View through an arched stone doorway into a long hall with carved dark wooden screens and visitors"
         }
       ]
     }
