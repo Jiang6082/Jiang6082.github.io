@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID, createHash } from "node:crypto";
 import sharp from "sharp";
+import { extractDetails, readDetails, writeDetails } from "../photo-details.mjs";
 export async function createManager(
   root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."),
 ) {
@@ -193,6 +194,13 @@ export async function createManager(
           });
           album.photos.push({ src: name, alt: "Photograph", hidden: false });
           await save(current.catalog);
+          // Camera settings and city-level place; exact GPS is never stored.
+          const found = await extractDetails(body);
+          if (Object.keys(found).length) {
+            const details = await readDetails(root);
+            details[name] = found;
+            await writeDetails(root, details);
+          }
         } else throw fail(404, "Not found");
         return read();
       });

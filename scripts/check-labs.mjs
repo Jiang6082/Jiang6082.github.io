@@ -24,22 +24,7 @@ for (const sigma of [0.05, 0.25, 0.8])
 assert.equal(callValue(110, 100, 1, 0, 0), 10);
 assert.throws(() => callValue(0, 100, 1, 0.25, 0.04), RangeError);
 const html = (p) => readFileSync(`dist/${p}/index.html`, "utf8");
-const room = html("travel-world"),
-  gallery = html("photography"),
-  resume = html("resume");
-const photos = JSON.parse(
-  room.match(/id="room-data"[^>]*>([\s\S]*?)<\/script>/)[1],
-);
-assert.equal(
-  photos.length,
-  (gallery.match(/data-group="photographs"/g) || []).length,
-);
-for (const p of photos) {
-  assert(p.alt && p.aspect > 0);
-  for (const path of [p.thumb, p.texture, p.full])
-    assert(existsSync(`dist${path}`));
-}
-assert(room.includes('id="start-room" hidden'));
+const resume = html("resume");
 assert(html("options-lab").includes('id="start-surface" hidden'));
 assert(
   !/Leadership|Achievements|Quant Trading Group|I build research tools/.test(
@@ -55,7 +40,7 @@ const publicPages = [
 ];
 for (const p of publicPages)
   assert(!/\bQJS\b|\/projects\/qjs/.test(readFileSync(p, "utf8")));
-for (const name of ["travel-world", "options-lab"]) {
+for (const name of ["options-lab"]) {
   const page = html(name);
   assert(
     !/<link[^>]+rel="modulepreload"[^>]+scene\./.test(page),
@@ -63,7 +48,7 @@ for (const name of ["travel-world", "options-lab"]) {
   );
 }
 const files = readdirSync("dist/_astro");
-for (const prefix of ["travel-world.astro_", "options-lab.astro_"]) {
+for (const prefix of ["options-lab.astro_"]) {
   const script = readFileSync(
     "dist/_astro/" +
       files.find((f) => f.startsWith(prefix) && f.endsWith(".js")),
@@ -72,5 +57,5 @@ for (const prefix of ["travel-world.astro_", "options-lab.astro_"]) {
   assert(script.includes("import("), "3D code must load only after activation");
 }
 console.log(
-  "Passed: independent option prices, 972 model boundary/monotonicity cases, photo-room catalog/assets, lazy 3D loading, hidden entry controls, and requested public removals.",
+  "Passed: independent option prices, 972 model boundary/monotonicity cases, lazy 3D loading, hidden entry controls, and requested public removals.",
 );

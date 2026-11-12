@@ -1,9 +1,9 @@
 ---
 // Shared fullscreen lightbox. A page provides the data on
 // `window.__GALLERY__` (array of { key, title, items:[{title,caption,alt,
-// placeholder,thumb,full}] }) and renders clickable elements carrying
-// `data-group` + `data-index`. Click → open; scroll → zoom; drag → pan;
-// ← / → → navigate; Esc / backdrop → close.
+// placeholder,thumb,full,place?,settings?}] }) and renders clickable elements
+// carrying `data-group` + `data-index`, or calls window.__openLightbox(key, i).
+// Click → open; scroll → zoom; drag → pan; ← / → → navigate; Esc / backdrop → close.
 ---
 
 <div
@@ -22,6 +22,8 @@
     <figcaption class="lb-cap">
       <h2 class="lb-title"></h2>
       <p class="lb-caption muted"></p>
+      <p class="lb-place"></p>
+      <p class="lb-settings"></p>
       <span class="lb-counter muted small"></span>
     </figcaption>
   </figure>
@@ -35,6 +37,10 @@
     placeholder: boolean;
     thumb: string;
     full: string;
+    /** City-level place name, e.g. "Kyoto, Japan". */
+    place?: string;
+    /** Camera, lens, and exposure, e.g. "Sony α7 IV · 35 mm · ƒ/1.8". */
+    settings?: string;
   }
   interface Group {
     key: string;
@@ -50,6 +56,8 @@
   const elTitle = lb.querySelector<HTMLElement>(".lb-title")!;
   const elCaption = lb.querySelector<HTMLElement>(".lb-caption")!;
   const elCounter = lb.querySelector<HTMLElement>(".lb-counter")!;
+  const elPlace = lb.querySelector<HTMLElement>(".lb-place")!;
+  const elSettings = lb.querySelector<HTMLElement>(".lb-settings")!;
   const btnPrev = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
   const btnNext = lb.querySelector<HTMLButtonElement>(".lb-next")!;
   const btnClose = lb.querySelector<HTMLButtonElement>(".lb-close")!;
@@ -103,6 +111,10 @@
     elTitle.style.display = "none";
     elCaption.textContent = "";
     elCaption.style.display = "none";
+    elPlace.textContent = item.place ?? "";
+    elPlace.hidden = !item.place;
+    elSettings.textContent = item.settings ?? "";
+    elSettings.hidden = !item.settings;
     const multi = current.length > 1;
     elCounter.textContent = multi ? `${index + 1} / ${current.length}` : "";
     btnPrev.style.display = multi ? "" : "none";
@@ -134,6 +146,8 @@
     index = (index - 1 + current.length) % current.length;
     render();
   };
+
+  (window as any).__openLightbox = open;
 
   document.querySelectorAll<HTMLElement>("[data-group]").forEach((el) => {
     el.addEventListener("click", (e) => {
@@ -285,6 +299,34 @@
   .lb-caption {
     margin: 0.25rem 0 0;
     color: rgba(255, 255, 255, 0.7) !important;
+  }
+  .lb-place {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    color: #fff;
+  }
+  .lb-place::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.95em;
+    margin-right: 0.4em;
+    vertical-align: -0.1em;
+    background: currentColor;
+    opacity: 0.7;
+    --pin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.6a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2z'/%3E%3C/svg%3E");
+    -webkit-mask: var(--pin) center / contain no-repeat;
+    mask: var(--pin) center / contain no-repeat;
+  }
+  .lb-settings {
+    margin: 0.3rem 0 0;
+    font: 0.8rem/1.5 var(--font-mono);
+    color: rgba(255, 255, 255, 0.72);
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-place[hidden],
+  .lb-settings[hidden] {
+    display: none;
   }
   .lb-counter {
     display: inline-block;

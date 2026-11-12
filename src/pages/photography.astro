@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
 import { collections, singles } from "../data/photos";
+import { detailsFor, settingsLine } from "../data/photo-details";
 import { SITE } from "../config";
 import { getImage } from "astro:assets";
 const files = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
@@ -45,6 +46,8 @@ const processed = await Promise.all(
       alt: p.alt || p.title || `Photograph ${i + 1} by Charles Jiang`,
       location: p.location || "",
       date: p.date || "",
+      place: detailsFor(p.src).place?.name ?? "",
+      settings: settingsLine(detailsFor(p.src)),
       album: album.id,
       albumTitle: album.title,
       placeholder: false,
@@ -85,8 +88,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     </div>
   </header>
   <p class="page-shell">
-    <a class="text-link" href={`${base}/travel-world`}
-      >Enter the 3D travel world <span aria-hidden="true">↗</span></a
+    <a class="text-link" href={`${base}/photography/map`}
+      >See where they were taken <span aria-hidden="true">↗</span></a
     >
   </p>
   <div class="gallery-toolbar page-shell">

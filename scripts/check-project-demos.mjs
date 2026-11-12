@@ -41,20 +41,6 @@ for (const day of [20, 21, 30, 41])
   }
 assert.equal(qlike(20, 20), 0);
 assert(qlike(40, 20) > qlike(30, 20));
-const world = readFileSync("dist/travel-world/index.html", "utf8");
-const photos = JSON.parse(
-  world.match(/id="room-data"[^>]*>([\s\S]*?)<\/script>/)[1],
-);
-for (const id of ["railway", "airfield", "coast", "garden", "streets"])
-  assert(world.includes(`data-stop="${id}"`));
-assert.equal(
-  photos.filter((p) => p.destinations.includes("airfield")).length,
-  0,
-);
-assert(photos.some((p) => p.destinations.includes("coast")));
-assert(
-  readFileSync("dist/photo-room/index.html", "utf8").includes("/travel-world/"),
-);
 for (const [slug, kind] of [
   ["idx-exchange", "homes"],
   ["geld", "costs"],
@@ -66,5 +52,5 @@ for (const [slug, kind] of [
   assert(page.includes("Try the interactive demo"));
 }
 console.log(
-  "Passed: search filtering/pagination/empty states, BH step-up cases, past-only forecasts, destination coverage, legacy route, and all four walkthrough demos.",
+  "Passed: search filtering/pagination/empty states, BH step-up cases, past-only forecasts, and all four walkthrough demos.",
 );

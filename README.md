@@ -6,7 +6,7 @@
 
 Project walkthroughs, a web résumé, notes, and photography.
 
-**Stack:** Astro, TypeScript, Three.js (optional 3D views), Sharp, Schibsted Grotesk.
+**Stack:** Astro, TypeScript, Leaflet (photo map), Three.js (options surface), Sharp, Schibsted Grotesk.
 
 ## Run locally
 
@@ -32,7 +32,7 @@ npm run preview
 | Project walkthroughs   | `src/data/research.ts`                                |
 | Résumé                 | `src/data/resume.ts`                                  |
 | Notes                  | `src/content/blog/`                                   |
-| Photos                 | `npm run photos:manage` (see `PHOTO-MANAGER.md`)      |
+| Photos and their details | `npm run photos` or `npm run photos:manage` (see `PHOTO-MANAGER.md`) |
 | Share image            | `npm run og` regenerates `public/og.jpg`              |
 | Colors and type        | `src/styles/global.css`                               |
 

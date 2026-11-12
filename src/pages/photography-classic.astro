@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getImage } from "astro:assets";
 import { collections, singles, type Photo } from "../data/photos";
+import { detailsFor, settingsLine } from "../data/photo-details";
 
 // All images under src/photos are imported so Astro can optimize them and
 // expose their real dimensions. Files are resolved by `src` at build time.
@@ -15,9 +16,12 @@ const clampAr = (ar: number) => Math.max(0.5, Math.min(ar, 2.6));
 // generating an optimized thumbnail + full-size WebP for real photos.
 async function toItem(p: Photo) {
   const mod = p.src ? files[`../photos/${p.src}`] : undefined;
+  const details = detailsFor(p.src);
   const base = {
     title: "",
-    caption: "",
+    caption: [details.place?.name, settingsLine(details)]
+      .filter(Boolean)
+      .join(" — "),
     alt: p.alt || p.title || "Photo",
   };
   if (!mod) {
