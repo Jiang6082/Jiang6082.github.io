@@ -126,6 +126,28 @@ export const resume = {
       ],
     },
     {
+      name: "Poker Opponent Modeling",
+      dates: "November 2026",
+      tools: "Python · DuckDB · Polars · PokerKit · NumPy · SciPy · scikit-learn",
+      links: [{ label: "Poker walkthrough", href: "/projects/poker" }],
+      bullets: [
+        "Audited 21.6 million online hand histories across 37 checksum-verified shards with DuckDB, flagging duplicates, conflicting hand IDs, and errors in the published dataset card.",
+        "Replayed 51,854 hands action by action with PokerKit, using exact decimal chip accounting with zero failures, to build 447,356 leakage-free decision snapshots.",
+        "Built an empirical-Bayes model that shrinks each player’s action frequencies toward the population; on 11,298 later decisions it cut log loss from 0.659 to 0.577 (95% interval for the change: −0.087 to −0.076).",
+      ],
+    },
+    {
+      name: "Treasury Yield-Curve Research",
+      dates: "November 2026",
+      tools: "Python · pandas · NumPy · SciPy · scikit-learn · Matplotlib",
+      links: [{ label: "Treasury walkthrough", href: "/projects/treasury-yields" }],
+      bullets: [
+        "Built a reproducible pipeline on 4,001 daily Treasury curves (2010–2025) from hash-verified official sources, cross-checked against all 16,004 matching FRED values.",
+        "Forecast five-day 10-year yield changes with monthly-refit Ridge models, purging overlapping labels at every refit; on 993 held-out forecasts the model did not beat a no-change baseline (14.24 vs. 14.20 bp RMSE).",
+        "Measured bond risk for a $1M 10-year position (DV01 $817.57/bp) and showed duration plus convexity matches exact repricing within $0.13 for a 10 bp shock.",
+      ],
+    },
+    {
       name: "Market Volatility Forecasting",
       dates: "February 2026 – March 2026",
       tools: "Python · pandas · NumPy · scikit-learn · PyTorch · Matplotlib",
