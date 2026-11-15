@@ -36,6 +36,10 @@ npm run preview
 | Share image            | `npm run og` regenerates `public/og.jpg`              |
 | Colors and type        | `src/styles/global.css`                               |
 
+## Parked pages
+
+- `/options-lab`: the 3D Black–Scholes call surface, built for Project Olsen. Olsen is off the Projects page, so nothing links here. The page is still live and still covered by `check-labs.mjs`. Link it from a project again, or delete it.
+
 ## Deploy
 
 Every push and pull request builds the site and runs the checks. Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`.

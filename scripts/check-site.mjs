@@ -43,15 +43,26 @@ for (const file of htmls) {
   }
 }
 const projects = readFileSync(join(root, "projects/index.html"), "utf8");
-for (const id of [
+const projectIds = [
   "project-emberforge",
   "project-geld",
   "market-volatility-forecasting",
-  "Project-Olsen",
+  "treasury-yield-curve-research",
+  "poker",
   "idx-exchange",
-])
-  assert(projects.includes(`id="${id}"`));
-assert(!projects.includes('href="https://github.com/Jiang6082/Project-Olsen"'));
+];
+for (const id of projectIds) assert(projects.includes(`id="${id}"`), `projects page: missing ${id}`);
+assert(!projects.includes('id="Project-Olsen"'), "Olsen is no longer listed");
+// Private repositories must never be linked from any page.
+const privateRepos = ["Project-Olsen", "poker", "treasury-yield-curve-research"];
+for (const file of htmls) {
+  const html = readFileSync(file, "utf8");
+  for (const repo of privateRepos)
+    assert(
+      !new RegExp(`github\\.com/Jiang6082/${repo}(?![\\w-])`, "i").test(html),
+      `${file}: links to private repo ${repo}`,
+    );
+}
 const gallery = readFileSync(join(root, "photography/index.html"), "utf8");
 const serialized = gallery.match(
   /window\.__GALLERY__ = (\[[\s\S]*?\]);<\/script>/,
@@ -82,5 +93,5 @@ for (const photo of allPhotos) {
   assert(albumPhotos.some((item) => item.full === photo.full));
 }
 console.log(
-  `Passed: all 5 project anchors, private-link handling, ${allPhotos.length} photographs in ${groups.length - 1} albums, ${htmls.length} pages and ${checked} local links/assets.`,
+  `Passed: all ${projectIds.length} project anchors, private-link handling, ${allPhotos.length} photographs in ${groups.length - 1} albums, ${htmls.length} pages and ${checked} local links/assets.`,
 );

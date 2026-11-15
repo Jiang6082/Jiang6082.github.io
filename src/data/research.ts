@@ -23,7 +23,10 @@ export interface Walkthrough {
   caveat: string;
   facts: { value: string; label: string }[];
   sections: Section[];
-  source: string;
+  /** Public repository. Omit for private projects so nothing links to GitHub. */
+  source?: string;
+  /** Has an interactive demo in ProjectPlayground. */
+  demo?: boolean;
 }
 const source = (repo: string, ref: string, path: string, label: string) => ({
   label,
@@ -85,6 +88,7 @@ export const walkthroughs: Walkthrough[] = [
       { value: "2.53", label: "Diagnostic long–short Sharpe" },
     ],
     source: "https://github.com/Jiang6082/project-emberforge",
+    demo: true,
     sections: [
       {
         id: "design",
@@ -219,6 +223,7 @@ export const walkthroughs: Walkthrough[] = [
       { value: "0.963", label: "Intraday V13 matched SIP Sharpe" },
     ],
     source: "https://github.com/Jiang6082/project-geld",
+    demo: true,
     sections: [
       {
         id: "daily-method",
@@ -433,6 +438,7 @@ export const walkthroughs: Walkthrough[] = [
       { value: "39.7%", label: "Lower QLIKE than persistence" },
     ],
     source: "https://github.com/Jiang6082/market-volatility-forecasting",
+    demo: true,
     sections: [
       {
         id: "protocol",
@@ -549,6 +555,226 @@ export const walkthroughs: Walkthrough[] = [
     ],
   },
   {
+    slug: "treasury-yields",
+    project: "treasury-yield-curve-research",
+    title: "Treasury yield-curve signals",
+    intro:
+      "Does the shape of the Treasury curve forecast next week’s move in the 10-year yield? A reproducible test on 16 years of official data.",
+    summary: {
+      problem:
+        "Slope and curvature are often cited as predictors of rate moves. I wanted to test that cleanly: official data, strict chronological validation, and an honest comparison against simply predicting no change.",
+      built:
+        "A reproducible pipeline that snapshots and hash-verifies Treasury par-yield archives, builds 20 causal curve and momentum features, refits Ridge models monthly on expanding windows, scores five forecasts on 2022–2025, and translates yield moves into bond risk (duration, convexity, DV01).",
+      decisions: [
+        "Training rows must have their five-day target end before each refit, which purges overlapping labels.",
+        "The penalty and features were fixed on 2016–2021 validation before the 2022–2025 test was scored.",
+        "Uncertainty comes from a paired block bootstrap that keeps overlapping forecasts and regime clusters together.",
+        "Every source file is kept with its URL, timestamp, and SHA-256 hash, and cross-checked against FRED.",
+      ],
+      next: "Log forecasts prospectively on new data, add autoregressive and rolling-window baselines, and test the momentum and volatility features separately.",
+    },
+    caveat:
+      "Par-yield changes aren’t tradable returns, so no trading performance is claimed.",
+    facts: [
+      { value: "4,001", label: "Daily Treasury curves, 2010–2025" },
+      { value: "993", label: "Held-out forecasts, 2022–2025" },
+      { value: "14.24 bp", label: "Ridge RMSE (no change: 14.20 bp)" },
+    ],
+    sections: [
+      {
+        id: "data",
+        title: "Official data, kept exactly as published",
+        paragraphs: [
+          "The sample is 4,001 daily curves from January 2010 to December 2025 at the 2-, 5-, 10-, and 30-year points, from Treasury’s CSV archives (2010–2023) and annual XML feeds (2024–2025). Every raw file is stored with its URL, retrieval time, and SHA-256 hash, so a rerun replays the same bytes offline.",
+          "Cleaning rejects duplicates and invalid values and never fills or interpolates. One all-missing row (October 11, 2010) is dropped. After 60 days of feature warm-up and five unlabeled days at the end, 3,936 rows remain.",
+          "An independently downloaded FRED sample matches all 16,004 maturity-date values. That checks consistency between publishers, not market prices.",
+        ],
+        sources: [],
+      },
+      {
+        id: "method",
+        title: "Features, target, and a strict timeline",
+        paragraphs: [
+          "The target is the change in the 10-year yield over the next five Treasury observation days, in basis points. Counting observed dates rather than calendar days avoids filling weekends and holidays.",
+          "The 20 features are level (the mean of the four yields), the 10Y−2Y and 30Y−5Y slopes, curvature, 1-, 5-, and 20-day changes at each tenor, 5- and 20-day slope changes, and 20- and 60-day volatility of daily 10-year changes.",
+          "Ridge is refit monthly on an expanding window. At each refit, only rows whose five-day target has already ended can enter training, so overlapping labels never leak. Scaling is fit inside each training sample. The penalty was chosen from 0.1 to 10,000 on 2016–2021 validation and fixed before the test.",
+        ],
+        code: "target(t)  = y10(t+5) − y10(t)      bp, five observed dates\ncurvature  = 2·y5 − y2 − y10\ntrain rows = { s : s + 5 < refit date }",
+        sources: [],
+      },
+      {
+        id: "results",
+        title: "Held-out results: no edge over no change",
+        paragraphs: [
+          "Across 993 test forecasts, full Ridge reached 14.237 bp RMSE against 14.201 bp for predicting zero change. The paired difference in mean squared error was +1.032 bp², with a 95% block-bootstrap interval of [−2.424, +4.355]. Negative would favor Ridge, so the interval doesn’t support an edge.",
+          "Five-day momentum was far worse at 20.104 bp. Both Ridge models picked the largest penalty in the grid, which shrinks them toward the mean. I didn’t widen the grid after seeing the test.",
+        ],
+        table: {
+          caption: "2022–2025 held-out forecasts; lower error is better",
+          columns: ["Model", "MAE (bp)", "RMSE (bp)"],
+          rows: [
+            ["Zero change", "11.158", "14.201"],
+            ["Historical mean", "11.182", "14.228"],
+            ["Five-day momentum", "15.824", "20.104"],
+            ["Curve-only Ridge", "11.188", "14.241"],
+            ["Full Ridge", "11.183", "14.237"],
+          ],
+        },
+        sources: [],
+      },
+      {
+        id: "regimes",
+        title: "Regimes, and an uncertainty band that broke",
+        paragraphs: [
+          "I split the test forecasts by whether the curve was inverted and whether recent volatility was above the pre-test median of 4.287 bp a day. Ridge was slightly worse than no change in every slice.",
+          "A nominal 90% prediction band, sized from validation errors, covered only 71.9% of test outcomes, and 69.5% in high volatility. Volatility in 2022–2025 ran well above the validation period, and the band didn’t adapt.",
+        ],
+        table: {
+          caption: "Test RMSE by regime at the forecast date (bp); slices overlap",
+          columns: ["Regime", "Forecasts", "Zero change", "Full Ridge"],
+          rows: [
+            ["Inverted curve", "541", "15.330", "15.347"],
+            ["Non-inverted", "452", "12.718", "12.782"],
+            ["High volatility", "882", "14.689", "14.722"],
+            ["Low volatility", "111", "9.464", "9.549"],
+          ],
+        },
+        sources: [],
+      },
+      {
+        id: "risk",
+        title: "From yield moves to bond risk",
+        paragraphs: [
+          "To put forecasts in portfolio terms, the project prices a hypothetical $1 million, 10-year, 4% semiannual bond at a 4% yield. Its modified duration is 8.1757 years, convexity 78.8979, and DV01 $817.57 per basis point.",
+          "For a +10 bp shock, duration alone predicts −$8,175.72. Adding convexity gives −$8,136.27, within 13 cents of exact repricing at −$8,136.40. The derivatives are checked against finite differences.",
+        ],
+        code: "ΔP ≈ −D·P·Δy + ½·C·P·Δy²\nD = 8.1757 yrs   C = 78.8979   DV01 = $817.57/bp\n+10 bp: −$8,175.72 (duration)   −$8,136.27 (+convexity)   −$8,136.40 (exact)",
+        sources: [],
+      },
+      {
+        id: "what-didnt-work",
+        title: "What didn’t work: the curve didn’t beat a random walk",
+        paragraphs: [
+          "The headline result is negative. Level, slope, curvature, momentum, and volatility together didn’t forecast next-week 10-year moves better than assuming no change, and the uncertainty band under-covered once volatility shifted.",
+          "Treasury also changed its curve methodology on December 6, 2021, close to the test boundary, which limits how much the validation period says about the test. The test has now been seen, so any new idea needs a fresh holdout.",
+        ],
+        sources: [],
+      },
+    ],
+  },
+  {
+    slug: "poker",
+    project: "poker",
+    title: "Poker opponent modeling",
+    intro:
+      "Can a player’s own history predict their next action better than population behavior? A study built on 21.6 million audited hands.",
+    summary: {
+      problem:
+        "Opponent models usually start from population averages. I wanted to measure how much one player’s own history adds, using real hand histories and a strict replay so every decision is legal and in order.",
+      built:
+        "A pipeline that downloads and checksum-verifies a 1.28 GB public hand-history corpus, audits every row with DuckDB, replays selected hands action by action with PokerKit, extracts pre-decision features, and compares population and personalized action models on later dates.",
+      decisions: [
+        "Player identities stay scoped to one site; matching names across sites are never merged.",
+        "Replay parses each logged action directly, with exact decimal chip accounting, instead of letting the engine repair missing actions.",
+        "Every feature comes from before the decision, and a player’s past tendencies use completed prior days only.",
+        "The personal model is a Dirichlet prior centered on population frequencies, with its strength tuned on validation dates.",
+      ],
+      next: "Fit a full hierarchical model and bet-size predictions, and build an adapter for my own Poker Now games with stable player IDs.",
+    },
+    caveat:
+      "Results assume the dataset’s anonymized player IDs persist over time, which the evidence supports but can’t prove.",
+    facts: [
+      { value: "21.6M", label: "Hand rows audited" },
+      { value: "51,854", label: "Hands replayed, zero failures" },
+      { value: "−0.082", label: "Log-loss change from personalizing" },
+    ],
+    sections: [
+      {
+        id: "audit",
+        title: "Auditing 21.6 million hands",
+        paragraphs: [
+          "The source is a public corpus of 2009 online no-limit Hold’em histories, pinned to one revision. The audit covered all 37 shards: 21,616,175 rows and 1.28 GB compressed. After removing 400 duplicate copies and quarantining 547 rows with conflicting hand IDs, 21,605,407 hands remain.",
+          "Players appear as opaque tokens. Across 280,389 site-scoped tokens and 116.9 million player-hand observations, the median player has 60 hands and the busiest has 106,800.",
+          "The audit also caught problems in the data itself: the dataset card swaps the PokerStars and PartyPoker totals, and every iPoker hand is missing starting stacks. I reported these rather than silently correcting them, and left iPoker out of the modeling.",
+        ],
+        table: {
+          caption: "Raw hands by site",
+          columns: ["Site", "Hands"],
+          rows: [
+            ["PokerStars", "8,298,718"],
+            ["iPoker Network", "5,996,745"],
+            ["PartyPoker", "3,092,698"],
+            ["Ongame Network", "1,647,765"],
+            ["Full Tilt Poker", "1,299,503"],
+            ["Absolute Poker", "1,270,658"],
+          ],
+        },
+        sources: [],
+      },
+      {
+        id: "identity",
+        title: "Can a token be treated as one person?",
+        paragraphs: [
+          "Personal models only make sense if a token keeps referring to the same player. The anonymization mapping isn’t published, so I tested for consistency instead. 242,095 tokens appear in more than one source file, and when a token reappears moments later it sits in the same seat 99.95–99.999% of the time on five of the six sites.",
+          "iPoker matched only 11.6%, consistent with its missing metadata, so it stayed out. Persistence is supported, not confirmed, and every result below is conditional on it.",
+        ],
+        table: {
+          caption: "Same-seat rate for a token’s rapid successive appearances",
+          columns: ["Site", "Observations", "Same seat"],
+          rows: [
+            ["PokerStars", "229,773", "99.999%"],
+            ["Full Tilt Poker", "188,547", "99.995%"],
+            ["Absolute Poker", "201,854", "99.987%"],
+            ["Ongame Network", "124,348", "99.961%"],
+            ["PartyPoker", "233,753", "99.955%"],
+            ["iPoker Network", "48,355", "11.564%"],
+          ],
+        },
+        sources: [],
+      },
+      {
+        id: "replay",
+        title: "Strict replay and decision snapshots",
+        paragraphs: [
+          "The study follows two PokerStars players at the $0.25 big blind in 3–6-player games, picked for the most hands and for opposite styles: in training, one raises preflop 3.45% of the time and the other 15.94%. Training dates come before July 5, 2009, validation is July 5, and testing starts July 6.",
+          "Each hand is replayed with PokerKit one logged action at a time, checking whose turn it is, card ownership, the final state, and chip conservation. All 51,854 attempted hands replayed with zero failures, producing 447,356 decision snapshots.",
+          "A snapshot records only what was public before the decision: position, street, players left, stacks, pot, the price to call, pot odds, stack-to-pot ratio, earlier betting, and board texture.",
+        ],
+        code: "snapshot (before the action)\n  position, street, players left\n  effective stack, pot, to call, pot odds, SPR\n  earlier raises and calls, board texture\nlabel: fold | check/call | bet/raise",
+        sources: [],
+      },
+      {
+        id: "results",
+        title: "Held-out action prediction",
+        paragraphs: [
+          "On 11,298 test decisions from later dates, the personalized model cut log loss from 0.659 to 0.577, a change of −0.082 with a 95% source-file bootstrap interval of [−0.087, −0.076]. Accuracy rose from 75.9% to 77.4%. Both players improved: 0.669 to 0.595 and 0.648 to 0.559.",
+          "The smoothing matters. Raw personal frequencies helped too, at 0.613, but borrowing strength from the population prior did better. A population logistic regression did worse than simple frequencies here.",
+        ],
+        table: {
+          caption: "11,298 held-out decisions; lower log loss and Brier score are better",
+          columns: ["Model", "Log loss", "Brier", "Accuracy"],
+          rows: [
+            ["Bayesian smoothed", "0.57704", "0.34540", "77.40%"],
+            ["Player frequencies", "0.61324", "0.34661", "77.33%"],
+            ["Population", "0.65873", "0.38023", "75.89%"],
+            ["Population logistic", "0.71545", "0.41379", "71.46%"],
+            ["Marginal frequency", "0.97100", "0.58384", "57.87%"],
+          ],
+        },
+        sources: [],
+      },
+      {
+        id: "what-didnt-work",
+        title: "What didn’t work: guessing hidden cards",
+        paragraphs: [
+          "The original goal included estimating opponents’ hidden hands. Cards are only revealed at showdown, and which hands reach showdown isn’t random, so a naive model would learn from a biased sample. I didn’t fit one, and unrevealed hands were never labeled as weak.",
+          "A full hierarchical Bayesian model, bet-size prediction, and session-aware timing are also still unbuilt. The two players were chosen after the fact, so the results describe this pair, not poker players in general.",
+        ],
+        sources: [],
+      },
+    ],
+  },
+  {
     slug: "idx-exchange",
     project: "idx-exchange",
     title: "Property Search Platform",
@@ -575,6 +801,7 @@ export const walkthroughs: Walkthrough[] = [
       { value: "10 / 15 s", label: "Map / listing cache TTL" },
     ],
     source: "https://github.com/Jiang6082/idx-exchange",
+    demo: true,
     sections: [
       {
         id: "request-path",
