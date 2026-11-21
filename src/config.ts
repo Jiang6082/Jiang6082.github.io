@@ -28,6 +28,14 @@ export const GITHUB = {
   username: "jiang6082",
 };
 
+// Heathrow record (/photography/aviation/record). To make the page live,
+// publish the Google Sheet's "Record" tab as CSV (File → Share → Publish to
+// web → Record → Comma-separated values) and paste the link here. Empty =
+// show src/data/heathrow-record.csv from the last build.
+export const AVIATION = {
+  recordSheetCsv: "",
+};
+
 // Cookieless visitor counts via GoatCounter (no consent banner needed).
 // Create a site at https://www.goatcounter.com and put its code here, e.g.
 // "charlesjiang" for charlesjiang.goatcounter.com. Empty = analytics off.

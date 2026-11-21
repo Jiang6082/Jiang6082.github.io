@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
+import AviationTabs from "../../components/AviationTabs.astro";
 import { getImage } from "astro:assets";
 import {
   airframes,
@@ -57,23 +58,15 @@ const cards = await Promise.all(
 );
 
 type Card = (typeof cards)[number];
-const byNewest = (a: Airframe, b: Airframe) =>
-  b.latest.localeCompare(a.latest) || a.registration.localeCompare(b.registration);
 const count = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 // Default view (also the no-JavaScript view): airline, then aircraft type.
+const byType = (a: Airframe, b: Airframe) =>
+  a.type.localeCompare(b.type) || a.registration.localeCompare(b.registration);
 const airlines = [...new Set(cards.map((c) => c.airline))]
   .map((name) => {
-    const list = cards.filter((c) => c.airline === name);
-    const types = [...new Set(list.map((c) => c.type))].sort();
-    return {
-      name,
-      list,
-      types: types.map((type) => ({
-        type,
-        list: list.filter((c) => c.type === type).sort(byNewest),
-      })),
-    };
+    const list = cards.filter((c) => c.airline === name).sort(byType);
+    return { name, list, types: new Set(list.map((c) => c.type)).size };
   })
   .sort((a, b) => b.list.length - a.list.length || a.name.localeCompare(b.name));
 const families = [...new Set(cards.map((c) => c.family))]
@@ -110,6 +103,7 @@ const searchText = (c: Card) =>
   </header>
   <PhotoTabs current="aviation" />
   <div class="page-shell">
+    <AviationTabs current="logbook" />
     {
       sample && (
         <p class="sample-banner">
@@ -173,7 +167,7 @@ const searchText = (c: Card) =>
         <label>
           Group by
           <select data-control="group">
-            <option value="airline">Airline, then type</option>
+            <option value="airline">Airline</option>
             <option value="type">Aircraft type</option>
             <option value="none">No grouping</option>
           </select>
@@ -181,9 +175,9 @@ const searchText = (c: Card) =>
         <label>
           Sort
           <select data-control="sort">
+            <option value="type">Aircraft type</option>
             <option value="newest">Newest first</option>
             <option value="registration">Registration</option>
-            <option value="type">Aircraft type</option>
           </select>
         </label>
         <p class="result-count" aria-live="polite"></p>
@@ -198,16 +192,11 @@ const searchText = (c: Card) =>
               {airline.name}
               <span>
                 {count(airline.list.length, "airframe")} ·{" "}
-                {count(airline.types.length, "type")}
+                {count(airline.types, "type")}
               </span>
             </h2>
-            {airline.types.map((t) => (
-              <div class="subgroup">
-                <h3>
-                  {t.type} <span>{t.list.length}</span>
-                </h3>
-                <div class="grid">
-                  {t.list.map((c) => (
+            <div class="grid">
+                  {airline.list.map((c) => (
                     <article
                       class="airframe"
                       data-reg={c.registration}
@@ -254,9 +243,7 @@ const searchText = (c: Card) =>
                       </div>
                     </article>
                   ))}
-                </div>
-              </div>
-            ))}
+            </div>
           </section>
         ))
       }
@@ -285,10 +272,10 @@ const searchText = (c: Card) =>
     airline: params.get("airline") ?? "all",
     family: params.get("aircraft") ?? "all",
     group: (params.get("group") as Group) ?? "airline",
-    sort: (params.get("sort") as Sort) ?? "newest",
+    sort: (params.get("sort") as Sort) ?? "type",
   };
   if (!["airline", "type", "none"].includes(state.group)) state.group = "airline";
-  if (!["newest", "registration", "type"].includes(state.sort)) state.sort = "newest";
+  if (!["newest", "registration", "type"].includes(state.sort)) state.sort = "type";
 
   const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
   const el = (tag: string, cls?: string, text?: string) => {
@@ -297,7 +284,7 @@ const searchText = (c: Card) =>
     if (text !== undefined) node.textContent = text;
     return node;
   };
-  const heading = (tag: "h2" | "h3", title: string, meta: string) => {
+  const heading = (tag: "h2", title: string, meta: string) => {
     const h = el(tag, undefined, `${title} `);
     h.append(el("span", undefined, meta));
     return h;
@@ -353,15 +340,11 @@ const searchText = (c: Card) =>
       );
       for (const [airline, list] of groups) {
         const section = el("section", "group");
-        const types = groupBy(list, (c) => c.dataset.type!).sort((a, b) => a[0].localeCompare(b[0]));
+        const types = new Set(list.map((c) => c.dataset.type)).size;
         section.append(
-          heading("h2", airline, `${plural(list.length, "airframe")} · ${plural(types.length, "type")}`),
+          heading("h2", airline, `${plural(list.length, "airframe")} · ${plural(types, "type")}`),
+          grid(list),
         );
-        for (const [type, cardsOfType] of types) {
-          const sub = el("div", "subgroup");
-          sub.append(heading("h3", type, String(cardsOfType.length)), grid(cardsOfType));
-          section.append(sub);
-        }
         root.append(section);
       }
     }
@@ -380,7 +363,7 @@ const searchText = (c: Card) =>
     if (state.airline !== "all") next.set("airline", state.airline);
     if (state.family !== "all") next.set("aircraft", state.family);
     if (state.group !== "airline") next.set("group", state.group);
-    if (state.sort !== "newest") next.set("sort", state.sort);
+    if (state.sort !== "type") next.set("sort", state.sort);
     const query = next.toString();
     history.replaceState(null, "", query ? `?${query}` : location.pathname);
   }
@@ -557,20 +540,11 @@ const searchText = (c: Card) =>
     font-weight: 500;
     margin: 0 0 1.25rem;
   }
-  .logbook :global(h2 span),
-  .logbook :global(h3 span) {
+  .logbook :global(h2 span) {
     font: 0.8125rem var(--font-mono);
     color: var(--muted);
     margin-left: 0.5rem;
     letter-spacing: 0;
-  }
-  .logbook :global(.subgroup) {
-    margin-bottom: 1.75rem;
-  }
-  .logbook :global(h3) {
-    font-size: 1.05rem;
-    font-weight: 500;
-    margin: 0 0 0.9rem;
   }
   .logbook :global(.grid) {
     display: grid;

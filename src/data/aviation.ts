@@ -1,5 +1,6 @@
 import raw from "./aviation.csv?raw";
 import { parseCsv } from "../lib/csv.js";
+import { canonicalType } from "../lib/record.js";
 import { detailsFor, settingsLine } from "./photo-details";
 // The aviation logbook: one CSV row per photo, grouped here into airframes
 // (one per registration). Camera settings come from photo-details.json.
@@ -142,3 +143,12 @@ export function noteLine(s: Spot) {
     .filter(Boolean)
     .join(" · ");
 }
+
+/** Logbook photos as Heathrow-record catches (airline + generic type). */
+export const catches = spots.map((s) => ({
+  airline: s.airline,
+  type: canonicalType(s.variant),
+  date: formatDate(s.date),
+  registration: s.registration,
+  sample: s.sample,
+}));

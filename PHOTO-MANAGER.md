@@ -28,10 +28,19 @@ The catalog is `src/data/photos.json`; optimized uploads go into `src/photos/upl
 
 ## Aviation logbook
 
-The Aviation page (`/photography/aviation`) is a spotter's logbook: one card per airframe (registration), grouped by airline and aircraft type, with search, filters, and sorting.
+The Aviation page (`/photography/aviation`) is a spotter's logbook: one card per airframe (registration), grouped by airline, with search, filters, and sorting.
 
 1. Put originals in `photos-src/aviation/` and run `npm run photos`. This resizes them into `src/photos/aviation/` and records their camera settings.
 2. Add one row per photo to `src/data/aviation.csv`. Any spreadsheet app can open and save it. Required columns: `file` (e.g. `aviation/IMG_1234.jpg`), `registration`, `airline`, `manufacturer`, `family` (used for the Aircraft filter, e.g. `A350`, `787`), `variant` (e.g. `A350-1041`), `date` (`YYYY-MM-DD`), and `airport` (IATA code, e.g. `LHR`). Optional columns: `runway`, `movement`, `flight`, `route`, `livery`, `name`, and `spot`. Blank optional columns simply don't show.
 3. More photos of the same registration join that airframe's card automatically.
 
 The demo rows are marked `sample=yes` and use `src/photos/aviation/sample-*.jpg`. Delete both once real photos are in, and the demo banner disappears. `node scripts/check-aviation.mjs` (part of `npm run check`) catches missing photos, bad dates, and a registration listed with two different airlines or types.
+
+## Heathrow record
+
+`/photography/aviation/record` is a checklist of every airline at Heathrow and the aircraft types it flies, with a tick for each type you've photographed. It reads `src/data/heathrow-record.csv`, or your Google Sheet once that's set up.
+
+- **Ticking:** set `photographed` to TRUE (a checkbox in Google Sheets). Logbook photos also tick the matching airline and type automatically. Model codes like `A350-1041` or `777-336ER` match the record's `A350-1000` and `777-300ER`.
+- **Going live:** in Google Sheets, File → Share → Publish to web → the Record tab → Comma-separated values. Paste the link into `src/config.ts` as `AVIATION.recordSheetCsv`. The page then loads the sheet whenever someone opens it.
+- **Snapshot:** `npm run record:pull` copies the published sheet into `src/data/heathrow-record.csv`, so the next site update matches it even without JavaScript.
+- Keep the Record tab's column headers. `node scripts/check-record.mjs` (part of `npm run check`) validates the file.

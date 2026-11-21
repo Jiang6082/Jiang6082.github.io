@@ -10,10 +10,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check && npm run check:site",
-    "check:site": "node scripts/check-site.mjs && node scripts/check-labs.mjs && node scripts/check-project-demos.mjs && node scripts/check-filmstrip-wheel.mjs && node scripts/check-photo-map.mjs && node scripts/check-aviation.mjs && node scripts/check-photo-manager.mjs",
+    "check:site": "node scripts/check-site.mjs && node scripts/check-labs.mjs && node scripts/check-project-demos.mjs && node scripts/check-filmstrip-wheel.mjs && node scripts/check-photo-map.mjs && node scripts/check-aviation.mjs && node scripts/check-record.mjs && node scripts/check-photo-manager.mjs",
     "og": "node scripts/make-og.mjs",
     "photos": "node scripts/resize-photos.mjs",
-    "photos:manage": "node scripts/photo-manager/server.mjs"
+    "photos:manage": "node scripts/photo-manager/server.mjs",
+    "record:pull": "node scripts/pull-record.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",

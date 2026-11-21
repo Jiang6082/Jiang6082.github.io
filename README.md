@@ -34,6 +34,7 @@ npm run preview
 | Notes                  | `src/content/blog/`                                   |
 | Photos and their details | `npm run photos` or `npm run photos:manage` (see `PHOTO-MANAGER.md`) |
 | Aviation logbook       | `src/data/aviation.csv`, photos in `src/photos/aviation/` (see `PHOTO-MANAGER.md`) |
+| Heathrow record        | `src/data/heathrow-record.csv`, or a published Google Sheet set in `src/config.ts` |
 | Share image            | `npm run og` regenerates `public/og.jpg`              |
 | Colors and type        | `src/styles/global.css`                               |
 

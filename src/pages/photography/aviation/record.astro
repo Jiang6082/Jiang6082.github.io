@@ -1,0 +1,477 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PhotoTabs from "../../../components/PhotoTabs.astro";
+import AviationTabs from "../../../components/AviationTabs.astro";
+import { AVIATION } from "../../../config";
+import { catches } from "../../../data/aviation";
+import recordCsv from "../../../data/heathrow-record.csv?raw";
+import { parseRecord, buildRecord, renderRecord, defaultState } from "../../../lib/record.js";
+
+const rows = parseRecord(recordCsv);
+const model = buildRecord(rows, catches);
+const first = renderRecord(model, defaultState);
+const alliances = [...new Set(model.map((a) => a.alliance))].sort((a, b) =>
+  a === "Unaligned" ? 1 : b === "Unaligned" ? -1 : a.localeCompare(b),
+);
+const sampleTicks = catches.some((c) => c.sample);
+const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
+const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
+---
+
+<BaseLayout
+  title="Heathrow record"
+  description="Every airline at London Heathrow and the aircraft they fly, ticked off as Charles Jiang photographs them."
+  wide
+>
+  <header class="record-heading page-shell">
+    <p class="eyebrow">Photography / Aviation / Record</p><h1>
+      Heathrow record
+    </h1><p>
+      Every airline flying to London Heathrow and the aircraft they operate. A
+      type gets ticked once I’ve photographed it.
+    </p>
+  </header>
+  <PhotoTabs current="aviation" />
+  <div class="page-shell">
+    <AviationTabs current="record" />
+    {
+      sampleTicks && (
+        <p class="sample-banner">
+          <strong>Demo.</strong> Ticks marked here come from the sample logbook
+          entries and will disappear with them. Real ticks come from your Google
+          Sheet and your logbook photos.
+        </p>
+      )
+    }
+    <dl class="record-stats" data-stats>
+      <div>
+        <dt>Types photographed</dt>
+        <dd>
+          <span data-stat="caught">{first.stats.caught}</span>
+          <small>/ <span data-stat="types">{first.stats.types}</span></small>
+        </dd>
+      </div>
+      <div>
+        <dt>Complete</dt>
+        <dd>
+          <span data-stat="pct">{pct(first.stats.caught, first.stats.types)}</span><small
+            >%</small
+          >
+        </dd>
+      </div>
+      <div>
+        <dt>Airlines started</dt>
+        <dd>
+          <span data-stat="started">{first.stats.started}</span>
+          <small>/ <span data-stat="airlines">{first.stats.airlines}</span></small>
+        </dd>
+      </div>
+      <div>
+        <dt>Airlines finished</dt>
+        <dd><span data-stat="complete">{first.stats.complete}</span></dd>
+      </div>
+    </dl>
+
+    <div class="record-controls" hidden>
+      <label class="search">
+        <span>Search</span>
+        <input
+          type="search"
+          data-control="q"
+          placeholder="Airline, code, country, or aircraft"
+          autocomplete="off"
+        />
+      </label>
+      <div class="chips" role="group" aria-label="Show">
+        <span class="chips-label">Show</span>
+        <button type="button" data-show="all" aria-pressed="true">All</button>
+        <button type="button" data-show="caught" aria-pressed="false">Photographed</button>
+        <button type="button" data-show="missing" aria-pressed="false">Still to find</button>
+      </div>
+      <div class="chips" role="group" aria-label="Alliance">
+        <span class="chips-label">Alliance</span>
+        <button type="button" data-alliance="all" aria-pressed="true">All</button>
+        {
+          alliances.map((a) => (
+            <button type="button" data-alliance={a} aria-pressed="false">
+              {a}
+            </button>
+          ))
+        }
+      </div>
+      <div class="view">
+        <label>
+          Aircraft
+          <select data-control="scope">
+            <option value="heathrow">Types seen at Heathrow</option>
+            <option value="fleet">Whole fleet</option>
+          </select>
+        </label>
+        <label>
+          Sort
+          <select data-control="sort">
+            <option value="az">Airline A–Z</option>
+            <option value="caught">Most photographed</option>
+            <option value="progress">Closest to complete</option>
+          </select>
+        </label>
+        <p class="source" data-source>
+          {AVIATION.recordSheetCsv ? "Loading the latest sheet…" : "From the last site update"}
+        </p>
+      </div>
+    </div>
+
+    <ul class="legend" aria-label="Key">
+      <li><span class="rec-type is-caught"><span class="rec-check">✓</span>Photographed</span></li>
+      <li><span class="rec-type">Flies to Heathrow</span></li>
+      <li><span class="rec-type is-occasional">Occasional</span></li>
+    </ul>
+
+    <div
+      id="record"
+      class="record"
+      data-sheet={AVIATION.recordSheetCsv}
+      set:html={first.html}
+    />
+    <p class="record-note">
+      Airlines and aircraft come from public schedule and fleet information as
+      of November 2026, and some types are best guesses. “Occasional” means
+      seasonal or substitute aircraft; “Whole fleet” adds types that don’t
+      usually come to Heathrow.
+    </p>
+  </div>
+  <script type="application/json" id="record-data" set:html={json({ rows, catches })} />
+</BaseLayout>
+<script>
+  import { parseRecord, buildRecord, renderRecord, defaultState } from "../../../lib/record.js";
+
+  const root = document.getElementById("record")!;
+  const controls = document.querySelector<HTMLElement>(".record-controls")!;
+  const source = controls.querySelector<HTMLElement>("[data-source]")!;
+  const { rows, catches } = JSON.parse(document.getElementById("record-data")!.textContent!);
+  let model = buildRecord(rows, catches);
+
+  const params = new URLSearchParams(location.search);
+  const state = {
+    ...defaultState,
+    q: params.get("q") ?? "",
+    show: params.get("show") ?? "all",
+    scope: params.get("scope") ?? "heathrow",
+    alliance: params.get("alliance") ?? "all",
+    sort: params.get("sort") ?? "az",
+  };
+
+  const set = (name: string, value: number) => {
+    const el = document.querySelector(`[data-stat="${name}"]`);
+    if (el) el.textContent = String(value);
+  };
+
+  function render() {
+    const { html, stats } = renderRecord(model, state);
+    root.innerHTML = html;
+    set("caught", stats.caught);
+    set("types", stats.types);
+    set("pct", stats.types ? Math.round((stats.caught / stats.types) * 100) : 0);
+    set("started", stats.started);
+    set("airlines", stats.airlines);
+    set("complete", stats.complete);
+    for (const key of ["show", "alliance"] as const)
+      controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset[key] === state[key])),
+      );
+    const next = new URLSearchParams();
+    for (const [key, value] of Object.entries(state))
+      if (value && value !== (defaultState as Record<string, string>)[key]) next.set(key, value);
+    const query = next.toString();
+    history.replaceState(null, "", query ? `?${query}` : location.pathname);
+  }
+
+  const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
+  const scope = controls.querySelector<HTMLSelectElement>('[data-control="scope"]')!;
+  const sort = controls.querySelector<HTMLSelectElement>('[data-control="sort"]')!;
+  search.value = state.q;
+  scope.value = state.scope;
+  sort.value = state.sort;
+  search.addEventListener("input", () => ((state.q = search.value), render()));
+  scope.addEventListener("change", () => ((state.scope = scope.value), render()));
+  sort.addEventListener("change", () => ((state.sort = sort.value), render()));
+  controls.querySelectorAll<HTMLButtonElement>("[data-show]").forEach((b) =>
+    b.addEventListener("click", () => ((state.show = b.dataset.show!), render())),
+  );
+  controls.querySelectorAll<HTMLButtonElement>("[data-alliance]").forEach((b) =>
+    b.addEventListener("click", () => ((state.alliance = b.dataset.alliance!), render())),
+  );
+  controls.hidden = false;
+  render();
+
+  // Live data: the published Google Sheet, when one is configured.
+  const sheet = root.dataset.sheet;
+  if (sheet) {
+    const url = `${sheet}${sheet.includes("?") ? "&" : "?"}t=${Date.now()}`;
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : Promise.reject(new Error(String(r.status)))))
+      .then((text) => {
+        const live = parseRecord(text);
+        if (!live.length) throw new Error("empty sheet");
+        model = buildRecord(live, catches);
+        source.textContent = "Live from my Google Sheet";
+        render();
+      })
+      .catch(() => {
+        source.textContent = "From the last site update (the live sheet didn’t load)";
+      });
+  }
+</script>
+<style>
+  .record-heading {
+    padding: 1rem 0 2.5rem;
+  }
+  .record-heading h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin: 1.8rem 0 1rem;
+  }
+  .record-heading > p:last-child {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 40rem;
+  }
+  .sample-banner {
+    border: 1px dashed var(--accent);
+    background: var(--accent-soft);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.9rem;
+    margin: 0 0 2rem;
+  }
+  .record-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0 0 2.5rem;
+    padding: 1.5rem 0;
+    border-block: 1px solid var(--border);
+  }
+  .record-stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.35rem;
+  }
+  .record-stats dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .record-stats dd {
+    margin: 0;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .record-stats small {
+    font-size: 0.5em;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .record-controls {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .record-controls[hidden] {
+    display: none;
+  }
+  .search {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 28rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .search input {
+    font-size: 1rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chips-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    min-width: 4.5rem;
+  }
+  .chips button {
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--fg);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 999px;
+  }
+  .chips button[aria-pressed="true"] {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+  .view {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .view label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .view select {
+    font: inherit;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.5rem;
+  }
+  .source {
+    margin: 0 0 0 auto;
+  }
+  .legend {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  .record :global(.rec-airline) {
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+    gap: 1rem 2rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .record :global(.rec-head h2) {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 0;
+  }
+  .record :global(.rec-code) {
+    font: 0.75rem var(--font-mono);
+    color: var(--muted);
+    margin-left: 0.35rem;
+  }
+  .record :global(.rec-meta) {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0.2rem 0 0.6rem;
+  }
+  .record :global(.rec-progress) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    font-size: 0.8rem;
+  }
+  .record :global(.rec-progress strong) {
+    font: 500 0.8rem var(--font-mono);
+    white-space: nowrap;
+  }
+  .record :global(.rec-bar) {
+    flex: 1;
+    max-width: 9rem;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .record :global(.rec-bar span) {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+  .record :global(.rec-types) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-content: start;
+  }
+  .record :global(.rec-type),
+  .legend .rec-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8rem;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  .record :global(.rec-check),
+  .legend .rec-check {
+    font-size: 0.75rem;
+  }
+  .record :global(.rec-check:empty) {
+    display: none;
+  }
+  .record :global(.rec-type.is-caught),
+  .legend .rec-type.is-caught {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .record :global(.rec-type.is-occasional),
+  .legend .rec-type.is-occasional {
+    border-style: dashed;
+  }
+  .record :global(.rec-type.is-elsewhere) {
+    color: var(--muted);
+    background: transparent;
+  }
+  .record :global(.rec-airline.is-complete .rec-head h2)::after {
+    content: " ✓";
+    color: var(--accent);
+  }
+  .record :global(.rec-empty) {
+    color: var(--muted);
+    padding: 2rem 0;
+  }
+  .record :global(.sr-only) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .record-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 760px) {
+    .record-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .record :global(.rec-airline) {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .source {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+</style>
