@@ -1,7 +1,7 @@
 ---
 // Shared fullscreen lightbox. A page provides the data on
 // `window.__GALLERY__` (array of { key, title, items:[{title,caption,alt,
-// placeholder,thumb,full,place?,settings?}] }) and renders clickable elements
+// placeholder,thumb,full,heading?,place?,note?,settings?}] }) and renders clickable elements
 // carrying `data-group` + `data-index`, or calls window.__openLightbox(key, i).
 // Click → open; scroll → zoom; drag → pan; ← / → → navigate; Esc / backdrop → close.
 ---
@@ -22,7 +22,9 @@
     <figcaption class="lb-cap">
       <h2 class="lb-title"></h2>
       <p class="lb-caption muted"></p>
+      <p class="lb-heading"></p>
       <p class="lb-place"></p>
+      <p class="lb-note"></p>
       <p class="lb-settings"></p>
       <span class="lb-counter muted small"></span>
     </figcaption>
@@ -37,8 +39,12 @@
     placeholder: boolean;
     thumb: string;
     full: string;
+    /** Bold first line, e.g. "G-XLEA · British Airways · Airbus A380-841". */
+    heading?: string;
     /** City-level place name, e.g. "Kyoto, Japan". */
     place?: string;
+    /** Extra line under the place, e.g. a flight and route. */
+    note?: string;
     /** Camera, lens, and exposure, e.g. "Sony α7 IV · 35 mm · ƒ/1.8". */
     settings?: string;
   }
@@ -56,7 +62,9 @@
   const elTitle = lb.querySelector<HTMLElement>(".lb-title")!;
   const elCaption = lb.querySelector<HTMLElement>(".lb-caption")!;
   const elCounter = lb.querySelector<HTMLElement>(".lb-counter")!;
+  const elHeading = lb.querySelector<HTMLElement>(".lb-heading")!;
   const elPlace = lb.querySelector<HTMLElement>(".lb-place")!;
+  const elNote = lb.querySelector<HTMLElement>(".lb-note")!;
   const elSettings = lb.querySelector<HTMLElement>(".lb-settings")!;
   const btnPrev = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
   const btnNext = lb.querySelector<HTMLButtonElement>(".lb-next")!;
@@ -111,8 +119,12 @@
     elTitle.style.display = "none";
     elCaption.textContent = "";
     elCaption.style.display = "none";
+    elHeading.textContent = item.heading ?? "";
+    elHeading.hidden = !item.heading;
     elPlace.textContent = item.place ?? "";
     elPlace.hidden = !item.place;
+    elNote.textContent = item.note ?? "";
+    elNote.hidden = !item.note;
     elSettings.textContent = item.settings ?? "";
     elSettings.hidden = !item.settings;
     const multi = current.length > 1;
@@ -324,6 +336,22 @@
     color: rgba(255, 255, 255, 0.72);
     font-variant-numeric: tabular-nums;
   }
+  .lb-heading {
+    margin: 0.75rem 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .lb-heading + .lb-place {
+    margin-top: 0.3rem;
+  }
+  .lb-note {
+    margin: 0.3rem 0 0;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .lb-heading[hidden],
+  .lb-note[hidden],
   .lb-place[hidden],
   .lb-settings[hidden] {
     display: none;

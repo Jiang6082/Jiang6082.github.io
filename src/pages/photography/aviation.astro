@@ -1,0 +1,670 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Lightbox from "../../components/Lightbox.astro";
+import PhotoTabs from "../../components/PhotoTabs.astro";
+import { getImage } from "astro:assets";
+import {
+  airframes,
+  spots,
+  slug,
+  formatDate,
+  spotLine,
+  noteLine,
+  airportName,
+  type Airframe,
+} from "../../data/aviation";
+
+const files = import.meta.glob("../../photos/**/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+}) as Record<string, { default: ImageMetadata }>;
+const image = (file: string) => {
+  const meta = files[`../../photos/${file}`]?.default;
+  if (!meta) throw new Error(`aviation.csv: no photo at src/photos/${file}`);
+  return meta;
+};
+
+// Thumbnails for cards, full-size images for the viewer.
+const cards = await Promise.all(
+  airframes.map(async (a) => {
+    const meta = image(a.spots[0].file);
+    const width = Math.min(720, meta.width);
+    const thumb = await getImage({
+      src: meta,
+      width,
+      widths: [360, width].filter((w, i, all) => w <= width && all.indexOf(w) === i),
+      format: "webp",
+    });
+    const items = await Promise.all(
+      a.spots.map(async (s) => {
+        const m = image(s.file);
+        const full = await getImage({ src: m, width: Math.min(2400, m.width), format: "webp" });
+        return {
+          title: "",
+          caption: "",
+          alt: `${s.airline} ${s.type} ${s.registration}${s.movement ? `, ${s.movement.toLowerCase()}` : ""}`,
+          placeholder: false,
+          thumb: "",
+          full: full.src,
+          heading: `${s.registration} · ${s.airline} · ${s.type}`,
+          place: spotLine(s),
+          note: noteLine(s),
+          settings: s.settings,
+        };
+      }),
+    );
+    return { ...a, thumb, items };
+  }),
+);
+
+type Card = (typeof cards)[number];
+const byNewest = (a: Airframe, b: Airframe) =>
+  b.latest.localeCompare(a.latest) || a.registration.localeCompare(b.registration);
+const count = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+// Default view (also the no-JavaScript view): airline, then aircraft type.
+const airlines = [...new Set(cards.map((c) => c.airline))]
+  .map((name) => {
+    const list = cards.filter((c) => c.airline === name);
+    const types = [...new Set(list.map((c) => c.type))].sort();
+    return {
+      name,
+      list,
+      types: types.map((type) => ({
+        type,
+        list: list.filter((c) => c.type === type).sort(byNewest),
+      })),
+    };
+  })
+  .sort((a, b) => b.list.length - a.list.length || a.name.localeCompare(b.name));
+const families = [...new Set(cards.map((c) => c.family))]
+  .map((name) => ({ name, n: cards.filter((c) => c.family === name).length }))
+  .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+
+const latest = spots.map((s) => s.date).sort().at(-1) ?? "";
+const airports = [...new Set(spots.map((s) => s.airport))];
+const stats = [
+  { label: "Airframes", value: cards.length },
+  { label: "Photos", value: spots.length },
+  { label: "Airlines", value: airlines.length },
+  { label: "Aircraft types", value: new Set(cards.map((c) => c.type)).size },
+];
+const sample = cards.some((c) => c.sample);
+const galleryGroups = cards.map((c) => ({ key: c.key, title: c.registration, items: c.items }));
+const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
+const searchText = (c: Card) =>
+  [c.registration, c.registration.replace("-", ""), c.airline, c.type, c.family, c.name, c.livery]
+    .join(" ")
+    .toLowerCase();
+---
+
+<BaseLayout
+  title="Aviation"
+  description="A spotter’s logbook of aircraft photographed by Charles Jiang, by airline and type."
+  wide
+>
+  <header class="aviation-heading page-shell">
+    <p class="eyebrow">Photography / Aviation</p><h1>Aviation</h1><p>
+      A spotter’s logbook: every airframe I’ve photographed, by airline and
+      type.
+    </p>
+  </header>
+  <PhotoTabs current="aviation" />
+  <div class="page-shell">
+    {
+      sample && (
+        <p class="sample-banner">
+          <strong>Demo.</strong> These are sample entries with illustrated
+          placeholders, not real spots. Your Heathrow photos and their details
+          will replace them.
+        </p>
+      )
+    }
+    <dl class="stats">
+      {
+        stats.map((s) => (
+          <div>
+            <dt>{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))
+      }
+      <div>
+        <dt>Latest spot</dt>
+        <dd class="small-value">
+          {formatDate(latest)}
+          <span>{airports.map((a) => airportName(a)).join(", ")}</span>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="controls" hidden>
+      <label class="search">
+        <span>Search</span>
+        <input
+          type="search"
+          data-control="q"
+          placeholder="Registration, airline, or type"
+          autocomplete="off"
+        />
+      </label>
+      <div class="chips" role="group" aria-label="Filter by airline">
+        <span class="chips-label">Airline</span>
+        <button type="button" data-airline="all" aria-pressed="true">All</button>
+        {
+          airlines.map((a) => (
+            <button type="button" data-airline={slug(a.name)} aria-pressed="false">
+              {a.name} <span>{a.list.length}</span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="chips" role="group" aria-label="Filter by aircraft">
+        <span class="chips-label">Aircraft</span>
+        <button type="button" data-family="all" aria-pressed="true">All</button>
+        {
+          families.map((f) => (
+            <button type="button" data-family={slug(f.name)} aria-pressed="false">
+              {f.name} <span>{f.n}</span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="view">
+        <label>
+          Group by
+          <select data-control="group">
+            <option value="airline">Airline, then type</option>
+            <option value="type">Aircraft type</option>
+            <option value="none">No grouping</option>
+          </select>
+        </label>
+        <label>
+          Sort
+          <select data-control="sort">
+            <option value="newest">Newest first</option>
+            <option value="registration">Registration</option>
+            <option value="type">Aircraft type</option>
+          </select>
+        </label>
+        <p class="result-count" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div id="logbook" class="logbook">
+      {
+        airlines.map((airline) => (
+          <section class="group">
+            <h2>
+              {airline.name}
+              <span>
+                {count(airline.list.length, "airframe")} ·{" "}
+                {count(airline.types.length, "type")}
+              </span>
+            </h2>
+            {airline.types.map((t) => (
+              <div class="subgroup">
+                <h3>
+                  {t.type} <span>{t.list.length}</span>
+                </h3>
+                <div class="grid">
+                  {t.list.map((c) => (
+                    <article
+                      class="airframe"
+                      data-reg={c.registration}
+                      data-airline={slug(c.airline)}
+                      data-airline-name={c.airline}
+                      data-family={slug(c.family)}
+                      data-type={c.type}
+                      data-date={c.latest}
+                      data-search={searchText(c)}
+                    >
+                      <a
+                        class="airframe-photo"
+                        href={c.items[0].full}
+                        data-group={c.key}
+                        data-index="0"
+                        aria-label={`Open ${count(c.items.length, "photo")} of ${c.registration}`}
+                      >
+                        <img
+                          src={c.thumb.src}
+                          srcset={c.thumb.srcSet.attribute}
+                          sizes="(max-width: 600px) 92vw, 300px"
+                          width={c.thumb.attributes.width}
+                          height={c.thumb.attributes.height}
+                          alt={c.items[0].alt}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        {c.items.length > 1 && (
+                          <span class="photo-count">{count(c.items.length, "photo")}</span>
+                        )}
+                      </a>
+                      <div class="airframe-body">
+                        <p class="reg">{c.registration}</p>
+                        <p class="type">{c.type}</p>
+                        <p class="meta">
+                          {c.airline} · {c.spots[0].airport} · {formatDate(c.latest)}
+                        </p>
+                        {(c.livery || c.name) && (
+                          <ul class="badges">
+                            {c.livery && <li class="badge-livery">{c.livery}</li>}
+                            {c.name && <li>“{c.name}”</li>}
+                          </ul>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+    <p class="empty" hidden>No airframes match. Clear a filter or the search.</p>
+  </div>
+  <script is:inline set:html={`window.__GALLERY__ = ${json(galleryGroups)};`} />
+  <Lightbox />
+</BaseLayout>
+<script>
+  type Group = "airline" | "type" | "none";
+  type Sort = "newest" | "registration" | "type";
+
+  const root = document.getElementById("logbook")!;
+  const controls = document.querySelector<HTMLElement>(".controls")!;
+  const empty = document.querySelector<HTMLElement>(".empty")!;
+  const counter = controls.querySelector<HTMLElement>(".result-count")!;
+  const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
+  const groupSelect = controls.querySelector<HTMLSelectElement>('[data-control="group"]')!;
+  const sortSelect = controls.querySelector<HTMLSelectElement>('[data-control="sort"]')!;
+  const cards = Array.from(root.querySelectorAll<HTMLElement>(".airframe"));
+
+  const params = new URLSearchParams(location.search);
+  const state = {
+    q: params.get("q") ?? "",
+    airline: params.get("airline") ?? "all",
+    family: params.get("aircraft") ?? "all",
+    group: (params.get("group") as Group) ?? "airline",
+    sort: (params.get("sort") as Sort) ?? "newest",
+  };
+  if (!["airline", "type", "none"].includes(state.group)) state.group = "airline";
+  if (!["newest", "registration", "type"].includes(state.sort)) state.sort = "newest";
+
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  const el = (tag: string, cls?: string, text?: string) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const heading = (tag: "h2" | "h3", title: string, meta: string) => {
+    const h = el(tag, undefined, `${title} `);
+    h.append(el("span", undefined, meta));
+    return h;
+  };
+  const grid = (list: HTMLElement[]) => {
+    const g = el("div", "grid");
+    g.append(...list);
+    return g;
+  };
+  const groupBy = (list: HTMLElement[], key: (c: HTMLElement) => string) => {
+    const map = new Map<string, HTMLElement[]>();
+    for (const c of list) map.set(key(c), [...(map.get(key(c)) ?? []), c]);
+    return [...map.entries()];
+  };
+
+  function render() {
+    const q = state.q.trim().toLowerCase().replace(/\s+/g, " ");
+    const visible = cards.filter(
+      (c) =>
+        (state.airline === "all" || c.dataset.airline === state.airline) &&
+        (state.family === "all" || c.dataset.family === state.family) &&
+        (!q || c.dataset.search!.includes(q)),
+    );
+    const reg = (a: HTMLElement, b: HTMLElement) =>
+      a.dataset.reg!.localeCompare(b.dataset.reg!);
+    visible.sort(
+      state.sort === "registration"
+        ? reg
+        : state.sort === "type"
+          ? (a, b) => a.dataset.type!.localeCompare(b.dataset.type!) || reg(a, b)
+          : (a, b) => b.dataset.date!.localeCompare(a.dataset.date!) || reg(a, b),
+    );
+
+    root.replaceChildren();
+    if (state.group === "none") {
+      root.append(grid(visible));
+    } else if (state.group === "type") {
+      const groups = groupBy(visible, (c) => c.dataset.type!).sort(
+        (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
+      );
+      for (const [type, list] of groups) {
+        const section = el("section", "group");
+        const airlineCount = new Set(list.map((c) => c.dataset.airline)).size;
+        section.append(
+          heading("h2", type, `${plural(list.length, "airframe")} · ${plural(airlineCount, "airline")}`),
+          grid(list),
+        );
+        root.append(section);
+      }
+    } else {
+      const groups = groupBy(visible, (c) => c.dataset.airlineName!).sort(
+        (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
+      );
+      for (const [airline, list] of groups) {
+        const section = el("section", "group");
+        const types = groupBy(list, (c) => c.dataset.type!).sort((a, b) => a[0].localeCompare(b[0]));
+        section.append(
+          heading("h2", airline, `${plural(list.length, "airframe")} · ${plural(types.length, "type")}`),
+        );
+        for (const [type, cardsOfType] of types) {
+          const sub = el("div", "subgroup");
+          sub.append(heading("h3", type, String(cardsOfType.length)), grid(cardsOfType));
+          section.append(sub);
+        }
+        root.append(section);
+      }
+    }
+
+    empty.hidden = visible.length > 0;
+    counter.textContent = `Showing ${visible.length} of ${plural(cards.length, "airframe")}`;
+    controls.querySelectorAll<HTMLButtonElement>("[data-airline]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.airline === state.airline)),
+    );
+    controls.querySelectorAll<HTMLButtonElement>("[data-family]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.family === state.family)),
+    );
+
+    const next = new URLSearchParams();
+    if (state.q) next.set("q", state.q);
+    if (state.airline !== "all") next.set("airline", state.airline);
+    if (state.family !== "all") next.set("aircraft", state.family);
+    if (state.group !== "airline") next.set("group", state.group);
+    if (state.sort !== "newest") next.set("sort", state.sort);
+    const query = next.toString();
+    history.replaceState(null, "", query ? `?${query}` : location.pathname);
+  }
+
+  search.value = state.q;
+  groupSelect.value = state.group;
+  sortSelect.value = state.sort;
+  search.addEventListener("input", () => {
+    state.q = search.value;
+    render();
+  });
+  groupSelect.addEventListener("change", () => {
+    state.group = groupSelect.value as Group;
+    render();
+  });
+  sortSelect.addEventListener("change", () => {
+    state.sort = sortSelect.value as Sort;
+    render();
+  });
+  controls.querySelectorAll<HTMLButtonElement>("[data-airline]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.airline = b.dataset.airline!;
+      render();
+    }),
+  );
+  controls.querySelectorAll<HTMLButtonElement>("[data-family]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.family = b.dataset.family!;
+      render();
+    }),
+  );
+  controls.hidden = false;
+  render();
+</script>
+<style>
+  .aviation-heading {
+    padding: 1rem 0 2.5rem;
+  }
+  .aviation-heading h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin: 1.8rem 0 1rem;
+  }
+  .aviation-heading > p:last-child {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 36rem;
+  }
+  .sample-banner {
+    border: 1px dashed var(--accent);
+    background: var(--accent-soft);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.9rem;
+    margin: 0 0 2rem;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0 0 2.5rem;
+    padding: 1.5rem 0;
+    border-block: 1px solid var(--border);
+  }
+  .stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.35rem;
+  }
+  .stats dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .stats dd {
+    margin: 0;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats .small-value {
+    font-size: 1.1rem;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+  .stats .small-value span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .controls {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .controls[hidden] {
+    display: none;
+  }
+  .search {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 28rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .search input {
+    font-size: 1rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chips-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    min-width: 4.5rem;
+  }
+  .chips button {
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--fg);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 999px;
+  }
+  .chips button span {
+    color: var(--muted);
+    margin-left: 0.25rem;
+    font-size: 0.75rem;
+  }
+  .chips button[aria-pressed="true"] {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+  .chips button[aria-pressed="true"] span {
+    color: var(--bg);
+    opacity: 0.75;
+  }
+  .view {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .view label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .view select {
+    font: inherit;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.5rem;
+  }
+  .result-count {
+    margin: 0 0 0 auto;
+  }
+  .logbook :global(.group) {
+    border-top: 1px solid var(--border);
+    padding: 1.75rem 0 1rem;
+  }
+  .logbook :global(h2) {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+  }
+  .logbook :global(h2 span),
+  .logbook :global(h3 span) {
+    font: 0.8125rem var(--font-mono);
+    color: var(--muted);
+    margin-left: 0.5rem;
+    letter-spacing: 0;
+  }
+  .logbook :global(.subgroup) {
+    margin-bottom: 1.75rem;
+  }
+  .logbook :global(h3) {
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 0 0 0.9rem;
+  }
+  .logbook :global(.grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .airframe {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+  .airframe-photo {
+    display: block;
+    position: relative;
+    background: var(--surface-2);
+  }
+  .airframe-photo img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .photo-count {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    background: rgb(37 40 34 / 0.78);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+  .airframe-body {
+    padding: 0.9rem 1rem 1rem;
+  }
+  .airframe-body p {
+    margin: 0;
+  }
+  .reg {
+    font: 600 1.15rem var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .type {
+    margin-top: 0.2rem !important;
+    font-size: 0.95rem;
+  }
+  .meta {
+    margin-top: 0.35rem !important;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .badges {
+    list-style: none;
+    padding: 0;
+    margin: 0.7rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .badges li {
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    color: var(--muted);
+  }
+  .badges .badge-livery {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .empty {
+    color: var(--muted);
+    padding: 2rem 0;
+  }
+  @media (max-width: 760px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .logbook :global(.grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .airframe-body {
+      padding: 0.7rem 0.75rem 0.8rem;
+    }
+    .reg {
+      font-size: 1rem;
+    }
+    .type {
+      font-size: 0.85rem;
+    }
+    .result-count {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+</style>

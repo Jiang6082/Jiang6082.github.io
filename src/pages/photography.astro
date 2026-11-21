@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
+import PhotoTabs from "../components/PhotoTabs.astro";
 import { collections, singles } from "../data/photos";
 import { detailsFor, settingsLine } from "../data/photo-details";
 import { SITE } from "../config";
@@ -87,11 +88,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       </p>
     </div>
   </header>
-  <p class="page-shell">
-    <a class="text-link" href={`${base}/photography/map`}
-      >See where they were taken <span aria-hidden="true">↗</span></a
-    >
-  </p>
+  <PhotoTabs current="gallery" />
   <div class="gallery-toolbar page-shell">
     <div class="album-switch" role="group" aria-label="Filter by album" hidden>
       <button type="button" data-album="all" aria-pressed="true"
@@ -230,8 +227,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    border-top: 1px solid var(--border);
-    padding: 1.2rem 0;
+    padding: 0 0 1.2rem;
   }
   .album-switch,
   .view-switch {

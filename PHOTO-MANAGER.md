@@ -25,3 +25,13 @@ Use **Earlier / Later** to rearrange photographs, the album menu on each photogr
 The manager runs only on your computer. Changes appear in the local website preview, in the filmstrip, contact sheet, and map. They reach the public site only after the website is published. Keep the manager running while using it, and restart it with the same command when needed.
 
 The catalog is `src/data/photos.json`; optimized uploads go into `src/photos/uploads/`. Original uploads and catalog backups are kept in `.photo-manager/`, which is excluded from Git. Back up that folder separately if you want to keep the originals on another computer. Hiding a photograph never deletes its file. Restoring a catalog backup is a manual recovery operation.
+
+## Aviation logbook
+
+The Aviation page (`/photography/aviation`) is a spotter's logbook: one card per airframe (registration), grouped by airline and aircraft type, with search, filters, and sorting.
+
+1. Put originals in `photos-src/aviation/` and run `npm run photos`. This resizes them into `src/photos/aviation/` and records their camera settings.
+2. Add one row per photo to `src/data/aviation.csv`. Any spreadsheet app can open and save it. Required columns: `file` (e.g. `aviation/IMG_1234.jpg`), `registration`, `airline`, `manufacturer`, `family` (used for the Aircraft filter, e.g. `A350`, `787`), `variant` (e.g. `A350-1041`), `date` (`YYYY-MM-DD`), and `airport` (IATA code, e.g. `LHR`). Optional columns: `runway`, `movement`, `flight`, `route`, `livery`, `name`, and `spot`. Blank optional columns simply don't show.
+3. More photos of the same registration join that airframe's card automatically.
+
+The demo rows are marked `sample=yes` and use `src/photos/aviation/sample-*.jpg`. Delete both once real photos are in, and the demo banner disappears. `node scripts/check-aviation.mjs` (part of `npm run check`) catches missing photos, bad dates, and a registration listed with two different airlines or types.

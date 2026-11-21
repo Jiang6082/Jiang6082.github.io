@@ -1,0 +1,43 @@
+---
+// Section switcher shared by the photography pages.
+const { current } = Astro.props as { current: "gallery" | "aviation" | "map" };
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const tabs = [
+  { id: "gallery", label: "Gallery", href: `${base}/photography` },
+  { id: "aviation", label: "Aviation", href: `${base}/photography/aviation` },
+  { id: "map", label: "Map", href: `${base}/photography/map` },
+];
+---
+
+<nav class="photo-tabs page-shell" aria-label="Photography sections">
+  {
+    tabs.map((t) => (
+      <a href={t.href} aria-current={t.id === current ? "page" : undefined}>
+        {t.label}
+      </a>
+    ))
+  }
+</nav>
+<style>
+  .photo-tabs {
+    display: flex;
+    gap: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  a {
+    color: var(--muted);
+    padding: 0.75rem 0;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    font-size: 0.95rem;
+  }
+  a:hover {
+    color: var(--fg);
+    text-decoration: none;
+  }
+  a[aria-current] {
+    color: var(--fg);
+    border-bottom-color: var(--accent);
+  }
+</style>
