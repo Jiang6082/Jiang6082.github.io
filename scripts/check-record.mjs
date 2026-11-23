@@ -6,7 +6,7 @@ import { parseRecord, buildRecord, canonicalType } from "../src/lib/record.js";
 
 const text = readFileSync("src/data/heathrow-record.csv", "utf8");
 const header = text.split("\n")[0];
-for (const col of ["airline", "iata", "country", "alliance", "manufacturer", "family", "type", "at_heathrow", "photographed"])
+for (const col of ["airline", "iata", "alliance", "type", "at_heathrow", "arrival_times", "photographed"])
   assert(header.split(",").includes(col), `heathrow-record.csv: missing column ${col}`);
 
 const raw = parseCsv(text);
@@ -22,8 +22,8 @@ for (const [i, r] of raw.entries()) {
   assert(!seen.has(key), `${where}: ${r.airline} ${r.type} is listed twice`);
   seen.add(key);
   const a = airlines.get(r.airline);
-  if (a) assert.deepEqual([r.iata, r.country, r.alliance], a, `${where}: ${r.airline} details differ between rows`);
-  else airlines.set(r.airline, [r.iata, r.country, r.alliance]);
+  if (a) assert.deepEqual([r.iata, r.alliance], a, `${where}: ${r.airline} details differ between rows`);
+  else airlines.set(r.airline, [r.iata, r.alliance]);
 }
 
 const cases = {

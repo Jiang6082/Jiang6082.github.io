@@ -28,6 +28,7 @@ export function parseRecord(text) {
       family: r.family ?? "",
       type: r.type,
       atHeathrow: heathrowStatus(r.at_heathrow),
+      arrivals: r.arrival_times ?? "",
       photographed: yes.test(r.photographed ?? ""),
       date: r.date ?? "",
       registration: (r.registration ?? "").toUpperCase(),
@@ -87,6 +88,7 @@ export function buildRecord(rows, catches = []) {
       family: r.family,
       manufacturer: r.manufacturer,
       atHeathrow: r.atHeathrow,
+      arrivals: r.arrivals,
       caught: r.photographed || Boolean(logged),
       date: r.date || logged?.date || "",
       registration: r.registration || logged?.registration || "",
@@ -148,13 +150,14 @@ export function renderRecord(model, state = defaultState) {
           const classes = ["rec-type", t.caught && "is-caught", t.atHeathrow === "Occasional" && "is-occasional", t.atHeathrow === "No" && "is-elsewhere"]
             .filter(Boolean)
             .join(" ");
-          const detail = t.caught
+          const status = t.caught
             ? ["Photographed", t.date, t.registration].filter(Boolean).join(" · ")
             : t.atHeathrow === "Occasional"
               ? "Occasional at Heathrow"
               : t.atHeathrow === "No"
                 ? "Not usually at Heathrow"
                 : "Not photographed yet";
+          const detail = t.arrivals && t.atHeathrow !== "No" ? `${status}. Usual arrivals: ${t.arrivals}` : status;
           return `<li class="${classes}" title="${esc(detail)}"><span class="rec-check" aria-hidden="true">${t.caught ? "✓" : ""}</span>${esc(t.type)}<span class="sr-only">, ${esc(detail.toLowerCase())}</span></li>`;
         })
         .join("");

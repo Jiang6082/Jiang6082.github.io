@@ -1,569 +1,569 @@
-airline,iata,country,alliance,manufacturer,family,type,at_heathrow,photographed,date,registration,confidence,notes
-Aegean Airlines,A3,Greece,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Aegean Airlines,A3,Greece,Star Alliance,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-Aegean Airlines,A3,Greece,Star Alliance,Airbus,A320 family,A320,Occasional,FALSE,,,Medium,
-Aegean Airlines,A3,Greece,Star Alliance,Airbus,A320 family,A321,Occasional,FALSE,,,Medium,
-Aer Lingus,EI,Ireland,None,Airbus,A320 family,A320,Yes,FALSE,,,Medium,Includes Aer Lingus UK-registered aircraft possibly
-Aer Lingus,EI,Ireland,None,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Aer Lingus,EI,Ireland,None,Airbus,A320 family,A321LR,Yes,FALSE,,,Medium,Reported on scheduled DUB-LHR in summer 2026
-Aer Lingus,EI,Ireland,None,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-Aer Lingus,EI,Ireland,None,Airbus,A320 family,A321XLR,Occasional,FALSE,,,Medium,Used on some LHR rotations between transatlantic flying
-Aer Lingus,EI,Ireland,None,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Aer Lingus,EI,Ireland,None,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Aeroméxico,AM,Mexico,SkyTeam,Boeing,787,787-8,Yes,FALSE,,,High,MEX-LHR
-Aeroméxico,AM,Mexico,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,High,
-Aeroméxico,AM,Mexico,SkyTeam,Boeing,737,737 MAX 8,No,FALSE,,,High,
-Aeroméxico,AM,Mexico,SkyTeam,Boeing,737,737 MAX 9,No,FALSE,,,High,
-Aeroméxico,AM,Mexico,SkyTeam,Boeing,737,737-800,No,FALSE,,,High,
-Aeroméxico,AM,Mexico,SkyTeam,Embraer,E-Jet,E190,No,FALSE,,,Medium,
-Air Algérie,AH,Algeria,None,Boeing,737,737-800,Yes,FALSE,,,Low,
-Air Algérie,AH,Algeria,None,Airbus,A330,A330-200,Occasional,FALSE,,,Low,
-Air Algérie,AH,Algeria,None,Airbus,A330,A330-900,Occasional,FALSE,,,Low,
-Air Algérie,AH,Algeria,None,ATR,ATR 72,ATR 72-600,No,FALSE,,,Medium,
-Air Algérie,AH,Algeria,None,Airbus,A320 family,A320,No,FALSE,,,Low,
-Air Algérie,AH,Algeria,None,Airbus,A320 family,A321,No,FALSE,,,Low,
-Air Algérie,AH,Algeria,None,Boeing,737,737-700,No,FALSE,,,Low,
-Air Astana,KC,Kazakhstan,None,Airbus,A320 family,A321LR,Yes,FALSE,,,Medium,
-Air Astana,KC,Kazakhstan,None,Boeing,787,787-9,Yes,FALSE,,,Low,Verify LHR use
-Air Astana,KC,Kazakhstan,None,Airbus,A320 family,A320neo,No,FALSE,,,Low,
-Air Astana,KC,Kazakhstan,None,Airbus,A320 family,A321neo,No,FALSE,,,Low,
-Air Astana,KC,Kazakhstan,None,Embraer,E-Jet,E190-E2,No,FALSE,,,Medium,
-Air Canada,AC,Canada,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,High,
-Air Canada,AC,Canada,Star Alliance,Boeing,787,787-8,Yes,FALSE,,,Medium,
-Air Canada,AC,Canada,Star Alliance,Boeing,787,787-9,Yes,FALSE,,,High,
-Air Canada,AC,Canada,Star Alliance,Boeing,787,787-10,Occasional,FALSE,,,Low,
-Air Canada,AC,Canada,Star Alliance,Airbus,A220,A220-300,No,FALSE,,,High,
-Air Canada,AC,Canada,Star Alliance,Airbus,A320 family,A319,No,FALSE,,,Medium,
-Air Canada,AC,Canada,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,High,
-Air Canada,AC,Canada,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,High,
-Air Canada,AC,Canada,Star Alliance,Airbus,A320 family,A321XLR,No,FALSE,,,Medium,Planned YYZ-LHR Aug-Oct 2026 removed; widebodies instead
-Air Canada,AC,Canada,Star Alliance,Boeing,737,737 MAX 8,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A350,A350-900,Yes,FALSE,,,Medium,PEK and TFU to LHR
-Air China,CA,China,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,Medium,
-Air China,CA,China,Star Alliance,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-Air China,CA,China,Star Alliance,Boeing,747,747-8,Occasional,FALSE,,,Low,Few left; substitutions
-Air China,CA,China,Star Alliance,Airbus,A320 family,A319,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A320 family,A320neo,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Air China,CA,China,Star Alliance,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-Air China,CA,China,Star Alliance,Boeing,737,737-800,No,FALSE,,,High,
-Air China,CA,China,Star Alliance,COMAC,C919,C919,No,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A220,A220-300,Yes,FALSE,,,High,
-Air France,AF,France,SkyTeam,Airbus,A320 family,A319,Yes,FALSE,,,Medium,Declining
-Air France,AF,France,SkyTeam,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,Recent deliveries; from memory
-Air France,AF,France,SkyTeam,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A330,A330-900,No,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A350,A350-900,No,FALSE,,,Medium,
-Air France,AF,France,SkyTeam,Airbus,A350,A350-1000,No,FALSE,,,Low,Delivery status uncertain
-Air France,AF,France,SkyTeam,Boeing,777,777-300ER,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,High,Second daily Mumbai flight with First; some Delhi flights; being phased toward 787s
-Air India,AI,India,Star Alliance,Boeing,787,787-8,Yes,FALSE,,,Medium,Retrofitted 787-8 on Bengaluru and Delhi routes from mid-2026
-Air India,AI,India,Star Alliance,Boeing,787,787-9,Yes,FALSE,,,High,New 787-9 on Mumbai-LHR since 1 Jul 2026; some Delhi flights
-Air India,AI,India,Star Alliance,Airbus,A320 family,A319,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-Air India,AI,India,Star Alliance,Airbus,A350,A350-900,No,FALSE,,,Low,Not tied to LHR in any source; A350-1000 deliveries expected 2026 - not listed as unsure if delivered
-Air Peace,P4,Nigeria,None,Boeing,777,777-300,Yes,FALSE,,,Low,Abuja–Heathrow since Oct 2025; 777 variant unconfirmed
-Air Serbia,JU,Serbia,None,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Air Serbia,JU,Serbia,None,Airbus,A320 family,A319,Occasional,FALSE,,,Low,
-Air Serbia,JU,Serbia,None,Airbus,A320 family,A321,Occasional,FALSE,,,Low,
-Air Serbia,JU,Serbia,None,ATR,ATR 72,ATR 72-600,No,FALSE,,,Medium,Regional
-Air Serbia,JU,Serbia,None,Airbus,A330,A330-200,No,FALSE,,,Medium,Long-haul
-Air Serbia,JU,Serbia,None,Airbus,A330,A330-300,No,FALSE,,,Low,Long-haul
-Alaska Airlines,AS,United States,oneworld,Boeing,787,787-9,Yes,FALSE,,,High,SEA-LHR daily since May 2026 using leased AA slots
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737 MAX 8,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737 MAX 9,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737-700,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737-800,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737-900,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,737,737-900ER,No,FALSE,,,High,
-Alaska Airlines,AS,United States,oneworld,Boeing,787,787-10,No,FALSE,,,Low,Delivery status uncertain; not LHR
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,Medium,Also used on LHR
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,787,787-9,Yes,FALSE,,,Medium,HND-LHR
-All Nippon Airways,NH,Japan,Star Alliance,Airbus,A320 family,A320neo,No,FALSE,,,High,
-All Nippon Airways,NH,Japan,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,High,
-All Nippon Airways,NH,Japan,Star Alliance,Airbus,A380,A380-800,No,FALSE,,,High,Honolulu only
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,737,737-800,No,FALSE,,,High,
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,767,767-300ER,No,FALSE,,,High,
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,777,777-200ER,No,FALSE,,,Medium,
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,777,777-300,No,FALSE,,,High,Domestic
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,787,787-8,No,FALSE,,,High,
-All Nippon Airways,NH,Japan,Star Alliance,Boeing,787,787-10,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Boeing,777,777-300ER,Yes,FALSE,,,High,JFK/DFW/ORD-LHR
-American Airlines,AA,United States,oneworld,Boeing,787,787-8,Yes,FALSE,,,High,
-American Airlines,AA,United States,oneworld,Boeing,787,787-9,Yes,FALSE,,,High,
-American Airlines,AA,United States,oneworld,Boeing,777,777-200ER,Occasional,FALSE,,,Low,Rare substitution
-American Airlines,AA,United States,oneworld,Airbus,A320 family,A319,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Airbus,A320 family,A320,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Airbus,A320 family,A321,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Airbus,A320 family,A321XLR,No,FALSE,,,Medium,Transatlantic to other airports; slot-constrained at LHR
-American Airlines,AA,United States,oneworld,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Airbus,A330,A330-200,No,FALSE,,,Low,Being retired; not LHR
-American Airlines,AA,United States,oneworld,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-American Airlines,AA,United States,oneworld,Boeing,737,737-800,No,FALSE,,,Medium,
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A350,A350-900,Yes,FALSE,,,Medium,Merging into Korean Air 17 Dec 2026; leaves Star Alliance; LHR route status/slots changing
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A380,A380-800,Occasional,FALSE,,,Low,
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,High,
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,High,
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-Asiana Airlines,OZ,South Korea,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Asiana Airlines,OZ,South Korea,Star Alliance,Boeing,777,777-200ER,No,FALSE,,,Low,
-Austrian Airlines,OS,Austria,Star Alliance,Airbus,A320 family,A319,Yes,FALSE,,,Medium,
-Austrian Airlines,OS,Austria,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Austrian Airlines,OS,Austria,Star Alliance,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Austrian Airlines,OS,Austria,Star Alliance,Embraer,E-Jet,E195,Occasional,FALSE,,,Low,Phasing out
-Austrian Airlines,OS,Austria,Star Alliance,Boeing,767,767-300ER,No,FALSE,,,Low,Being retired
-Austrian Airlines,OS,Austria,Star Alliance,Boeing,777,777-200ER,No,FALSE,,,Low,Being retired
-Austrian Airlines,OS,Austria,Star Alliance,Boeing,787,787-9,No,FALSE,,,Low,Long-haul fleet detail from memory
-Avianca,AV,Colombia,Star Alliance,Boeing,787,787-8,Yes,FALSE,,,High,BOG-LHR
-Avianca,AV,Colombia,Star Alliance,Boeing,787,787-9,Occasional,FALSE,,,Low,Small fleet
-Avianca,AV,Colombia,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Avianca,AV,Colombia,Star Alliance,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-Avianca,AV,Colombia,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,Low,
-Avianca,AV,Colombia,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-Azerbaijan Airlines,J2,Azerbaijan,None,Boeing,787,787-8,Yes,FALSE,,,Low,Likely main LHR type; unverified
-Azerbaijan Airlines,J2,Azerbaijan,None,Airbus,A320 family,A319,Occasional,FALSE,,,Low,
-Azerbaijan Airlines,J2,Azerbaijan,None,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-Azerbaijan Airlines,J2,Azerbaijan,None,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,
-Azerbaijan Airlines,J2,Azerbaijan,None,Airbus,A320 family,A321,No,FALSE,,,Low,
-Azerbaijan Airlines,J2,Azerbaijan,None,Embraer,E-Jet,E190,No,FALSE,,,Low,Fleet affected after Dec 2024 crash
-Biman Bangladesh Airlines,BG,Bangladesh,None,Boeing,787,787-8,Yes,FALSE,,,Medium,Dhaka-Sylhet-LHR (one-stop) per AeroRoutes NS26
-Biman Bangladesh Airlines,BG,Bangladesh,None,Boeing,787,787-9,Yes,FALSE,,,Medium,Dhaka-Sylhet-LHR per AeroRoutes NS26
-Biman Bangladesh Airlines,BG,Bangladesh,None,Boeing,777,777-300ER,Occasional,FALSE,,,Low,Sources conflict; may substitute on LHR
-Biman Bangladesh Airlines,BG,Bangladesh,None,Boeing,737,737-800,No,FALSE,,,High,
-Biman Bangladesh Airlines,BG,Bangladesh,None,De Havilland,Dash 8,Dash 8-400,No,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Airbus,A320 family,A319,Yes,FALSE,,,Medium,Being replaced by neo; some A319s Heathrow-based
-British Airways,BA,United Kingdom,oneworld,Airbus,A320 family,A320,Yes,FALSE,,,Medium,Ceo fleet shrinking
-British Airways,BA,United Kingdom,oneworld,Airbus,A320 family,A320neo,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Airbus,A320 family,A321,Yes,FALSE,,,Medium,Ceo fleet shrinking
-British Airways,BA,United Kingdom,oneworld,Airbus,A320 family,A321neo,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Airbus,A350,A350-1000,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Airbus,A380,A380-800,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Boeing,777,777-200ER,Yes,FALSE,,,Medium,Being retired gradually
-British Airways,BA,United Kingdom,oneworld,Boeing,777,777-300ER,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Boeing,787,787-8,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Boeing,787,787-9,Yes,FALSE,,,High,
-British Airways,BA,United Kingdom,oneworld,Boeing,787,787-10,Yes,FALSE,,,High,
-Brussels Airlines,SN,Belgium,Star Alliance,Airbus,A320 family,A319,Yes,FALSE,,,Medium,
-Brussels Airlines,SN,Belgium,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Brussels Airlines,SN,Belgium,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Brussels Airlines,SN,Belgium,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Bulgaria Air,FB,Bulgaria,None,Airbus,A320 family,A319,Yes,FALSE,,,Low,
-Bulgaria Air,FB,Bulgaria,None,Airbus,A220,A220-300,Occasional,FALSE,,,Low,Unverified for LHR
-Bulgaria Air,FB,Bulgaria,None,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-Bulgaria Air,FB,Bulgaria,None,Embraer,E-Jet,E190,No,FALSE,,,Low,
-Cathay Pacific,CX,Hong Kong,oneworld,Airbus,A350,A350-1000,Yes,FALSE,,,Medium,Main LHR type alongside 777-300ER
-Cathay Pacific,CX,Hong Kong,oneworld,Boeing,777,777-300ER,Yes,FALSE,,,Medium,Aria Suite retrofit ongoing
-Cathay Pacific,CX,Hong Kong,oneworld,Airbus,A350,A350-900,Occasional,FALSE,,,Medium,Occasional LHR swaps
-Cathay Pacific,CX,Hong Kong,oneworld,Airbus,A320 family,A321neo,No,FALSE,,,Medium,Regional
-Cathay Pacific,CX,Hong Kong,oneworld,Airbus,A330,A330-300,No,FALSE,,,Medium,Regional
-China Airlines,CI,Taiwan,SkyTeam,Airbus,A350,A350-900,Yes,FALSE,,,Low,Heathrow service not confirmed by search; verify (may be Gatwick or other)
-China Airlines,CI,Taiwan,SkyTeam,Airbus,A350,A350-1000,Occasional,FALSE,,,Low,Newly delivered; Heathrow service unverified
-China Airlines,CI,Taiwan,SkyTeam,Boeing,777,777-300ER,Occasional,FALSE,,,Low,Heathrow service unverified
-China Airlines,CI,Taiwan,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,High,Heathrow service unverified
-China Airlines,CI,Taiwan,SkyTeam,Airbus,A330,A330-300,No,FALSE,,,Medium,Heathrow service unverified
-China Airlines,CI,Taiwan,SkyTeam,Boeing,737,737-800,No,FALSE,,,High,Heathrow service unverified
-China Eastern Airlines,MU,China,SkyTeam,Boeing,777,777-300ER,Yes,FALSE,,,Medium,PVG-LHR; source says 777s
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A320 family,A319,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A320 family,A320,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A320 family,A320neo,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A320 family,A321,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A330,A330-200,No,FALSE,,,Medium,
-China Eastern Airlines,MU,China,SkyTeam,Airbus,A350,A350-900,No,FALSE,,,Low,Source says not used to London
-China Eastern Airlines,MU,China,SkyTeam,Boeing,737,737-800,No,FALSE,,,High,
-China Eastern Airlines,MU,China,SkyTeam,COMAC,C919,C919,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Boeing,787,787-9,Yes,FALSE,,,Low,CAN-LHR; type unverified
-China Southern Airlines,CZ,China,None,Airbus,A330,A330-200,Occasional,FALSE,,,Low,Original 2018 LHR type
-China Southern Airlines,CZ,China,None,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-China Southern Airlines,CZ,China,None,Airbus,A350,A350-900,Occasional,FALSE,,,Low,
-China Southern Airlines,CZ,China,None,Airbus,A320 family,A319,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Airbus,A320 family,A320,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Airbus,A320 family,A320neo,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Airbus,A320 family,A321,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Airbus,A320 family,A321neo,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-China Southern Airlines,CZ,China,None,Boeing,737,737-800,No,FALSE,,,High,
-China Southern Airlines,CZ,China,None,Boeing,787,787-8,No,FALSE,,,Medium,
-Croatia Airlines,OU,Croatia,Star Alliance,Airbus,A320 family,A319,Yes,FALSE,,,Medium,
-Croatia Airlines,OU,Croatia,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Croatia Airlines,OU,Croatia,Star Alliance,Airbus,A220,A220-300,Occasional,FALSE,,,Low,Fleet renewal ongoing
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A330,A330-900,Yes,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A350,A350-900,Yes,FALSE,,,High,ATL/DTW/JFK/BOS-LHR; A350-1000 not yet in service
-Delta Air Lines,DL,United States,SkyTeam,Boeing,767,767-300ER,Yes,FALSE,,,Medium,Seasonal/JFK
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A330,A330-200,Occasional,FALSE,,,Low,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-Delta Air Lines,DL,United States,SkyTeam,Boeing,767,767-400ER,Occasional,FALSE,,,Low,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A220,A220-100,No,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A220,A220-300,No,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A320 family,A319,No,FALSE,,,Low,Being phased out
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A320 family,A320,No,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A320 family,A321,No,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,High,
-Delta Air Lines,DL,United States,SkyTeam,Boeing,717,717-200,No,FALSE,,,Low,Retiring
-Delta Air Lines,DL,United States,SkyTeam,Boeing,737,737-800,No,FALSE,,,Medium,
-Delta Air Lines,DL,United States,SkyTeam,Boeing,737,737-900ER,No,FALSE,,,Medium,
-Delta Air Lines,DL,United States,SkyTeam,Boeing,757,757-200,No,FALSE,,,Medium,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A320 family,A321,Yes,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A320 family,A321neo,Yes,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Boeing,787,787-9,Occasional,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A220,A220-300,No,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Airbus,A330,A330-200,No,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Boeing,737,737-800,No,FALSE,,,Low,
-EgyptAir,MS,Egypt,Star Alliance,Boeing,777,777-300ER,No,FALSE,,,Low,
-El Al,LY,Israel,None,Boeing,737,737 MAX 8,Yes,FALSE,,,Low,
-El Al,LY,Israel,None,Boeing,737,737-800,Yes,FALSE,,,Medium,
-El Al,LY,Israel,None,Boeing,787,787-9,Yes,FALSE,,,Medium,
-El Al,LY,Israel,None,Boeing,737,737-900,Occasional,FALSE,,,Low,
-El Al,LY,Israel,None,Boeing,787,787-8,Occasional,FALSE,,,Low,
-El Al,LY,Israel,None,Boeing,777,777-200ER,No,FALSE,,,Low,Being retired; verify
-Emirates,EK,United Arab Emirates,None,Airbus,A350,A350-900,Yes,FALSE,,,Medium,A350 flies LHR on some rotations
-Emirates,EK,United Arab Emirates,None,Airbus,A380,A380-800,Yes,FALSE,,,High,
-Emirates,EK,United Arab Emirates,None,Boeing,777,777-300ER,Yes,FALSE,,,High,
-Emirates,EK,United Arab Emirates,None,Boeing,777,777-200LR,No,FALSE,,,Low,Few remaining; verify still in service
-Emirates,EK,United Arab Emirates,None,Boeing,787,787-9,No,FALSE,,,Low,Entered service recently; not known on LHR
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Airbus,A350,A350-900,Yes,FALSE,,,Medium,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,787,787-8,Yes,FALSE,,,Medium,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Airbus,A350,A350-1000,Occasional,FALSE,,,Low,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,787,787-9,Occasional,FALSE,,,Medium,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Airbus,A220,A220-300,No,FALSE,,,High,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,737,737 MAX 8,No,FALSE,,,High,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,737,737-800,No,FALSE,,,High,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,777,777-200LR,No,FALSE,,,Low,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,Boeing,777,777-300ER,No,FALSE,,,Medium,
-Ethiopian Airlines,ET,Ethiopia,Star Alliance,De Havilland,Dash 8,Dash 8-400,No,FALSE,,,High,
-Etihad Airways,EY,United Arab Emirates,None,Boeing,787,787-9,Yes,FALSE,,,Medium,
-Etihad Airways,EY,United Arab Emirates,None,Boeing,787,787-10,Yes,FALSE,,,Medium,
-Etihad Airways,EY,United Arab Emirates,None,Airbus,A380,A380-800,Occasional,FALSE,,,Medium,Returned to LHR on some flights
-Etihad Airways,EY,United Arab Emirates,None,Boeing,777,777-300ER,Occasional,FALSE,,,Low,
-Etihad Airways,EY,United Arab Emirates,None,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Etihad Airways,EY,United Arab Emirates,None,Airbus,A320 family,A321,No,FALSE,,,Low,
-Etihad Airways,EY,United Arab Emirates,None,Airbus,A330,A330-300,No,FALSE,,,Low,
-Eurowings,EW,Germany,None,Airbus,A320 family,A319,Yes,FALSE,,,Medium,Berlin-LHR started Mar 2026 with A319 per news; Some routes moved to Gatwick in 2026
-Eurowings,EW,Germany,None,Airbus,A320 family,A320,Occasional,FALSE,,,Low,Some routes moved to Gatwick in 2026
-Eurowings,EW,Germany,None,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,Some routes moved to Gatwick in 2026
-Eurowings,EW,Germany,None,Boeing,737,737-800,No,FALSE,,,Low,Mostly wet-leased out; Some routes moved to Gatwick in 2026
-EVA Air,BR,Taiwan,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,Medium,TPE-LHR
-EVA Air,BR,Taiwan,Star Alliance,Boeing,787,787-10,Yes,FALSE,,,Low,
-EVA Air,BR,Taiwan,Star Alliance,Boeing,787,787-9,Occasional,FALSE,,,Low,
-EVA Air,BR,Taiwan,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,High,
-EVA Air,BR,Taiwan,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,High,
-EVA Air,BR,Taiwan,Star Alliance,Airbus,A330,A330-200,No,FALSE,,,Medium,
-EVA Air,BR,Taiwan,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Finnair,AY,Finland,oneworld,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Finnair,AY,Finland,oneworld,Airbus,A320 family,A321,Yes,FALSE,,,Medium,Most common on HEL-LHR
-Finnair,AY,Finland,oneworld,Airbus,A320 family,A319,Occasional,FALSE,,,Low,Being retired
-Finnair,AY,Finland,oneworld,Airbus,A350,A350-900,Occasional,FALSE,,,Low,Occasional upgauge
-Finnair,AY,Finland,oneworld,Airbus,A330,A330-300,No,FALSE,,,Medium,Long-haul
-Gulf Air,GF,Bahrain,None,Boeing,787,787-9,Yes,FALSE,,,High,
-Gulf Air,GF,Bahrain,None,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,
-Gulf Air,GF,Bahrain,None,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Gulf Air,GF,Bahrain,None,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-Hainan Airlines,HU,China,None,Boeing,787,787-9,Yes,FALSE,,,Medium,Changsha and other routes to LHR
-Hainan Airlines,HU,China,None,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-Hainan Airlines,HU,China,None,Airbus,A350,A350-900,Occasional,FALSE,,,Low,
-Hainan Airlines,HU,China,None,Airbus,A320 family,A320,No,FALSE,,,High,
-Hainan Airlines,HU,China,None,Airbus,A320 family,A321,No,FALSE,,,High,
-Hainan Airlines,HU,China,None,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Hainan Airlines,HU,China,None,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-Hainan Airlines,HU,China,None,Boeing,737,737-800,No,FALSE,,,High,
-Hainan Airlines,HU,China,None,Boeing,787,787-8,No,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A319,Yes,FALSE,,,Low,Few remaining
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A320 family,A321XLR,Occasional,FALSE,,,Low,
-Iberia,IB,Spain,oneworld,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A330,A330-900,No,FALSE,,,Medium,
-Iberia,IB,Spain,oneworld,Airbus,A350,A350-900,No,FALSE,,,Medium,
-Icelandair,FI,Iceland,None,Boeing,737,737 MAX 8,Yes,FALSE,,,Medium,Main type on KEF-LHR
-Icelandair,FI,Iceland,None,Airbus,A320 family,A321LR,Occasional,FALSE,,,Medium,
-Icelandair,FI,Iceland,None,Boeing,737,737 MAX 9,Occasional,FALSE,,,Low,
-Icelandair,FI,Iceland,None,Boeing,757,757-200,No,FALSE,,,Medium,Final LHR 757 flight reported Sept 2025; remaining 757s end Jan 2027
-Icelandair,FI,Iceland,None,Boeing,767,767-300ER,No,FALSE,,,Medium,Final passenger flights Jan 2027
-Icelandair,FI,Iceland,None,De Havilland,Dash 8,Dash 8-400,No,FALSE,,,Low,Domestic/Greenland network
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A320 family,A320neo,Yes,FALSE,,,High,FCO-LHR returned 29 Mar 2026 with A320neo
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A320 family,A321,Occasional,FALSE,,,Low,
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A220,A220-300,No,FALSE,,,Low,
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A320 family,A319,No,FALSE,,,Low,Few if any remaining
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A330,A330-900,No,FALSE,,,Medium,
-ITA Airways,AZ,Italy,SkyTeam,Airbus,A350,A350-900,No,FALSE,,,Medium,
-Japan Airlines,JL,Japan,oneworld,Airbus,A350,A350-1000,Yes,FALSE,,,Medium,HND-LHR
-Japan Airlines,JL,Japan,oneworld,Boeing,787,787-9,Yes,FALSE,,,Medium,Seen on LHR
-Japan Airlines,JL,Japan,oneworld,Boeing,777,777-300ER,Occasional,FALSE,,,Low,Used on LHR in past; shrinking role
-Japan Airlines,JL,Japan,oneworld,Airbus,A320 family,A321neo,No,FALSE,,,Medium,Domestic
-Japan Airlines,JL,Japan,oneworld,Airbus,A350,A350-900,No,FALSE,,,Medium,Mostly domestic; some regional
-Japan Airlines,JL,Japan,oneworld,Boeing,737,737-800,No,FALSE,,,High,
-Japan Airlines,JL,Japan,oneworld,Boeing,767,767-300ER,No,FALSE,,,Medium,Domestic and regional
-Japan Airlines,JL,Japan,oneworld,Boeing,777,777-200ER,No,FALSE,,,Medium,Domestic
-Japan Airlines,JL,Japan,oneworld,Boeing,787,787-8,No,FALSE,,,High,
-JetBlue,B6,United States,None,Airbus,A320 family,A321LR,Yes,FALSE,,,High,JFK/BOS-LHR Mint
-JetBlue,B6,United States,None,Airbus,A320 family,A321XLR,Occasional,FALSE,,,Low,Entering service 2026; LHR use unconfirmed
-JetBlue,B6,United States,None,Airbus,A220,A220-300,No,FALSE,,,High,
-JetBlue,B6,United States,None,Airbus,A320 family,A320,No,FALSE,,,High,
-JetBlue,B6,United States,None,Airbus,A320 family,A321,No,FALSE,,,High,
-JetBlue,B6,United States,None,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-JetBlue,B6,United States,None,Embraer,E-Jet,E190,No,FALSE,,,Medium,Being retired
-Kenya Airways,KQ,Kenya,SkyTeam,Boeing,787,787-8,Yes,FALSE,,,Medium,
-Kenya Airways,KQ,Kenya,SkyTeam,Boeing,777,777-300ER,Occasional,FALSE,,,Low,Returned to service per reports; verify
-Kenya Airways,KQ,Kenya,SkyTeam,Boeing,737,737-700,No,FALSE,,,Low,
-Kenya Airways,KQ,Kenya,SkyTeam,Boeing,737,737-800,No,FALSE,,,Medium,
-Kenya Airways,KQ,Kenya,SkyTeam,De Havilland,Dash 8,Dash 8-400,No,FALSE,,,Medium,
-Kenya Airways,KQ,Kenya,SkyTeam,Embraer,E-Jet,E190,No,FALSE,,,Medium,
-KLM,KL,Netherlands,SkyTeam,Boeing,737,737-800,Yes,FALSE,,,Medium,
-KLM,KL,Netherlands,SkyTeam,Embraer,E-Jet,E175,Yes,FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
-KLM,KL,Netherlands,SkyTeam,Embraer,E-Jet,E190,Yes,FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
-KLM,KL,Netherlands,SkyTeam,Embraer,E-Jet,E195-E2,Yes,FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
-KLM,KL,Netherlands,SkyTeam,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,Recent type; from memory
-KLM,KL,Netherlands,SkyTeam,Boeing,737,737-700,Occasional,FALSE,,,Low,
-KLM,KL,Netherlands,SkyTeam,Boeing,737,737-900,Occasional,FALSE,,,Low,
-KLM,KL,Netherlands,SkyTeam,Boeing,787,787-9,Occasional,FALSE,,,Low,
-KLM,KL,Netherlands,SkyTeam,Airbus,A330,A330-200,No,FALSE,,,Low,
-KLM,KL,Netherlands,SkyTeam,Airbus,A330,A330-300,No,FALSE,,,Low,
-KLM,KL,Netherlands,SkyTeam,Boeing,777,777-200ER,No,FALSE,,,Medium,
-KLM,KL,Netherlands,SkyTeam,Boeing,777,777-300ER,No,FALSE,,,Medium,
-KLM,KL,Netherlands,SkyTeam,Boeing,787,787-10,No,FALSE,,,Low,
-KM Malta Airlines,KM,Malta,None,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-KM Malta Airlines,KM,Malta,None,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-KM Malta Airlines,KM,Malta,None,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,
-Korean Air,KE,South Korea,SkyTeam,Boeing,777,777-300ER,Yes,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,Medium,ICN-LHR
-Korean Air,KE,South Korea,SkyTeam,Airbus,A380,A380-800,Occasional,FALSE,,,Low,Seasonal/substitution
-Korean Air,KE,South Korea,SkyTeam,Airbus,A220,A220-300,No,FALSE,,,High,
-Korean Air,KE,South Korea,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,High,
-Korean Air,KE,South Korea,SkyTeam,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Airbus,A350,A350-900,No,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Boeing,737,737-800,No,FALSE,,,High,
-Korean Air,KE,South Korea,SkyTeam,Boeing,737,737-900,No,FALSE,,,High,
-Korean Air,KE,South Korea,SkyTeam,Boeing,747,747-8,No,FALSE,,,Low,Rare
-Korean Air,KE,South Korea,SkyTeam,Boeing,777,777-200ER,No,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Boeing,777,777-300,No,FALSE,,,Medium,
-Korean Air,KE,South Korea,SkyTeam,Boeing,787,787-10,No,FALSE,,,Medium,
-Kuwait Airways,KU,Kuwait,None,Boeing,777,777-300ER,Yes,FALSE,,,Medium,
-Kuwait Airways,KU,Kuwait,None,Airbus,A330,A330-800,Occasional,FALSE,,,Low,Verify aircraft on LHR rotation
-Kuwait Airways,KU,Kuwait,None,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Kuwait Airways,KU,Kuwait,None,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-LATAM Airlines Brasil,LA,Brazil,None,Boeing,787,787-9,Yes,FALSE,,,High,GRU-LHR
-LATAM Airlines Brasil,LA,Brazil,None,Airbus,A320 family,A319,No,FALSE,,,Medium,
-LATAM Airlines Brasil,LA,Brazil,None,Airbus,A320 family,A320,No,FALSE,,,High,
-LATAM Airlines Brasil,LA,Brazil,None,Airbus,A320 family,A320neo,No,FALSE,,,High,
-LATAM Airlines Brasil,LA,Brazil,None,Airbus,A320 family,A321,No,FALSE,,,Medium,
-LATAM Airlines Brasil,LA,Brazil,None,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-LATAM Airlines Brasil,LA,Brazil,None,Boeing,767,767-300ER,No,FALSE,,,Low,Few remaining
-LATAM Airlines Brasil,LA,Brazil,None,Boeing,777,777-300ER,No,FALSE,,,Medium,
-LATAM Airlines Brasil,LA,Brazil,None,Boeing,787,787-8,No,FALSE,,,Medium,
-LOT Polish Airlines,LO,Poland,Star Alliance,Airbus,A220,A220-300,Yes,FALSE,,,Medium,
-LOT Polish Airlines,LO,Poland,Star Alliance,Embraer,E-Jet,E195-E2,Yes,FALSE,,,Medium,
-LOT Polish Airlines,LO,Poland,Star Alliance,Boeing,737,737 MAX 8,Occasional,FALSE,,,Low,
-LOT Polish Airlines,LO,Poland,Star Alliance,Boeing,737,737-800,Occasional,FALSE,,,Low,
-LOT Polish Airlines,LO,Poland,Star Alliance,Embraer,E-Jet,E175,Occasional,FALSE,,,Low,
-LOT Polish Airlines,LO,Poland,Star Alliance,Embraer,E-Jet,E195,Occasional,FALSE,,,Low,
-LOT Polish Airlines,LO,Poland,Star Alliance,Boeing,787,787-8,No,FALSE,,,Medium,Long-haul
-LOT Polish Airlines,LO,Poland,Star Alliance,Boeing,787,787-9,No,FALSE,,,Medium,Long-haul
-LOT Polish Airlines,LO,Poland,Star Alliance,Embraer,E-Jet,E170,No,FALSE,,,Low,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A320 family,A319,Yes,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,High,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A220,A220-100,Occasional,FALSE,,,Low,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A220,A220-300,Occasional,FALSE,,,Low,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A350,A350-900,Occasional,FALSE,,,Low,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Low,
-Lufthansa,LH,Germany,Star Alliance,Airbus,A340,A340-300,No,FALSE,,,Low,Sources conflict on whether still flying
-Lufthansa,LH,Germany,Star Alliance,Airbus,A380,A380-800,No,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Boeing,747,747-8,No,FALSE,,,Medium,
-Lufthansa,LH,Germany,Star Alliance,Boeing,787,787-9,No,FALSE,,,Medium,
-Malaysia Airlines,MH,Malaysia,oneworld,Airbus,A350,A350-900,Yes,FALSE,,,High,Seen at LHR Sep 2026
-Malaysia Airlines,MH,Malaysia,oneworld,Airbus,A330,A330-200,No,FALSE,,,Medium,
-Malaysia Airlines,MH,Malaysia,oneworld,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Malaysia Airlines,MH,Malaysia,oneworld,Airbus,A330,A330-900,No,FALSE,,,Medium,
-Malaysia Airlines,MH,Malaysia,oneworld,Boeing,737,737 MAX 8,No,FALSE,,,Low,Delivery status unverified
-Malaysia Airlines,MH,Malaysia,oneworld,Boeing,737,737-800,No,FALSE,,,Medium,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A320 family,A321neo,Yes,FALSE,,,Low,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A330,A330-200,Occasional,FALSE,,,Low,
-Middle East Airlines,ME,Lebanon,SkyTeam,Airbus,A330,A330-900,Occasional,FALSE,,,Low,
-Oman Air,WY,Oman,None,Boeing,787,787-9,Yes,FALSE,,,Medium,
-Oman Air,WY,Oman,None,Boeing,787,787-8,Occasional,FALSE,,,Low,
-Oman Air,WY,Oman,None,Airbus,A330,A330-300,No,FALSE,,,Low,Verify still in service
-Oman Air,WY,Oman,None,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-Oman Air,WY,Oman,None,Boeing,737,737 MAX 9,No,FALSE,,,Low,
-Oman Air,WY,Oman,None,Boeing,737,737-800,No,FALSE,,,Medium,
-Pakistan International Airlines,PK,Pakistan,None,Boeing,777,777-300ER,Yes,FALSE,,,Medium,Lahore and Islamabad to LHR T4 since Mar 2026
-Pakistan International Airlines,PK,Pakistan,None,Boeing,777,777-200ER,Occasional,FALSE,,,Low,Reported as planned for Lahore route; may be retired or stored
-Pakistan International Airlines,PK,Pakistan,None,Boeing,787,787-9,Occasional,FALSE,,,Low,Wet-leased from Norse Atlantic (not PIA-owned); first one reported Nov 2026 replacing some 777 flights
-Pakistan International Airlines,PK,Pakistan,None,ATR,ATR 72,ATR 72-500,No,FALSE,,,Low,Type/active count unverified
-Pakistan International Airlines,PK,Pakistan,None,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Qantas,QF,Australia,oneworld,Airbus,A380,A380-800,Yes,FALSE,,,High,QF1/2 Sydney-Singapore-LHR; retirements from 2028
-Qantas,QF,Australia,oneworld,Boeing,787,787-9,Yes,FALSE,,,High,Perth-LHR; westbound routes via Singapore until 31 Jan 2027 (return nonstop)
-Qantas,QF,Australia,oneworld,Airbus,A320 family,A321XLR,No,FALSE,,,Medium,
-Qantas,QF,Australia,oneworld,Airbus,A330,A330-200,No,FALSE,,,High,
-Qantas,QF,Australia,oneworld,Airbus,A330,A330-300,No,FALSE,,,High,
-Qantas,QF,Australia,oneworld,Boeing,737,737-800,No,FALSE,,,High,QantasLink and Jetstar excluded
-Qatar Airways,QR,Qatar,oneworld,Airbus,A350,A350-900,Yes,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Airbus,A350,A350-1000,Yes,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Boeing,777,777-300ER,Yes,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Boeing,787,787-9,Yes,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Airbus,A380,A380-800,Occasional,FALSE,,,Medium,Partially returned to service
-Qatar Airways,QR,Qatar,oneworld,Boeing,787,787-8,Occasional,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Qatar Airways,QR,Qatar,oneworld,Airbus,A320 family,A321neo,No,FALSE,,,Low,
-Qatar Airways,QR,Qatar,oneworld,Airbus,A330,A330-300,No,FALSE,,,Low,Few remaining
-Riyadh Air,RW,Saudi Arabia,None,Boeing,787,787-9,Yes,FALSE,,,Medium,LHR service began June 2026
-Royal Air Maroc,AT,Morocco,oneworld,Boeing,737,737 MAX 8,Yes,FALSE,,,Medium,
-Royal Air Maroc,AT,Morocco,oneworld,Boeing,737,737-800,Yes,FALSE,,,Medium,
-Royal Air Maroc,AT,Morocco,oneworld,Boeing,787,787-8,Occasional,FALSE,,,Low,
-Royal Air Maroc,AT,Morocco,oneworld,Boeing,787,787-9,Occasional,FALSE,,,Low,
-Royal Air Maroc,AT,Morocco,oneworld,ATR,ATR 72,ATR 72-600,No,FALSE,,,Medium,
-Royal Air Maroc,AT,Morocco,oneworld,Boeing,737,737-700,No,FALSE,,,Medium,
-Royal Air Maroc,AT,Morocco,oneworld,Embraer,E-Jet,E190,No,FALSE,,,Medium,
-Royal Brunei Airlines,BI,Brunei,None,Boeing,787,787-8,Yes,FALSE,,,High,Nonstop BWN-LHR three weekly; extended to Mar 2027 and reportedly summer 2027
-Royal Brunei Airlines,BI,Brunei,None,Boeing,787,787-9,Occasional,FALSE,,,Low,Possible substitution
-Royal Brunei Airlines,BI,Brunei,None,Airbus,A320 family,A320neo,No,FALSE,,,Low,Narrowbody fleet details unverified
-Royal Jordanian,RJ,Jordan,oneworld,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Royal Jordanian,RJ,Jordan,oneworld,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Royal Jordanian,RJ,Jordan,oneworld,Airbus,A320 family,A319,Occasional,FALSE,,,Low,
-Royal Jordanian,RJ,Jordan,oneworld,Boeing,787,787-8,Occasional,FALSE,,,Medium,
-Royal Jordanian,RJ,Jordan,oneworld,Embraer,E-Jet,E175,No,FALSE,,,Low,
-RwandAir,WB,Rwanda,None,Airbus,A330,A330-200,Yes,FALSE,,,Low,LHR (T4) direct from Kigali since Nov 2022; type on route unconfirmed
-RwandAir,WB,Rwanda,None,Airbus,A330,A330-300,Occasional,FALSE,,,Low,
-RwandAir,WB,Rwanda,None,Airbus,A220,A220-300,No,FALSE,,,Low,
-RwandAir,WB,Rwanda,None,Boeing,737,737-800,No,FALSE,,,Low,
-RwandAir,WB,Rwanda,None,Bombardier,CRJ,CRJ900,No,FALSE,,,Medium,
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,Main type on CPH/ARN/OSL-LHR
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A320 family,A320,Occasional,FALSE,,,Low,Remaining ceo being phased out
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A320 family,A321LR,Occasional,FALSE,,,Low,Mostly transatlantic
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A330,A330-300,No,FALSE,,,Medium,Long-haul only; being phased out
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A330,A330-900,No,FALSE,,,Medium,Long-haul only
-SAS,SK,Sweden/Denmark/Norway,SkyTeam,Airbus,A350,A350-900,No,FALSE,,,Medium,Long-haul only
-Saudia,SV,Saudi Arabia,SkyTeam,Boeing,777,777-300ER,Yes,FALSE,,,Medium,
-Saudia,SV,Saudi Arabia,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,Medium,
-Saudia,SV,Saudi Arabia,SkyTeam,Boeing,787,787-10,Occasional,FALSE,,,Low,
-Saudia,SV,Saudi Arabia,SkyTeam,Airbus,A320 family,A320,No,FALSE,,,Medium,
-Saudia,SV,Saudi Arabia,SkyTeam,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-Saudia,SV,Saudi Arabia,SkyTeam,Airbus,A320 family,A321XLR,No,FALSE,,,Low,Entering service NW26
-Saudia,SV,Saudi Arabia,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-Saudia,SV,Saudi Arabia,SkyTeam,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Singapore Airlines,SQ,Singapore,Star Alliance,Airbus,A350,A350-900,Yes,FALSE,,,Medium,SQ306/305 moved to A350 from 1 Jul 2026
-Singapore Airlines,SQ,Singapore,Star Alliance,Airbus,A380,A380-800,Yes,FALSE,,,High,Two daily; some flights may change in winter - check
-Singapore Airlines,SQ,Singapore,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,High,SQ318/321
-Singapore Airlines,SQ,Singapore,Star Alliance,Boeing,737,737 MAX 8,No,FALSE,,,Medium,Short-haul regional only
-Singapore Airlines,SQ,Singapore,Star Alliance,Boeing,787,787-10,No,FALSE,,,Medium,Not seen on LHR
-South African Airways,SA,South Africa,Star Alliance,Airbus,A330,A330-300,Yes,FALSE,,,Low,LHR schedule not verified in 2026 sources
-South African Airways,SA,South Africa,Star Alliance,Airbus,A340,A340-300,Occasional,FALSE,,,Low,
-South African Airways,SA,South Africa,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,Medium,
-SriLankan Airlines,UL,Sri Lanka,oneworld,Airbus,A330,A330-300,Yes,FALSE,,,High,UL503/504 Colombo-LHR
-SriLankan Airlines,UL,Sri Lanka,oneworld,Airbus,A330,A330-200,Occasional,FALSE,,,Low,Mainly Middle East routes
-SriLankan Airlines,UL,Sri Lanka,oneworld,Airbus,A320 family,A320,No,FALSE,,,High,
-SriLankan Airlines,UL,Sri Lanka,oneworld,Airbus,A320 family,A320neo,No,FALSE,,,Medium,
-SriLankan Airlines,UL,Sri Lanka,oneworld,Airbus,A320 family,A321,No,FALSE,,,High,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A220,A220-100,Yes,FALSE,,,High,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A220,A220-300,Yes,FALSE,,,High,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A320 family,A321,Occasional,FALSE,,,Low,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Medium,
-Swiss,LX,Switzerland,Star Alliance,Airbus,A350,A350-900,No,FALSE,,,Low,Being delivered
-Swiss,LX,Switzerland,Star Alliance,Boeing,777,777-300ER,No,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A319,Yes,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A220,A220-300,Occasional,FALSE,,,Low,Fleet detail from memory; TAP Express E190/E195-E2 excluded
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A320 family,A321LR,Occasional,FALSE,,,Low,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A330,A330-900,Occasional,FALSE,,,Low,Substitutions possible
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A330,A330-200,No,FALSE,,,Low,
-TAP Air Portugal,TP,Portugal,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Low,
-Thai Airways,TG,Thailand,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,Low,From own knowledge; LHR schedule not confirmed by search
-Thai Airways,TG,Thailand,Star Alliance,Boeing,787,787-9,Yes,FALSE,,,Low,From own knowledge; LHR schedule not confirmed by search
-Thai Airways,TG,Thailand,Star Alliance,Airbus,A350,A350-900,Occasional,FALSE,,,Low,Used on some LHR flights (unverified)
-Thai Airways,TG,Thailand,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,Low,
-Thai Airways,TG,Thailand,Star Alliance,Airbus,A320 family,A321,No,FALSE,,,Low,A380 retired - revival abandoned 2022
-Thai Airways,TG,Thailand,Star Alliance,Airbus,A330,A330-300,No,FALSE,,,Low,
-Thai Airways,TG,Thailand,Star Alliance,Boeing,777,777-200ER,No,FALSE,,,Low,
-Thai Airways,TG,Thailand,Star Alliance,Boeing,787,787-8,No,FALSE,,,Low,
-Tunisair,TU,Tunisia,None,Airbus,A320 family,A320,Yes,FALSE,,,Low,A31X/A32X family flies LHR; exact types unconfirmed
-Tunisair,TU,Tunisia,None,Airbus,A320 family,A319,Occasional,FALSE,,,Low,
-Tunisair,TU,Tunisia,None,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,
-Tunisair,TU,Tunisia,None,Airbus,A320 family,A321,No,FALSE,,,Low,
-Tunisair,TU,Tunisia,None,Airbus,A330,A330-200,No,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A320 family,A321neo,Yes,FALSE,,,Medium,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A330,A330-300,Yes,FALSE,,,Medium,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A350,A350-900,Yes,FALSE,,,Medium,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A320 family,A320,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A320 family,A320neo,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,737,737 MAX 8,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,737,737 MAX 9,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,737,737-800,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,777,777-300ER,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,787,787-9,Occasional,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Airbus,A330,A330-200,No,FALSE,,,Low,
-Turkish Airlines,TK,Turkey,Star Alliance,Boeing,737,737-900,No,FALSE,,,Low,
-United Airlines,UA,United States,Star Alliance,Boeing,767,767-300ER,Yes,FALSE,,,Medium,EWR-LHR
-United Airlines,UA,United States,Star Alliance,Boeing,777,777-200,Yes,FALSE,,,Medium,
-United Airlines,UA,United States,Star Alliance,Boeing,777,777-300ER,Yes,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,787,787-8,Yes,FALSE,,,Medium,
-United Airlines,UA,United States,Star Alliance,Boeing,787,787-9,Yes,FALSE,,,High,Refreshed 787-9 on SFO-LHR from Apr 2026
-United Airlines,UA,United States,Star Alliance,Boeing,787,787-10,Yes,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,767,767-400ER,Occasional,FALSE,,,Low,
-United Airlines,UA,United States,Star Alliance,Boeing,777,777-200ER,Occasional,FALSE,,,Low,
-United Airlines,UA,United States,Star Alliance,Airbus,A320 family,A319,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Airbus,A320 family,A320,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Airbus,A320 family,A321neo,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737 MAX 8,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737 MAX 9,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737-700,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737-800,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737-900,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,737,737-900ER,No,FALSE,,,High,
-United Airlines,UA,United States,Star Alliance,Boeing,757,757-200,No,FALSE,,,Medium,No longer LHR
-United Airlines,UA,United States,Star Alliance,Boeing,757,757-300,No,FALSE,,,High,
-Uzbekistan Airways,HY,Uzbekistan,None,Boeing,787,787-8,Yes,FALSE,,,High,2 weekly 787 Apr-Jun 2026 per AeroRoutes
-Uzbekistan Airways,HY,Uzbekistan,None,Boeing,787,787-9,Yes,FALSE,,,Low,Newer deliveries; LHR use unverified
-Uzbekistan Airways,HY,Uzbekistan,None,Airbus,A320 family,A321LR,Occasional,FALSE,,,Medium,Was 1 weekly earlier in 2026
-Uzbekistan Airways,HY,Uzbekistan,None,Airbus,A320 family,A320,No,FALSE,,,Low,
-Uzbekistan Airways,HY,Uzbekistan,None,Airbus,A320 family,A320neo,No,FALSE,,,Low,
-Uzbekistan Airways,HY,Uzbekistan,None,Airbus,A320 family,A321neo,No,FALSE,,,Low,
-Vietnam Airlines,VN,Vietnam,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,High,Hanoi and Ho Chi Minh City to LHR T4
-Vietnam Airlines,VN,Vietnam,SkyTeam,Airbus,A350,A350-900,Occasional,FALSE,,,Low,Possible substitution
-Vietnam Airlines,VN,Vietnam,SkyTeam,Airbus,A320 family,A321,No,FALSE,,,Medium,
-Vietnam Airlines,VN,Vietnam,SkyTeam,Airbus,A320 family,A321neo,No,FALSE,,,Medium,
-Vietnam Airlines,VN,Vietnam,SkyTeam,Boeing,787,787-10,No,FALSE,,,Medium,
-Virgin Atlantic,VS,United Kingdom,SkyTeam,Airbus,A330,A330-300,Yes,FALSE,,,Medium,Six remaining; being retired by 2028
-Virgin Atlantic,VS,United Kingdom,SkyTeam,Airbus,A330,A330-900,Yes,FALSE,,,High,
-Virgin Atlantic,VS,United Kingdom,SkyTeam,Airbus,A350,A350-1000,Yes,FALSE,,,High,
-Virgin Atlantic,VS,United Kingdom,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,High,
-Vueling,VY,Spain,None,Airbus,A320 family,A320,Yes,FALSE,,,Medium,
-Vueling,VY,Spain,None,Airbus,A320 family,A320neo,Yes,FALSE,,,Medium,
-Vueling,VY,Spain,None,Airbus,A320 family,A321,Yes,FALSE,,,Medium,
-Vueling,VY,Spain,None,Airbus,A320 family,A321neo,Occasional,FALSE,,,Low,
-WestJet,WS,Canada,None,Boeing,787,787-9,Yes,FALSE,,,High,YYC-LHR
-WestJet,WS,Canada,None,Boeing,737,737 MAX 8,No,FALSE,,,Medium,Europe flights go to other airports
-WestJet,WS,Canada,None,Boeing,737,737-700,No,FALSE,,,High,
-WestJet,WS,Canada,None,Boeing,737,737-800,No,FALSE,,,High,
-XiamenAir,MF,China,SkyTeam,Boeing,787,787-9,Yes,FALSE,,,High,XMN-LHR from 6 Sep 2026; 3x weekly MF821/822
-XiamenAir,MF,China,SkyTeam,Boeing,737,737 MAX 8,No,FALSE,,,Medium,
-XiamenAir,MF,China,SkyTeam,Boeing,737,737-800,No,FALSE,,,High,
-XiamenAir,MF,China,SkyTeam,Boeing,787,787-8,No,FALSE,,,Low,
+airline,iata,alliance,type,at_heathrow,arrival_times,photographed,date,registration,confidence,notes
+Aegean Airlines,A3,Star Alliance,A320neo,Yes,"≈ 09:00 (A3 600), 13:30, 19:00 (A3 6xx)",FALSE,,,Medium,
+Aegean Airlines,A3,Star Alliance,A321neo,Yes,"≈ 09:00 (A3 600), 13:30, 19:00 (A3 6xx)",FALSE,,,Medium,
+Aegean Airlines,A3,Star Alliance,A320,Occasional,Varies,FALSE,,,Medium,
+Aegean Airlines,A3,Star Alliance,A321,Occasional,Varies,FALSE,,,Medium,
+Aer Lingus,EI,None,A320,Yes,"Roughly hourly, 07:00–22:30 (Dublin EI150-series; also Cork/Shannon/Belfast)",FALSE,,,Medium,Includes Aer Lingus UK-registered aircraft possibly
+Aer Lingus,EI,None,A320neo,Yes,"≈ Roughly hourly, 07:00–22:30",FALSE,,,Medium,
+Aer Lingus,EI,None,A321LR,Yes,"≈ Roughly hourly, 07:00–22:30",FALSE,,,Medium,Reported on scheduled DUB-LHR in summer 2026
+Aer Lingus,EI,None,A321neo,Yes,"≈ Roughly hourly, 07:00–22:30",FALSE,,,Medium,
+Aer Lingus,EI,None,A321XLR,Occasional,Varies,FALSE,,,Medium,Used on some LHR rotations between transatlantic flying
+Aer Lingus,EI,None,A330-200,No,,FALSE,,,Medium,
+Aer Lingus,EI,None,A330-300,No,,FALSE,,,Medium,
+Aeroméxico,AM,SkyTeam,787-8,Yes,"≈ Early afternoon, about 13:00–15:00 (AM2 from Mexico City)",FALSE,,,High,MEX-LHR
+Aeroméxico,AM,SkyTeam,787-9,Yes,"≈ Early afternoon, about 13:00–15:00 (AM2 from Mexico City)",FALSE,,,High,
+Aeroméxico,AM,SkyTeam,737 MAX 8,No,,FALSE,,,High,
+Aeroméxico,AM,SkyTeam,737 MAX 9,No,,FALSE,,,High,
+Aeroméxico,AM,SkyTeam,737-800,No,,FALSE,,,High,
+Aeroméxico,AM,SkyTeam,E190,No,,FALSE,,,Medium,
+Air Algérie,AH,None,737-800,Yes,"≈ 12:00-15:00 (AH2007 approx, from Algiers)",FALSE,,,Low,
+Air Algérie,AH,None,A330-200,Occasional,Varies,FALSE,,,Low,
+Air Algérie,AH,None,A330-900,Occasional,Varies,FALSE,,,Low,
+Air Algérie,AH,None,ATR 72-600,No,,FALSE,,,Medium,
+Air Algérie,AH,None,A320,No,,FALSE,,,Low,
+Air Algérie,AH,None,A321,No,,FALSE,,,Low,
+Air Algérie,AH,None,737-700,No,,FALSE,,,Low,
+Air Astana,KC,None,A321LR,Yes,Varies,FALSE,,,Medium,
+Air Astana,KC,None,787-9,Yes,Varies,FALSE,,,Low,Verify LHR use
+Air Astana,KC,None,A320neo,No,,FALSE,,,Low,
+Air Astana,KC,None,A321neo,No,,FALSE,,,Low,
+Air Astana,KC,None,E190-E2,No,,FALSE,,,Medium,
+Air Canada,AC,Star Alliance,777-300ER,Yes,"Mostly 06:00–11:30 (overnight from Toronto/Montreal, e.g. 06:35 AC854, 11:20 AC858), plus some afternoon/evening arrivals",FALSE,,,High,
+Air Canada,AC,Star Alliance,787-8,Yes,"≈ Mostly 06:00–11:30 (overnight from Toronto/Montreal, e.g. 06:35 AC854, 11:20 AC858), plus some afternoon/evening arrivals",FALSE,,,Medium,
+Air Canada,AC,Star Alliance,787-9,Yes,"≈ Mostly 06:00–11:30 (overnight from Toronto/Montreal, e.g. 06:35 AC854, 11:20 AC858), plus some afternoon/evening arrivals",FALSE,,,High,
+Air Canada,AC,Star Alliance,787-10,Occasional,Varies,FALSE,,,Low,
+Air Canada,AC,Star Alliance,A220-300,No,,FALSE,,,High,
+Air Canada,AC,Star Alliance,A319,No,,FALSE,,,Medium,
+Air Canada,AC,Star Alliance,A320,No,,FALSE,,,High,
+Air Canada,AC,Star Alliance,A321,No,,FALSE,,,High,
+Air Canada,AC,Star Alliance,A321XLR,No,,FALSE,,,Medium,Planned YYZ-LHR Aug-Oct 2026 removed; widebodies instead
+Air Canada,AC,Star Alliance,737 MAX 8,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A350-900,Yes,"≈ 16:30 (CA937), ~06:30 (CA855)",FALSE,,,Medium,PEK and TFU to LHR
+Air China,CA,Star Alliance,777-300ER,Yes,"≈ 16:30 (CA937), ~06:30 (CA855)",FALSE,,,Medium,
+Air China,CA,Star Alliance,A330-300,Occasional,Varies,FALSE,,,Low,
+Air China,CA,Star Alliance,747-8,Occasional,Varies,FALSE,,,Low,Few left; substitutions
+Air China,CA,Star Alliance,A319,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A320,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A320neo,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A321,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A321neo,No,,FALSE,,,High,
+Air China,CA,Star Alliance,A330-200,No,,FALSE,,,Medium,
+Air China,CA,Star Alliance,737 MAX 8,No,,FALSE,,,Medium,
+Air China,CA,Star Alliance,737-800,No,,FALSE,,,High,
+Air China,CA,Star Alliance,C919,No,,FALSE,,,Medium,
+Air France,AF,SkyTeam,A220-300,Yes,"Roughly hourly, 07:30–22:30 (CDG-LHR)",FALSE,,,High,
+Air France,AF,SkyTeam,A319,Yes,"≈ Roughly hourly, 07:30–22:30 (CDG-LHR)",FALSE,,,Medium,Declining
+Air France,AF,SkyTeam,A320,Yes,"≈ Roughly hourly, 07:30–22:30 (CDG-LHR)",FALSE,,,Medium,
+Air France,AF,SkyTeam,A321,Yes,"≈ Roughly hourly, 07:30–22:30 (CDG-LHR)",FALSE,,,Medium,
+Air France,AF,SkyTeam,A320neo,Occasional,Varies,FALSE,,,Low,Recent deliveries; from memory
+Air France,AF,SkyTeam,A330-200,No,,FALSE,,,Medium,
+Air France,AF,SkyTeam,A330-900,No,,FALSE,,,Medium,
+Air France,AF,SkyTeam,A350-900,No,,FALSE,,,Medium,
+Air France,AF,SkyTeam,A350-1000,No,,FALSE,,,Low,Delivery status uncertain
+Air France,AF,SkyTeam,777-300ER,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,777-300ER,Yes,"≈ 06:30 (AI112 approx), ~13:00 (AI162 approx)",FALSE,,,High,Second daily Mumbai flight with First; some Delhi flights; being phased toward 787s
+Air India,AI,Star Alliance,787-8,Yes,"≈ 06:30, ~13:00 (approx)",FALSE,,,Medium,Retrofitted 787-8 on Bengaluru and Delhi routes from mid-2026
+Air India,AI,Star Alliance,787-9,Yes,"≈ 06:30, ~13:00 (approx)",FALSE,,,High,New 787-9 on Mumbai-LHR since 1 Jul 2026; some Delhi flights
+Air India,AI,Star Alliance,A319,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,A320,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,A320neo,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,A321,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,A321neo,No,,FALSE,,,Medium,
+Air India,AI,Star Alliance,A350-900,No,,FALSE,,,Low,Not tied to LHR in any source; A350-1000 deliveries expected 2026 - not listed as unsure if delivered
+Air Peace,P4,None,777-300,Yes,"≈ 06:00 (P4 900 approx, from Lagos)",FALSE,,,Low,Abuja–Heathrow since Oct 2025; 777 variant unconfirmed
+Air Serbia,JU,None,A320,Yes,"≈ 10:45 (JU100), 16:30 (JU102)",FALSE,,,Medium,
+Air Serbia,JU,None,A319,Occasional,Varies,FALSE,,,Low,
+Air Serbia,JU,None,A321,Occasional,Varies,FALSE,,,Low,
+Air Serbia,JU,None,ATR 72-600,No,,FALSE,,,Medium,Regional
+Air Serbia,JU,None,A330-200,No,,FALSE,,,Medium,Long-haul
+Air Serbia,JU,None,A330-300,No,,FALSE,,,Low,Long-haul
+Alaska Airlines,AS,oneworld,787-9,Yes,"≈ Morning to midday, about 09:00–11:00 (Seattle flight)",FALSE,,,High,SEA-LHR daily since May 2026 using leased AA slots
+Alaska Airlines,AS,oneworld,737 MAX 8,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,737 MAX 9,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,737-700,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,737-800,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,737-900,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,737-900ER,No,,FALSE,,,High,
+Alaska Airlines,AS,oneworld,787-10,No,,FALSE,,,Low,Delivery status uncertain; not LHR
+All Nippon Airways,NH,Star Alliance,777-300ER,Yes,"≈ 15:45 (NH211), ~06:20 (NH209)",FALSE,,,Medium,Also used on LHR
+All Nippon Airways,NH,Star Alliance,787-9,Yes,"≈ 15:45 (NH211), ~06:20 (NH209)",FALSE,,,Medium,HND-LHR
+All Nippon Airways,NH,Star Alliance,A320neo,No,,FALSE,,,High,
+All Nippon Airways,NH,Star Alliance,A321neo,No,,FALSE,,,High,
+All Nippon Airways,NH,Star Alliance,A380-800,No,,FALSE,,,High,Honolulu only
+All Nippon Airways,NH,Star Alliance,737-800,No,,FALSE,,,High,
+All Nippon Airways,NH,Star Alliance,767-300ER,No,,FALSE,,,High,
+All Nippon Airways,NH,Star Alliance,777-200ER,No,,FALSE,,,Medium,
+All Nippon Airways,NH,Star Alliance,777-300,No,,FALSE,,,High,Domestic
+All Nippon Airways,NH,Star Alliance,787-8,No,,FALSE,,,High,
+All Nippon Airways,NH,Star Alliance,787-10,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,777-300ER,Yes,"Mostly 06:00–10:30 (overnight from JFK, Boston, Miami, e.g. 06:05 AA100, 07:10 AA106), plus afternoon arrivals from DFW/ORD/LAX",FALSE,,,High,JFK/DFW/ORD-LHR
+American Airlines,AA,oneworld,787-8,Yes,"≈ Mostly 06:00–10:30 (overnight from JFK, Boston, Miami, e.g. 06:05 AA100, 07:10 AA106), plus afternoon arrivals from DFW/ORD/LAX",FALSE,,,High,
+American Airlines,AA,oneworld,787-9,Yes,"≈ Mostly 06:00–10:30 (overnight from JFK, Boston, Miami, e.g. 06:05 AA100, 07:10 AA106), plus afternoon arrivals from DFW/ORD/LAX",FALSE,,,High,
+American Airlines,AA,oneworld,777-200ER,Occasional,Varies,FALSE,,,Low,Rare substitution
+American Airlines,AA,oneworld,A319,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,A320,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,A321,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,A321XLR,No,,FALSE,,,Medium,Transatlantic to other airports; slot-constrained at LHR
+American Airlines,AA,oneworld,A321neo,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,A330-200,No,,FALSE,,,Low,Being retired; not LHR
+American Airlines,AA,oneworld,737 MAX 8,No,,FALSE,,,Medium,
+American Airlines,AA,oneworld,737-800,No,,FALSE,,,Medium,
+Asiana Airlines,OZ,Star Alliance,A350-900,Yes,≈ 16:20 (OZ521),FALSE,,,Medium,Merging into Korean Air 17 Dec 2026; leaves Star Alliance; LHR route status/slots changing
+Asiana Airlines,OZ,Star Alliance,A380-800,Occasional,Varies,FALSE,,,Low,
+Asiana Airlines,OZ,Star Alliance,A320,No,,FALSE,,,High,
+Asiana Airlines,OZ,Star Alliance,A321,No,,FALSE,,,High,
+Asiana Airlines,OZ,Star Alliance,A321neo,No,,FALSE,,,Medium,
+Asiana Airlines,OZ,Star Alliance,A330-300,No,,FALSE,,,Medium,
+Asiana Airlines,OZ,Star Alliance,777-200ER,No,,FALSE,,,Low,
+Austrian Airlines,OS,Star Alliance,A319,Yes,"≈ Typically 3 daily Vienna arrivals: morning ~09:00, afternoon ~14:30, evening ~20:30 (OS451/455/459)",FALSE,,,Medium,
+Austrian Airlines,OS,Star Alliance,A320,Yes,"≈ Typically 3 daily Vienna arrivals: morning ~09:00, afternoon ~14:30, evening ~20:30 (OS451/455/459)",FALSE,,,Medium,
+Austrian Airlines,OS,Star Alliance,A321,Yes,"≈ Typically 3 daily Vienna arrivals: morning ~09:00, afternoon ~14:30, evening ~20:30 (OS451/455/459)",FALSE,,,Medium,
+Austrian Airlines,OS,Star Alliance,E195,Occasional,Varies,FALSE,,,Low,Phasing out
+Austrian Airlines,OS,Star Alliance,767-300ER,No,,FALSE,,,Low,Being retired
+Austrian Airlines,OS,Star Alliance,777-200ER,No,,FALSE,,,Low,Being retired
+Austrian Airlines,OS,Star Alliance,787-9,No,,FALSE,,,Low,Long-haul fleet detail from memory
+Avianca,AV,Star Alliance,787-8,Yes,"≈ midday, about 12:00–14:30 (AV124 from Bogota)",FALSE,,,High,BOG-LHR
+Avianca,AV,Star Alliance,787-9,Occasional,Varies,FALSE,,,Low,Small fleet
+Avianca,AV,Star Alliance,A320,No,,FALSE,,,Medium,
+Avianca,AV,Star Alliance,A320neo,No,,FALSE,,,Medium,
+Avianca,AV,Star Alliance,A321,No,,FALSE,,,Low,
+Avianca,AV,Star Alliance,A321neo,No,,FALSE,,,Medium,
+Azerbaijan Airlines,J2,None,787-8,Yes,≈ 07:30-09:00 (J2 Baku flight),FALSE,,,Low,Likely main LHR type; unverified
+Azerbaijan Airlines,J2,None,A319,Occasional,Varies,FALSE,,,Low,
+Azerbaijan Airlines,J2,None,A320,Occasional,Varies,FALSE,,,Low,
+Azerbaijan Airlines,J2,None,A320neo,Occasional,Varies,FALSE,,,Low,
+Azerbaijan Airlines,J2,None,A321,No,,FALSE,,,Low,
+Azerbaijan Airlines,J2,None,E190,No,,FALSE,,,Low,Fleet affected after Dec 2024 crash
+Biman Bangladesh Airlines,BG,None,787-8,Yes,"≈ 06:00 (BG201 approx, from Dhaka)",FALSE,,,Medium,Dhaka-Sylhet-LHR (one-stop) per AeroRoutes NS26
+Biman Bangladesh Airlines,BG,None,787-9,Yes,≈ 06:00 (BG201 approx),FALSE,,,Medium,Dhaka-Sylhet-LHR per AeroRoutes NS26
+Biman Bangladesh Airlines,BG,None,777-300ER,Occasional,Varies,FALSE,,,Low,Sources conflict; may substitute on LHR
+Biman Bangladesh Airlines,BG,None,737-800,No,,FALSE,,,High,
+Biman Bangladesh Airlines,BG,None,Dash 8-400,No,,FALSE,,,High,
+British Airways,BA,oneworld,A319,Yes,"Very frequent short-haul; roughly every 15-30 min, 06:30–23:00",FALSE,,,Medium,Being replaced by neo; some A319s Heathrow-based
+British Airways,BA,oneworld,A320,Yes,"Very frequent short-haul; roughly every 15-30 min, 06:30–23:00",FALSE,,,Medium,Ceo fleet shrinking
+British Airways,BA,oneworld,A320neo,Yes,"Very frequent short-haul; roughly every 15-30 min, 06:30–23:00",FALSE,,,High,
+British Airways,BA,oneworld,A321,Yes,"Very frequent short-haul; roughly every 15-30 min, 06:30–23:00",FALSE,,,Medium,Ceo fleet shrinking
+British Airways,BA,oneworld,A321neo,Yes,"Very frequent short-haul; roughly every 15-30 min, 06:30–23:00",FALSE,,,High,
+British Airways,BA,oneworld,A350-1000,Yes,"≈ Long-haul waves: US/Canada/Middle East flights arrive ~06:00–09:00 and ~17:00–22:00 (e.g. Philadelphia BA68, Nashville BA222)",FALSE,,,High,
+British Airways,BA,oneworld,A380-800,Yes,"≈ Typically early morning ~05:30–07:00 and mid-afternoon (Los Angeles BA282, San Francisco, Singapore, Johannesburg)",FALSE,,,High,
+British Airways,BA,oneworld,777-200ER,Yes,≈ US/Middle East/Africa arrivals mainly ~05:30–09:00 and ~16:00–22:00,FALSE,,,Medium,Being retired gradually
+British Airways,BA,oneworld,777-300ER,Yes,"≈ Long-haul arrivals mainly ~05:30–09:00 and ~15:00–22:00 (e.g. Boston, Los Angeles, Johannesburg)",FALSE,,,High,
+British Airways,BA,oneworld,787-8,Yes,≈ Long-haul arrivals mainly ~05:30–09:00 and ~16:00–22:00,FALSE,,,High,
+British Airways,BA,oneworld,787-9,Yes,≈ Long-haul arrivals mainly ~05:30–09:00 and ~16:00–22:00,FALSE,,,High,
+British Airways,BA,oneworld,787-10,Yes,≈ Long-haul arrivals mainly ~06:00–09:00 and ~17:00–22:00,FALSE,,,High,
+Brussels Airlines,SN,Star Alliance,A319,Yes,≈ 5-6 daily Brussels arrivals spread 08:00–21:30 (SN2091-series),FALSE,,,Medium,
+Brussels Airlines,SN,Star Alliance,A320,Yes,≈ 5-6 daily Brussels arrivals spread 08:00–21:30 (SN2091-series),FALSE,,,Medium,
+Brussels Airlines,SN,Star Alliance,A320neo,Yes,≈ 5-6 daily Brussels arrivals spread 08:00–21:30 (SN2091-series),FALSE,,,Medium,
+Brussels Airlines,SN,Star Alliance,A330-300,No,,FALSE,,,Medium,
+Bulgaria Air,FB,None,A319,Yes,≈ 11:30 (FB485),FALSE,,,Low,
+Bulgaria Air,FB,None,A220-300,Occasional,Varies,FALSE,,,Low,Unverified for LHR
+Bulgaria Air,FB,None,A320,Occasional,Varies,FALSE,,,Low,
+Bulgaria Air,FB,None,E190,No,,FALSE,,,Low,
+Cathay Pacific,CX,oneworld,A350-1000,Yes,"≈ 06:50 (CX255), ~14:30 (CX251), ~19:10 (CX253)",FALSE,,,Medium,Main LHR type alongside 777-300ER
+Cathay Pacific,CX,oneworld,777-300ER,Yes,"≈ 06:50 (CX255), ~14:30 (CX251), ~19:10 (CX253)",FALSE,,,Medium,Aria Suite retrofit ongoing
+Cathay Pacific,CX,oneworld,A350-900,Occasional,Varies,FALSE,,,Medium,Occasional LHR swaps
+Cathay Pacific,CX,oneworld,A321neo,No,,FALSE,,,Medium,Regional
+Cathay Pacific,CX,oneworld,A330-300,No,,FALSE,,,Medium,Regional
+China Airlines,CI,SkyTeam,A350-900,Yes,≈ 06:40 (CI69),FALSE,,,Low,Heathrow service not confirmed by search; verify (may be Gatwick or other)
+China Airlines,CI,SkyTeam,A350-1000,Occasional,Varies,FALSE,,,Low,Newly delivered; Heathrow service unverified
+China Airlines,CI,SkyTeam,777-300ER,Occasional,Varies,FALSE,,,Low,Heathrow service unverified
+China Airlines,CI,SkyTeam,A321neo,No,,FALSE,,,High,Heathrow service unverified
+China Airlines,CI,SkyTeam,A330-300,No,,FALSE,,,Medium,Heathrow service unverified
+China Airlines,CI,SkyTeam,737-800,No,,FALSE,,,High,Heathrow service unverified
+China Eastern Airlines,MU,SkyTeam,777-300ER,Yes,≈ 15:50 (MU551),FALSE,,,Medium,PVG-LHR; source says 777s
+China Eastern Airlines,MU,SkyTeam,A330-300,Occasional,Varies,FALSE,,,Low,
+China Eastern Airlines,MU,SkyTeam,A319,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,A320,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,A320neo,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,A321,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,A321neo,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,A330-200,No,,FALSE,,,Medium,
+China Eastern Airlines,MU,SkyTeam,A350-900,No,,FALSE,,,Low,Source says not used to London
+China Eastern Airlines,MU,SkyTeam,737-800,No,,FALSE,,,High,
+China Eastern Airlines,MU,SkyTeam,C919,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,787-9,Yes,≈ 06:00 (CZ303),FALSE,,,Low,CAN-LHR; type unverified
+China Southern Airlines,CZ,None,A330-200,Occasional,Varies,FALSE,,,Low,Original 2018 LHR type
+China Southern Airlines,CZ,None,A330-300,Occasional,Varies,FALSE,,,Low,
+China Southern Airlines,CZ,None,A350-900,Occasional,Varies,FALSE,,,Low,
+China Southern Airlines,CZ,None,A319,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,A320,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,A320neo,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,A321,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,A321neo,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,737 MAX 8,No,,FALSE,,,Medium,
+China Southern Airlines,CZ,None,737-800,No,,FALSE,,,High,
+China Southern Airlines,CZ,None,787-8,No,,FALSE,,,Medium,
+Croatia Airlines,OU,Star Alliance,A319,Yes,≈ 12:00 (OU490),FALSE,,,Medium,
+Croatia Airlines,OU,Star Alliance,A320,Yes,≈ 12:00 (OU490),FALSE,,,Medium,
+Croatia Airlines,OU,Star Alliance,A220-300,Occasional,Varies,FALSE,,,Low,Fleet renewal ongoing
+Delta Air Lines,DL,SkyTeam,A330-900,Yes,"Mostly 06:00–11:00 (overnight from JFK, Atlanta, Detroit, Boston; e.g. about 08:00 DL1, about 10:10 DL20 Seattle), plus a few afternoon arrivals",FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,A350-900,Yes,"Mostly 06:00–11:00 (overnight from JFK, Atlanta, Detroit, Boston; e.g. about 08:00 DL1, about 10:10 DL20 Seattle), plus a few afternoon arrivals",FALSE,,,High,ATL/DTW/JFK/BOS-LHR; A350-1000 not yet in service
+Delta Air Lines,DL,SkyTeam,767-300ER,Yes,"≈ Mostly 06:00–11:00 (overnight from JFK, Atlanta, Detroit, Boston; e.g. about 08:00 DL1, about 10:10 DL20 Seattle), plus a few afternoon arrivals",FALSE,,,Medium,Seasonal/JFK
+Delta Air Lines,DL,SkyTeam,A330-200,Occasional,Varies,FALSE,,,Low,
+Delta Air Lines,DL,SkyTeam,A330-300,Occasional,Varies,FALSE,,,Low,
+Delta Air Lines,DL,SkyTeam,767-400ER,Occasional,Varies,FALSE,,,Low,
+Delta Air Lines,DL,SkyTeam,A220-100,No,,FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,A220-300,No,,FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,A319,No,,FALSE,,,Low,Being phased out
+Delta Air Lines,DL,SkyTeam,A320,No,,FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,A321,No,,FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,A321neo,No,,FALSE,,,High,
+Delta Air Lines,DL,SkyTeam,717-200,No,,FALSE,,,Low,Retiring
+Delta Air Lines,DL,SkyTeam,737-800,No,,FALSE,,,Medium,
+Delta Air Lines,DL,SkyTeam,737-900ER,No,,FALSE,,,Medium,
+Delta Air Lines,DL,SkyTeam,757-200,No,,FALSE,,,Medium,
+EgyptAir,MS,Star Alliance,A320neo,Yes,"≈ Roughly 1-2 daily: afternoon ~15:00-16:00 and evening ~20:00-21:00 (MS777, MS779)",FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A321,Yes,"≈ Roughly 1-2 daily: afternoon ~15:00-16:00 and evening ~20:00-21:00 (MS777, MS779)",FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A321neo,Yes,"≈ Roughly 1-2 daily: afternoon ~15:00-16:00 and evening ~20:00-21:00 (MS777, MS779)",FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A320,Occasional,Varies,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A330-300,Occasional,Varies,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,787-9,Occasional,Varies,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A220-300,No,,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,A330-200,No,,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,737-800,No,,FALSE,,,Low,
+EgyptAir,MS,Star Alliance,777-300ER,No,,FALSE,,,Low,
+El Al,LY,None,737 MAX 8,Yes,"≈ Typically one or two daily Tel Aviv arrivals: ~morning (06:00-08:00) and ~afternoon/evening (15:00-19:00) (LY315, LY317)",FALSE,,,Low,
+El Al,LY,None,737-800,Yes,"≈ Typically one or two daily Tel Aviv arrivals: ~morning (06:00-08:00) and ~afternoon/evening (15:00-19:00) (LY315, LY317)",FALSE,,,Medium,
+El Al,LY,None,787-9,Yes,"≈ Typically one or two daily Tel Aviv arrivals: ~morning (06:00-08:00) and ~afternoon/evening (15:00-19:00) (LY315, LY317)",FALSE,,,Medium,
+El Al,LY,None,737-900,Occasional,Varies,FALSE,,,Low,
+El Al,LY,None,787-8,Occasional,Varies,FALSE,,,Low,
+El Al,LY,None,777-200ER,No,,FALSE,,,Low,Being retired; verify
+Emirates,EK,None,A350-900,Yes,"≈ Spread through the day: ~07:00-08:00, ~12:30-14:00, ~15:30-18:00 and ~19:00-20:00 arrivals",FALSE,,,Medium,A350 flies LHR on some rotations
+Emirates,EK,None,A380-800,Yes,"≈ Spread through the day: ~07:00-08:00, ~12:30-14:00, ~15:30-18:00 and ~19:00-20:00 arrivals",FALSE,,,High,
+Emirates,EK,None,777-300ER,Yes,"≈ Spread through the day: ~07:00-08:00, ~12:30-14:00, ~15:30-18:00 and ~19:00-20:00 arrivals",FALSE,,,High,
+Emirates,EK,None,777-200LR,No,,FALSE,,,Low,Few remaining; verify still in service
+Emirates,EK,None,787-9,No,,FALSE,,,Low,Entered service recently; not known on LHR
+Ethiopian Airlines,ET,Star Alliance,A350-900,Yes,"≈ 06:00 (ET700 approx), ~18:00 (ET708 approx)",FALSE,,,Medium,
+Ethiopian Airlines,ET,Star Alliance,787-8,Yes,"≈ 06:00, ~18:00 (approx)",FALSE,,,Medium,
+Ethiopian Airlines,ET,Star Alliance,A350-1000,Occasional,Varies,FALSE,,,Low,
+Ethiopian Airlines,ET,Star Alliance,787-9,Occasional,Varies,FALSE,,,Medium,
+Ethiopian Airlines,ET,Star Alliance,A220-300,No,,FALSE,,,High,
+Ethiopian Airlines,ET,Star Alliance,737 MAX 8,No,,FALSE,,,High,
+Ethiopian Airlines,ET,Star Alliance,737-800,No,,FALSE,,,High,
+Ethiopian Airlines,ET,Star Alliance,777-200LR,No,,FALSE,,,Low,
+Ethiopian Airlines,ET,Star Alliance,777-300ER,No,,FALSE,,,Medium,
+Ethiopian Airlines,ET,Star Alliance,Dash 8-400,No,,FALSE,,,High,
+Etihad Airways,EY,None,787-9,Yes,"≈ 07:30 (EY11), ~13:00 (EY19), ~15:30 (EY21), ~19:30 (EY17)",FALSE,,,Medium,
+Etihad Airways,EY,None,787-10,Yes,"≈ 07:30 (EY11), ~13:00 (EY19), ~15:30 (EY21), ~19:30 (EY17)",FALSE,,,Medium,
+Etihad Airways,EY,None,A380-800,Occasional,Varies,FALSE,,,Medium,Returned to LHR on some flights
+Etihad Airways,EY,None,777-300ER,Occasional,Varies,FALSE,,,Low,
+Etihad Airways,EY,None,A320,No,,FALSE,,,Medium,
+Etihad Airways,EY,None,A321,No,,FALSE,,,Low,
+Etihad Airways,EY,None,A330-300,No,,FALSE,,,Low,
+Eurowings,EW,None,A319,Yes,"≈ Few daily arrivals (Cologne/Stuttgart/Hamburg/Düsseldorf), mostly 09:00–21:00",FALSE,,,Medium,Berlin-LHR started Mar 2026 with A319 per news; Some routes moved to Gatwick in 2026
+Eurowings,EW,None,A320,Occasional,Varies,FALSE,,,Low,Some routes moved to Gatwick in 2026
+Eurowings,EW,None,A320neo,Occasional,Varies,FALSE,,,Low,Some routes moved to Gatwick in 2026
+Eurowings,EW,None,737-800,No,,FALSE,,,Low,Mostly wet-leased out; Some routes moved to Gatwick in 2026
+EVA Air,BR,Star Alliance,777-300ER,Yes,"≈ 06:50 (BR67), ~17:10 (BR69)",FALSE,,,Medium,TPE-LHR
+EVA Air,BR,Star Alliance,787-10,Yes,"≈ 06:50 (BR67), ~17:10 (BR69)",FALSE,,,Low,
+EVA Air,BR,Star Alliance,787-9,Occasional,Varies,FALSE,,,Low,
+EVA Air,BR,Star Alliance,A321,No,,FALSE,,,High,
+EVA Air,BR,Star Alliance,A321neo,No,,FALSE,,,High,
+EVA Air,BR,Star Alliance,A330-200,No,,FALSE,,,Medium,
+EVA Air,BR,Star Alliance,A330-300,No,,FALSE,,,Medium,
+Finnair,AY,oneworld,A320,Yes,"Approx. 09:10 (AY1331), 12:40, 17:00 (AY1337), 21:30",FALSE,,,Medium,
+Finnair,AY,oneworld,A321,Yes,"Approx. 09:10 (AY1331), 12:40, 17:00 (AY1337), 21:30",FALSE,,,Medium,Most common on HEL-LHR
+Finnair,AY,oneworld,A319,Occasional,Varies,FALSE,,,Low,Being retired
+Finnair,AY,oneworld,A350-900,Occasional,Varies,FALSE,,,Low,Occasional upgauge
+Finnair,AY,oneworld,A330-300,No,,FALSE,,,Medium,Long-haul
+Gulf Air,GF,None,787-9,Yes,"≈ Roughly 2 daily from Bahrain: ~07:00-08:00 and ~15:00-16:00 (GF1, GF5)",FALSE,,,High,
+Gulf Air,GF,None,A321neo,Occasional,Varies,FALSE,,,Low,
+Gulf Air,GF,None,A320,No,,FALSE,,,Medium,
+Gulf Air,GF,None,A320neo,No,,FALSE,,,Medium,
+Hainan Airlines,HU,None,787-9,Yes,≈ 15:30 (HU491),FALSE,,,Medium,Changsha and other routes to LHR
+Hainan Airlines,HU,None,A330-300,Occasional,Varies,FALSE,,,Low,
+Hainan Airlines,HU,None,A350-900,Occasional,Varies,FALSE,,,Low,
+Hainan Airlines,HU,None,A320,No,,FALSE,,,High,
+Hainan Airlines,HU,None,A321,No,,FALSE,,,High,
+Hainan Airlines,HU,None,A330-200,No,,FALSE,,,Medium,
+Hainan Airlines,HU,None,737 MAX 8,No,,FALSE,,,Medium,
+Hainan Airlines,HU,None,737-800,No,,FALSE,,,High,
+Hainan Airlines,HU,None,787-8,No,,FALSE,,,Medium,
+Iberia,IB,oneworld,A319,Yes,"≈ Roughly 6-8 daily Madrid arrivals, ~09:00–22:30 (IB3166-series)",FALSE,,,Low,Few remaining
+Iberia,IB,oneworld,A320,Yes,"≈ Roughly 6-8 daily Madrid arrivals, ~09:00–22:30",FALSE,,,Medium,
+Iberia,IB,oneworld,A320neo,Yes,"≈ Roughly 6-8 daily Madrid arrivals, ~09:00–22:30",FALSE,,,Medium,
+Iberia,IB,oneworld,A321,Yes,"≈ Roughly 6-8 daily Madrid arrivals, ~09:00–22:30",FALSE,,,Medium,
+Iberia,IB,oneworld,A321neo,Yes,"≈ Roughly 6-8 daily Madrid arrivals, ~09:00–22:30",FALSE,,,Medium,
+Iberia,IB,oneworld,A321XLR,Occasional,Varies,FALSE,,,Low,
+Iberia,IB,oneworld,A330-200,No,,FALSE,,,Medium,
+Iberia,IB,oneworld,A330-300,No,,FALSE,,,Medium,
+Iberia,IB,oneworld,A330-900,No,,FALSE,,,Medium,
+Iberia,IB,oneworld,A350-900,No,,FALSE,,,Medium,
+Icelandair,FI,None,737 MAX 8,Yes,"≈ 09:45, 15:00, 20:00",FALSE,,,Medium,Main type on KEF-LHR
+Icelandair,FI,None,A321LR,Occasional,Varies,FALSE,,,Medium,
+Icelandair,FI,None,737 MAX 9,Occasional,Varies,FALSE,,,Low,
+Icelandair,FI,None,757-200,No,,FALSE,,,Medium,Final LHR 757 flight reported Sept 2025; remaining 757s end Jan 2027
+Icelandair,FI,None,767-300ER,No,,FALSE,,,Medium,Final passenger flights Jan 2027
+Icelandair,FI,None,Dash 8-400,No,,FALSE,,,Low,Domestic/Greenland network
+ITA Airways,AZ,SkyTeam,A320neo,Yes,≈ Rome FCO arrivals ~3-4 daily plus Milan Linate; roughly 09:30–22:00,FALSE,,,High,FCO-LHR returned 29 Mar 2026 with A320neo
+ITA Airways,AZ,SkyTeam,A320,Occasional,Varies,FALSE,,,Low,
+ITA Airways,AZ,SkyTeam,A321,Occasional,Varies,FALSE,,,Low,
+ITA Airways,AZ,SkyTeam,A321neo,Occasional,Varies,FALSE,,,Low,
+ITA Airways,AZ,SkyTeam,A220-300,No,,FALSE,,,Low,
+ITA Airways,AZ,SkyTeam,A319,No,,FALSE,,,Low,Few if any remaining
+ITA Airways,AZ,SkyTeam,A330-900,No,,FALSE,,,Medium,
+ITA Airways,AZ,SkyTeam,A350-900,No,,FALSE,,,Medium,
+Japan Airlines,JL,oneworld,A350-1000,Yes,"≈ 15:30 (JL43), ~06:00 (JL41)",FALSE,,,Medium,HND-LHR
+Japan Airlines,JL,oneworld,787-9,Yes,"≈ 15:30 (JL43), ~06:00 (JL41)",FALSE,,,Medium,Seen on LHR
+Japan Airlines,JL,oneworld,777-300ER,Occasional,Varies,FALSE,,,Low,Used on LHR in past; shrinking role
+Japan Airlines,JL,oneworld,A321neo,No,,FALSE,,,Medium,Domestic
+Japan Airlines,JL,oneworld,A350-900,No,,FALSE,,,Medium,Mostly domestic; some regional
+Japan Airlines,JL,oneworld,737-800,No,,FALSE,,,High,
+Japan Airlines,JL,oneworld,767-300ER,No,,FALSE,,,Medium,Domestic and regional
+Japan Airlines,JL,oneworld,777-200ER,No,,FALSE,,,Medium,Domestic
+Japan Airlines,JL,oneworld,787-8,No,,FALSE,,,High,
+JetBlue,B6,None,A321LR,Yes,"≈ Early morning to mid-morning, about 06:00–08:30 (overnight from New York JFK/Boston)",FALSE,,,High,JFK/BOS-LHR Mint
+JetBlue,B6,None,A321XLR,Occasional,Varies,FALSE,,,Low,Entering service 2026; LHR use unconfirmed
+JetBlue,B6,None,A220-300,No,,FALSE,,,High,
+JetBlue,B6,None,A320,No,,FALSE,,,High,
+JetBlue,B6,None,A321,No,,FALSE,,,High,
+JetBlue,B6,None,A321neo,No,,FALSE,,,Medium,
+JetBlue,B6,None,E190,No,,FALSE,,,Medium,Being retired
+Kenya Airways,KQ,SkyTeam,787-8,Yes,"≈ 06:00 (KQ100 approx), ~19:00 (KQ102 approx)",FALSE,,,Medium,
+Kenya Airways,KQ,SkyTeam,777-300ER,Occasional,Varies,FALSE,,,Low,Returned to service per reports; verify
+Kenya Airways,KQ,SkyTeam,737-700,No,,FALSE,,,Low,
+Kenya Airways,KQ,SkyTeam,737-800,No,,FALSE,,,Medium,
+Kenya Airways,KQ,SkyTeam,Dash 8-400,No,,FALSE,,,Medium,
+Kenya Airways,KQ,SkyTeam,E190,No,,FALSE,,,Medium,
+KLM,KL,SkyTeam,737-800,Yes,"≈ Roughly hourly Amsterdam arrivals, 07:30–22:30 (KL1000-series)",FALSE,,,Medium,
+KLM,KL,SkyTeam,E175,Yes,"≈ Roughly hourly Amsterdam arrivals, 07:30–22:30",FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
+KLM,KL,SkyTeam,E190,Yes,"≈ Roughly hourly Amsterdam arrivals, 07:30–22:30",FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
+KLM,KL,SkyTeam,E195-E2,Yes,"≈ Roughly hourly Amsterdam arrivals, 07:30–22:30",FALSE,,,Medium,KLM Cityhopper aircraft flying under KL flight numbers
+KLM,KL,SkyTeam,A321neo,Occasional,Varies,FALSE,,,Low,Recent type; from memory
+KLM,KL,SkyTeam,737-700,Occasional,Varies,FALSE,,,Low,
+KLM,KL,SkyTeam,737-900,Occasional,Varies,FALSE,,,Low,
+KLM,KL,SkyTeam,787-9,Occasional,Varies,FALSE,,,Low,
+KLM,KL,SkyTeam,A330-200,No,,FALSE,,,Low,
+KLM,KL,SkyTeam,A330-300,No,,FALSE,,,Low,
+KLM,KL,SkyTeam,777-200ER,No,,FALSE,,,Medium,
+KLM,KL,SkyTeam,777-300ER,No,,FALSE,,,Medium,
+KLM,KL,SkyTeam,787-10,No,,FALSE,,,Low,
+KM Malta Airlines,KM,None,A320,Yes,"≈ 12:00 (KM100), 17:30",FALSE,,,Medium,
+KM Malta Airlines,KM,None,A320neo,Yes,"≈ 12:00 (KM100), 17:30",FALSE,,,Medium,
+KM Malta Airlines,KM,None,A321neo,Occasional,Varies,FALSE,,,Low,
+Korean Air,KE,SkyTeam,777-300ER,Yes,"~16:00 (KE907), ~15:30 (KE905)",FALSE,,,Medium,
+Korean Air,KE,SkyTeam,787-9,Yes,"~16:00 (KE907), ~15:30 (KE905)",FALSE,,,Medium,ICN-LHR
+Korean Air,KE,SkyTeam,A380-800,Occasional,Varies,FALSE,,,Low,Seasonal/substitution
+Korean Air,KE,SkyTeam,A220-300,No,,FALSE,,,High,
+Korean Air,KE,SkyTeam,A321neo,No,,FALSE,,,High,
+Korean Air,KE,SkyTeam,A330-200,No,,FALSE,,,Medium,
+Korean Air,KE,SkyTeam,A330-300,No,,FALSE,,,Medium,
+Korean Air,KE,SkyTeam,A350-900,No,,FALSE,,,Medium,
+Korean Air,KE,SkyTeam,737-800,No,,FALSE,,,High,
+Korean Air,KE,SkyTeam,737-900,No,,FALSE,,,High,
+Korean Air,KE,SkyTeam,747-8,No,,FALSE,,,Low,Rare
+Korean Air,KE,SkyTeam,777-200ER,No,,FALSE,,,Medium,
+Korean Air,KE,SkyTeam,777-300,No,,FALSE,,,Medium,
+Korean Air,KE,SkyTeam,787-10,No,,FALSE,,,Medium,
+Kuwait Airways,KU,None,777-300ER,Yes,"≈ Roughly 1-2 daily from Kuwait: ~07:30 and ~14:00-15:00 (KU101, KU117)",FALSE,,,Medium,
+Kuwait Airways,KU,None,A330-800,Occasional,Varies,FALSE,,,Low,Verify aircraft on LHR rotation
+Kuwait Airways,KU,None,A320,No,,FALSE,,,Medium,
+Kuwait Airways,KU,None,A320neo,No,,FALSE,,,Medium,
+LATAM Airlines Brasil,LA,None,787-9,Yes,"≈ midday, about 12:00–14:00 (LA8084 from Sao Paulo)",FALSE,,,High,GRU-LHR
+LATAM Airlines Brasil,LA,None,A319,No,,FALSE,,,Medium,
+LATAM Airlines Brasil,LA,None,A320,No,,FALSE,,,High,
+LATAM Airlines Brasil,LA,None,A320neo,No,,FALSE,,,High,
+LATAM Airlines Brasil,LA,None,A321,No,,FALSE,,,Medium,
+LATAM Airlines Brasil,LA,None,A321neo,No,,FALSE,,,Medium,
+LATAM Airlines Brasil,LA,None,767-300ER,No,,FALSE,,,Low,Few remaining
+LATAM Airlines Brasil,LA,None,777-300ER,No,,FALSE,,,Medium,
+LATAM Airlines Brasil,LA,None,787-8,No,,FALSE,,,Medium,
+LOT Polish Airlines,LO,Star Alliance,A220-300,Yes,"Approx. 10:30 (LO281), 17:20 (LO279), 21:00",FALSE,,,Medium,
+LOT Polish Airlines,LO,Star Alliance,E195-E2,Yes,"Approx. 10:30 (LO281), 17:20 (LO279), 21:00",FALSE,,,Medium,
+LOT Polish Airlines,LO,Star Alliance,737 MAX 8,Occasional,Varies,FALSE,,,Low,
+LOT Polish Airlines,LO,Star Alliance,737-800,Occasional,Varies,FALSE,,,Low,
+LOT Polish Airlines,LO,Star Alliance,E175,Occasional,Varies,FALSE,,,Low,
+LOT Polish Airlines,LO,Star Alliance,E195,Occasional,Varies,FALSE,,,Low,
+LOT Polish Airlines,LO,Star Alliance,787-8,No,,FALSE,,,Medium,Long-haul
+LOT Polish Airlines,LO,Star Alliance,787-9,No,,FALSE,,,Medium,Long-haul
+LOT Polish Airlines,LO,Star Alliance,E170,No,,FALSE,,,Low,
+Lufthansa,LH,Star Alliance,A319,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,A320,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,A320neo,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,High,
+Lufthansa,LH,Star Alliance,A321,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,A321neo,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,A220-100,Occasional,Varies,FALSE,,,Low,
+Lufthansa,LH,Star Alliance,A220-300,Occasional,Varies,FALSE,,,Low,
+Lufthansa,LH,Star Alliance,A350-900,Occasional,Varies,FALSE,,,Low,
+Lufthansa,LH,Star Alliance,A330-300,No,,FALSE,,,Low,
+Lufthansa,LH,Star Alliance,A340-300,No,,FALSE,,,Low,Sources conflict on whether still flying
+Lufthansa,LH,Star Alliance,A380-800,No,,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,747-8,No,,FALSE,,,Medium,
+Lufthansa,LH,Star Alliance,787-9,No,,FALSE,,,Medium,
+Malaysia Airlines,MH,oneworld,A350-900,Yes,"≈ 06:00 (MH2 approx), ~18:00 (MH4 approx)",FALSE,,,High,Seen at LHR Sep 2026
+Malaysia Airlines,MH,oneworld,A330-200,No,,FALSE,,,Medium,
+Malaysia Airlines,MH,oneworld,A330-300,No,,FALSE,,,Medium,
+Malaysia Airlines,MH,oneworld,A330-900,No,,FALSE,,,Medium,
+Malaysia Airlines,MH,oneworld,737 MAX 8,No,,FALSE,,,Low,Delivery status unverified
+Malaysia Airlines,MH,oneworld,737-800,No,,FALSE,,,Medium,
+Middle East Airlines,ME,SkyTeam,A321,Yes,"≈ Roughly 2-3 daily from Beirut: ~morning (06:00-08:00), ~afternoon (14:00-16:00) and ~evening (19:00-21:00) (ME201, ME205, ME203)",FALSE,,,Medium,
+Middle East Airlines,ME,SkyTeam,A321neo,Yes,"≈ Roughly 2-3 daily from Beirut: ~morning (06:00-08:00), ~afternoon (14:00-16:00) and ~evening (19:00-21:00) (ME201, ME205, ME203)",FALSE,,,Low,
+Middle East Airlines,ME,SkyTeam,A320,Occasional,Varies,FALSE,,,Low,
+Middle East Airlines,ME,SkyTeam,A320neo,Occasional,Varies,FALSE,,,Low,
+Middle East Airlines,ME,SkyTeam,A330-200,Occasional,Varies,FALSE,,,Low,
+Middle East Airlines,ME,SkyTeam,A330-900,Occasional,Varies,FALSE,,,Low,
+Oman Air,WY,None,787-9,Yes,"≈ Roughly 1-2 daily from Muscat: ~07:30 and ~13:00-14:00 (WY101, WY103)",FALSE,,,Medium,
+Oman Air,WY,None,787-8,Occasional,Varies,FALSE,,,Low,
+Oman Air,WY,None,A330-300,No,,FALSE,,,Low,Verify still in service
+Oman Air,WY,None,737 MAX 8,No,,FALSE,,,Medium,
+Oman Air,WY,None,737 MAX 9,No,,FALSE,,,Low,
+Oman Air,WY,None,737-800,No,,FALSE,,,Medium,
+Pakistan International Airlines,PK,None,777-300ER,Yes,"≈ 07:00-09:00 (PK785 approx), other days varies",FALSE,,,Medium,Lahore and Islamabad to LHR T4 since Mar 2026
+Pakistan International Airlines,PK,None,777-200ER,Occasional,Varies,FALSE,,,Low,Reported as planned for Lahore route; may be retired or stored
+Pakistan International Airlines,PK,None,787-9,Occasional,Varies,FALSE,,,Low,Wet-leased from Norse Atlantic (not PIA-owned); first one reported Nov 2026 replacing some 777 flights
+Pakistan International Airlines,PK,None,ATR 72-500,No,,FALSE,,,Low,Type/active count unverified
+Pakistan International Airlines,PK,None,A320,No,,FALSE,,,Medium,
+Qantas,QF,oneworld,A380-800,Yes,"≈ 06:00 (QF1 via Singapore, approx)",FALSE,,,High,QF1/2 Sydney-Singapore-LHR; retirements from 2028
+Qantas,QF,oneworld,787-9,Yes,≈ 06:00 (QF1) or ~17:00 (QF9 via Perth) approx,FALSE,,,High,Perth-LHR; westbound routes via Singapore until 31 Jan 2027 (return nonstop)
+Qantas,QF,oneworld,A321XLR,No,,FALSE,,,Medium,
+Qantas,QF,oneworld,A330-200,No,,FALSE,,,High,
+Qantas,QF,oneworld,A330-300,No,,FALSE,,,High,
+Qantas,QF,oneworld,737-800,No,,FALSE,,,High,QantasLink and Jetstar excluded
+Qatar Airways,QR,oneworld,A350-900,Yes,"≈ Many daily (about 7-8) from Doha: spread ~06:30-08:00 (QR3, QR7), midday ~12:00-14:00, afternoon ~15:00-17:00 and evening ~19:00-20:00",FALSE,,,Medium,
+Qatar Airways,QR,oneworld,A350-1000,Yes,"≈ Many daily (about 7-8) from Doha: spread ~06:30-08:00 (QR3, QR7), midday ~12:00-14:00, afternoon ~15:00-17:00 and evening ~19:00-20:00",FALSE,,,Medium,
+Qatar Airways,QR,oneworld,777-300ER,Yes,"≈ Many daily (about 7-8) from Doha: spread ~06:30-08:00 (QR3, QR7), midday ~12:00-14:00, afternoon ~15:00-17:00 and evening ~19:00-20:00",FALSE,,,Medium,
+Qatar Airways,QR,oneworld,787-9,Yes,"≈ Many daily (about 7-8) from Doha: spread ~06:30-08:00 (QR3, QR7), midday ~12:00-14:00, afternoon ~15:00-17:00 and evening ~19:00-20:00",FALSE,,,Medium,
+Qatar Airways,QR,oneworld,A380-800,Occasional,Varies,FALSE,,,Medium,Partially returned to service
+Qatar Airways,QR,oneworld,787-8,Occasional,Varies,FALSE,,,Medium,
+Qatar Airways,QR,oneworld,A320,No,,FALSE,,,Medium,
+Qatar Airways,QR,oneworld,A321neo,No,,FALSE,,,Low,
+Qatar Airways,QR,oneworld,A330-300,No,,FALSE,,,Low,Few remaining
+Riyadh Air,RW,None,787-9,Yes,Varies,FALSE,,,Medium,LHR service began June 2026
+Royal Air Maroc,AT,oneworld,737 MAX 8,Yes,≈ 08:00-22:00 (AT800 series from Casablanca approx),FALSE,,,Medium,
+Royal Air Maroc,AT,oneworld,737-800,Yes,≈ 08:00-22:00 (approx),FALSE,,,Medium,
+Royal Air Maroc,AT,oneworld,787-8,Occasional,Varies,FALSE,,,Low,
+Royal Air Maroc,AT,oneworld,787-9,Occasional,Varies,FALSE,,,Low,
+Royal Air Maroc,AT,oneworld,ATR 72-600,No,,FALSE,,,Medium,
+Royal Air Maroc,AT,oneworld,737-700,No,,FALSE,,,Medium,
+Royal Air Maroc,AT,oneworld,E190,No,,FALSE,,,Medium,
+Royal Brunei Airlines,BI,None,787-8,Yes,"≈ 06:30 (BI83 approx, Mon/Thu/Sat)",FALSE,,,High,Nonstop BWN-LHR three weekly; extended to Mar 2027 and reportedly summer 2027
+Royal Brunei Airlines,BI,None,787-9,Occasional,Varies,FALSE,,,Low,Possible substitution
+Royal Brunei Airlines,BI,None,A320neo,No,,FALSE,,,Low,Narrowbody fleet details unverified
+Royal Jordanian,RJ,oneworld,A320,Yes,"≈ Roughly 2 daily from Amman: ~morning (06:00-08:00) and ~afternoon/evening (14:00-18:00) (RJ111, RJ113)",FALSE,,,Medium,
+Royal Jordanian,RJ,oneworld,A321,Yes,"≈ Roughly 2 daily from Amman: ~morning (06:00-08:00) and ~afternoon/evening (14:00-18:00) (RJ111, RJ113)",FALSE,,,Medium,
+Royal Jordanian,RJ,oneworld,A319,Occasional,Varies,FALSE,,,Low,
+Royal Jordanian,RJ,oneworld,787-8,Occasional,Varies,FALSE,,,Medium,
+Royal Jordanian,RJ,oneworld,E175,No,,FALSE,,,Low,
+RwandAir,WB,None,A330-200,Yes,"≈ 06:00 (WB700 approx, from Kigali)",FALSE,,,Low,LHR (T4) direct from Kigali since Nov 2022; type on route unconfirmed
+RwandAir,WB,None,A330-300,Occasional,Varies,FALSE,,,Low,
+RwandAir,WB,None,A220-300,No,,FALSE,,,Low,
+RwandAir,WB,None,737-800,No,,FALSE,,,Low,
+RwandAir,WB,None,CRJ900,No,,FALSE,,,Medium,
+SAS,SK,SkyTeam,A320neo,Yes,"≈ 08:30, 12:30, 16:30, 20:30",FALSE,,,Medium,Main type on CPH/ARN/OSL-LHR
+SAS,SK,SkyTeam,A320,Occasional,Varies,FALSE,,,Low,Remaining ceo being phased out
+SAS,SK,SkyTeam,A321LR,Occasional,Varies,FALSE,,,Low,Mostly transatlantic
+SAS,SK,SkyTeam,A330-300,No,,FALSE,,,Medium,Long-haul only; being phased out
+SAS,SK,SkyTeam,A330-900,No,,FALSE,,,Medium,Long-haul only
+SAS,SK,SkyTeam,A350-900,No,,FALSE,,,Medium,Long-haul only
+Saudia,SV,SkyTeam,777-300ER,Yes,"≈ Roughly 3-4 daily from Jeddah and Riyadh: ~06:00-07:00, ~11:00-13:00 and ~15:00-18:00 (SV117, SV111, SV105 and similar)",FALSE,,,Medium,
+Saudia,SV,SkyTeam,787-9,Yes,"≈ Roughly 3-4 daily from Jeddah and Riyadh: ~06:00-07:00, ~11:00-13:00 and ~15:00-18:00 (SV117, SV111, SV105 and similar)",FALSE,,,Medium,
+Saudia,SV,SkyTeam,787-10,Occasional,Varies,FALSE,,,Low,
+Saudia,SV,SkyTeam,A320,No,,FALSE,,,Medium,
+Saudia,SV,SkyTeam,A320neo,No,,FALSE,,,Medium,
+Saudia,SV,SkyTeam,A321XLR,No,,FALSE,,,Low,Entering service NW26
+Saudia,SV,SkyTeam,A321neo,No,,FALSE,,,Medium,
+Saudia,SV,SkyTeam,A330-300,No,,FALSE,,,Medium,
+Singapore Airlines,SQ,Star Alliance,A350-900,Yes,~06:20 (SQ306 approx),FALSE,,,Medium,SQ306/305 moved to A350 from 1 Jul 2026
+Singapore Airlines,SQ,Star Alliance,A380-800,Yes,"05:55 (SQ322), ~15:20 (SQ308 approx)",FALSE,,,High,Two daily; some flights may change in winter - check
+Singapore Airlines,SQ,Star Alliance,777-300ER,Yes,≈ 13:00 (SQ318 approx),FALSE,,,High,SQ318/321
+Singapore Airlines,SQ,Star Alliance,737 MAX 8,No,,FALSE,,,Medium,Short-haul regional only
+Singapore Airlines,SQ,Star Alliance,787-10,No,,FALSE,,,Medium,Not seen on LHR
+South African Airways,SA,Star Alliance,A330-300,Yes,"≈ 06:00 (SA234 approx, from Johannesburg)",FALSE,,,Low,LHR schedule not verified in 2026 sources
+South African Airways,SA,Star Alliance,A340-300,Occasional,Varies,FALSE,,,Low,
+South African Airways,SA,Star Alliance,A320,No,,FALSE,,,Medium,
+SriLankan Airlines,UL,oneworld,A330-300,Yes,≈ 06:30 (UL503 approx),FALSE,,,High,UL503/504 Colombo-LHR
+SriLankan Airlines,UL,oneworld,A330-200,Occasional,Varies,FALSE,,,Low,Mainly Middle East routes
+SriLankan Airlines,UL,oneworld,A320,No,,FALSE,,,High,
+SriLankan Airlines,UL,oneworld,A320neo,No,,FALSE,,,Medium,
+SriLankan Airlines,UL,oneworld,A321,No,,FALSE,,,High,
+Swiss,LX,Star Alliance,A220-100,Yes,≈ Zurich ~6-7 daily and Geneva ~3 daily; spread 08:00–22:00,FALSE,,,High,
+Swiss,LX,Star Alliance,A220-300,Yes,≈ Zurich ~6-7 daily and Geneva ~3 daily; spread 08:00–22:00,FALSE,,,High,
+Swiss,LX,Star Alliance,A320,Yes,≈ Zurich ~6-7 daily and Geneva ~3 daily; spread 08:00–22:00,FALSE,,,Medium,
+Swiss,LX,Star Alliance,A320neo,Yes,≈ Zurich ~6-7 daily and Geneva ~3 daily; spread 08:00–22:00,FALSE,,,Medium,
+Swiss,LX,Star Alliance,A321,Occasional,Varies,FALSE,,,Low,
+Swiss,LX,Star Alliance,A321neo,Occasional,Varies,FALSE,,,Low,
+Swiss,LX,Star Alliance,A330-300,No,,FALSE,,,Medium,
+Swiss,LX,Star Alliance,A350-900,No,,FALSE,,,Low,Being delivered
+Swiss,LX,Star Alliance,777-300ER,No,,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A319,Yes,≈ Lisbon ~6-7 daily plus Porto ~2 daily; spread 08:30–23:00,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A320,Yes,≈ Lisbon ~6-7 daily plus Porto ~2 daily; spread 08:30–23:00,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A320neo,Yes,≈ Lisbon ~6-7 daily plus Porto ~2 daily; spread 08:30–23:00,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A321,Yes,≈ Lisbon ~6-7 daily plus Porto ~2 daily; spread 08:30–23:00,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A321neo,Yes,≈ Lisbon ~6-7 daily plus Porto ~2 daily; spread 08:30–23:00,FALSE,,,Medium,
+TAP Air Portugal,TP,Star Alliance,A220-300,Occasional,Varies,FALSE,,,Low,Fleet detail from memory; TAP Express E190/E195-E2 excluded
+TAP Air Portugal,TP,Star Alliance,A321LR,Occasional,Varies,FALSE,,,Low,
+TAP Air Portugal,TP,Star Alliance,A330-900,Occasional,Varies,FALSE,,,Low,Substitutions possible
+TAP Air Portugal,TP,Star Alliance,A330-200,No,,FALSE,,,Low,
+TAP Air Portugal,TP,Star Alliance,A330-300,No,,FALSE,,,Low,
+Thai Airways,TG,Star Alliance,777-300ER,Yes,"≈ 06:00 (TG910 approx), ~14:00 (TG916 approx)",FALSE,,,Low,From own knowledge; LHR schedule not confirmed by search
+Thai Airways,TG,Star Alliance,787-9,Yes,"≈ 06:00, ~14:00 (approx)",FALSE,,,Low,From own knowledge; LHR schedule not confirmed by search
+Thai Airways,TG,Star Alliance,A350-900,Occasional,Varies,FALSE,,,Low,Used on some LHR flights (unverified)
+Thai Airways,TG,Star Alliance,A320,No,,FALSE,,,Low,
+Thai Airways,TG,Star Alliance,A321,No,,FALSE,,,Low,A380 retired - revival abandoned 2022
+Thai Airways,TG,Star Alliance,A330-300,No,,FALSE,,,Low,
+Thai Airways,TG,Star Alliance,777-200ER,No,,FALSE,,,Low,
+Thai Airways,TG,Star Alliance,787-8,No,,FALSE,,,Low,
+Tunisair,TU,None,A320,Yes,"≈ 13:00 (TU 750 approx, from Tunis; not daily)",FALSE,,,Low,A31X/A32X family flies LHR; exact types unconfirmed
+Tunisair,TU,None,A319,Occasional,Varies,FALSE,,,Low,
+Tunisair,TU,None,A320neo,Occasional,Varies,FALSE,,,Low,
+Tunisair,TU,None,A321,No,,FALSE,,,Low,
+Tunisair,TU,None,A330-200,No,,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,A321,Yes,"Roughly 6-8 daily, about 09:50 (TK1979) to 21:30; TK1985 about 15:00",FALSE,,,Medium,
+Turkish Airlines,TK,Star Alliance,A321neo,Yes,"Roughly 6-8 daily, about 09:50 (TK1979) to 21:30; TK1985 about 15:00",FALSE,,,Medium,
+Turkish Airlines,TK,Star Alliance,A330-300,Yes,"Roughly 6-8 daily, about 09:50 (TK1979) to 21:30; TK1985 about 15:00",FALSE,,,Medium,
+Turkish Airlines,TK,Star Alliance,A350-900,Yes,"Roughly 6-8 daily, about 09:50 (TK1979) to 21:30; TK1985 about 15:00",FALSE,,,Medium,
+Turkish Airlines,TK,Star Alliance,A320,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,A320neo,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,737 MAX 8,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,737 MAX 9,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,737-800,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,777-300ER,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,787-9,Occasional,Varies,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,A330-200,No,,FALSE,,,Low,
+Turkish Airlines,TK,Star Alliance,737-900,No,,FALSE,,,Low,
+United Airlines,UA,Star Alliance,767-300ER,Yes,"Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,Medium,EWR-LHR
+United Airlines,UA,Star Alliance,777-200,Yes,"≈ Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,Medium,
+United Airlines,UA,Star Alliance,777-300ER,Yes,"≈ Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,High,
+United Airlines,UA,Star Alliance,787-8,Yes,"≈ Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,Medium,
+United Airlines,UA,Star Alliance,787-9,Yes,"≈ Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,High,Refreshed 787-9 on SFO-LHR from Apr 2026
+United Airlines,UA,Star Alliance,787-10,Yes,"≈ Mostly 06:00–09:00 (overnight from Newark/Washington/Chicago, e.g. 07:15 UA14), plus afternoon arrivals from West Coast/Denver",FALSE,,,High,
+United Airlines,UA,Star Alliance,767-400ER,Occasional,Varies,FALSE,,,Low,
+United Airlines,UA,Star Alliance,777-200ER,Occasional,Varies,FALSE,,,Low,
+United Airlines,UA,Star Alliance,A319,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,A320,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,A321neo,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737 MAX 8,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737 MAX 9,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737-700,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737-800,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737-900,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,737-900ER,No,,FALSE,,,High,
+United Airlines,UA,Star Alliance,757-200,No,,FALSE,,,Medium,No longer LHR
+United Airlines,UA,Star Alliance,757-300,No,,FALSE,,,High,
+Uzbekistan Airways,HY,None,787-8,Yes,≈ 06:30-07:30 (HY Tashkent flight),FALSE,,,High,2 weekly 787 Apr-Jun 2026 per AeroRoutes
+Uzbekistan Airways,HY,None,787-9,Yes,≈ 06:30-07:30 (HY Tashkent flight),FALSE,,,Low,Newer deliveries; LHR use unverified
+Uzbekistan Airways,HY,None,A321LR,Occasional,Varies,FALSE,,,Medium,Was 1 weekly earlier in 2026
+Uzbekistan Airways,HY,None,A320,No,,FALSE,,,Low,
+Uzbekistan Airways,HY,None,A320neo,No,,FALSE,,,Low,
+Uzbekistan Airways,HY,None,A321neo,No,,FALSE,,,Low,
+Vietnam Airlines,VN,SkyTeam,787-9,Yes,"≈ 06:00 (VN53 approx, from Hanoi/Ho Chi Minh City)",FALSE,,,High,Hanoi and Ho Chi Minh City to LHR T4
+Vietnam Airlines,VN,SkyTeam,A350-900,Occasional,Varies,FALSE,,,Low,Possible substitution
+Vietnam Airlines,VN,SkyTeam,A321,No,,FALSE,,,Medium,
+Vietnam Airlines,VN,SkyTeam,A321neo,No,,FALSE,,,Medium,
+Vietnam Airlines,VN,SkyTeam,787-10,No,,FALSE,,,Medium,
+Virgin Atlantic,VS,SkyTeam,A330-300,Yes,"≈ Mostly morning/early afternoon arrivals from North America ~06:00–09:00, plus Caribbean/Africa; check flight",FALSE,,,Medium,Six remaining; being retired by 2028
+Virgin Atlantic,VS,SkyTeam,A330-900,Yes,≈ US/Caribbean arrivals ~06:00–09:00 and some afternoon,FALSE,,,High,
+Virgin Atlantic,VS,SkyTeam,A350-1000,Yes,"≈ Johannesburg (daily, early morning ~05:30–07:00) plus US routes arriving ~06:00–09:00",FALSE,,,High,
+Virgin Atlantic,VS,SkyTeam,787-9,Yes,≈ US arrivals ~06:00–09:00; Phuket VS214/215 afternoon arrival (3x weekly from Oct 2026),FALSE,,,High,
+Vueling,VY,None,A320,Yes,≈ Barcelona ~3 daily plus Spain/Italy/Paris routes; roughly 08:00–23:00,FALSE,,,Medium,
+Vueling,VY,None,A320neo,Yes,≈ Barcelona ~3 daily plus other routes; roughly 08:00–23:00,FALSE,,,Medium,
+Vueling,VY,None,A321,Yes,≈ Barcelona ~3 daily plus other routes; roughly 08:00–23:00,FALSE,,,Medium,
+Vueling,VY,None,A321neo,Occasional,Varies,FALSE,,,Low,
+WestJet,WS,None,787-9,Yes,"≈ Morning and afternoon, about 07:00–09:00 (Toronto/Halifax) and about 14:00–16:00 (Calgary)",FALSE,,,High,YYC-LHR
+WestJet,WS,None,737 MAX 8,No,,FALSE,,,Medium,Europe flights go to other airports
+WestJet,WS,None,737-700,No,,FALSE,,,High,
+WestJet,WS,None,737-800,No,,FALSE,,,High,
+XiamenAir,MF,SkyTeam,787-9,Yes,"≈ 06:25 (MF833, days uncertain)",FALSE,,,High,XMN-LHR from 6 Sep 2026; 3x weekly MF821/822
+XiamenAir,MF,SkyTeam,737 MAX 8,No,,FALSE,,,Medium,
+XiamenAir,MF,SkyTeam,737-800,No,,FALSE,,,High,
+XiamenAir,MF,SkyTeam,787-8,No,,FALSE,,,Low,

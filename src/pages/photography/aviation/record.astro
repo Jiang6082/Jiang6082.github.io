@@ -78,7 +78,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
         <input
           type="search"
           data-control="q"
-          placeholder="Airline, code, country, or aircraft"
+          placeholder="Airline, code, or aircraft"
           autocomplete="off"
         />
       </label>
@@ -137,7 +137,9 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
       Airlines and aircraft come from public schedule and fleet information as
       of November 2026, and some types are best guesses. “Occasional” means
       seasonal or substitute aircraft; “Whole fleet” adds types that don’t
-      usually come to Heathrow.
+      usually come to Heathrow. Hover over an aircraft to see when it usually
+      arrives (UK time); ≈ marks times that haven’t been checked against a
+      timetable.
     </p>
   </div>
   <script type="application/json" id="record-data" set:html={json({ rows, catches })} />
