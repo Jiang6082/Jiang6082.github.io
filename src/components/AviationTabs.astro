@@ -1,4 +1,6 @@
 ---
+// Logbook / Heathrow record switch, styled as airport direction signs
+// (see src/styles/airside.css).
 const { current } = Astro.props as { current: "logbook" | "record" };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const tabs = [
@@ -7,7 +9,7 @@ const tabs = [
 ];
 ---
 
-<nav class="aviation-tabs" aria-label="Aviation sections">
+<nav class="as-signs" aria-label="Aviation sections">
   {
     tabs.map((t) => (
       <a href={t.href} aria-current={t.id === current ? "page" : undefined}>
@@ -16,27 +18,3 @@ const tabs = [
     ))
   }
 </nav>
-<style>
-  .aviation-tabs {
-    display: inline-flex;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    margin-bottom: 2rem;
-  }
-  a {
-    padding: 0.4rem 0.95rem;
-    border-radius: 999px;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-  a:hover {
-    color: var(--fg);
-    text-decoration: none;
-  }
-  a[aria-current] {
-    background: var(--fg);
-    color: var(--bg);
-  }
-</style>

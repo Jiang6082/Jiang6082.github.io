@@ -64,6 +64,24 @@ export function canonicalType(variant = "") {
   return variant.trim();
 }
 
+// ICAO type designators, the codes spotters and flight trackers use.
+const ICAO = {
+  "A220-100": "BCS1", "A220-300": "BCS3", A319: "A319", A320: "A320", A320neo: "A20N",
+  A321: "A321", A321neo: "A21N", A321LR: "A21N", A321XLR: "A21N", "A330-200": "A332",
+  "A330-300": "A333", "A330-800": "A338", "A330-900": "A339", "A340-300": "A343",
+  "A340-600": "A346", "A350-900": "A359", "A350-1000": "A35K", "A380-800": "A388",
+  "717-200": "B712", "737-700": "B737", "737-800": "B738", "737-900": "B739",
+  "737-900ER": "B739", "737 MAX 8": "B38M", "737 MAX 9": "B39M", "737 MAX 10": "B3XM",
+  "747-400": "B744", "747-8": "B748", "757-200": "B752", "757-300": "B753",
+  "767-300ER": "B763", "767-400ER": "B764", "777-200": "B772", "777-200ER": "B772",
+  "777-200LR": "B77L", "777-300": "B773", "777-300ER": "B77W", "777-9": "B779",
+  "787-8": "B788", "787-9": "B789", "787-10": "B78X", E170: "E170", E175: "E175",
+  E190: "E190", E195: "E195", "E190-E2": "E290", "E195-E2": "E295", "ATR 72-500": "AT75",
+  "ATR 72-600": "AT76", "Dash 8-400": "DH8D", CRJ900: "CRJ9", C919: "C919", ARJ21: "AJ27",
+};
+/** "A380-800" → "A388"; unknown types fall back to the label itself. */
+export const icaoCode = (type = "") => ICAO[type] ?? type;
+
 const same = (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 /**
@@ -140,14 +158,15 @@ export function renderRecord(model, state = defaultState) {
     shown.sort((a, b) => ratio(b) - ratio(a) || a.airline.localeCompare(b.airline));
   } else shown.sort((a, b) => a.airline.localeCompare(b.airline));
 
+  const pad = (n) => String(n).padStart(2, "0");
   const html = shown
     .map((shownAirline) => {
       const a = full.get(shownAirline.airline);
       const got = progress(a);
       const pct = Math.round((got / a.types.length) * 100);
-      const chips = shownAirline.types
+      const cells = shownAirline.types
         .map((t) => {
-          const classes = ["rec-type", t.caught && "is-caught", t.atHeathrow === "Occasional" && "is-occasional", t.atHeathrow === "No" && "is-elsewhere"]
+          const classes = ["as-cell", t.caught && "is-caught", t.atHeathrow === "Occasional" && "is-occasional", t.atHeathrow === "No" && "is-elsewhere"]
             .filter(Boolean)
             .join(" ");
           const status = t.caught
@@ -158,18 +177,18 @@ export function renderRecord(model, state = defaultState) {
                 ? "Not usually at Heathrow"
                 : "Not photographed yet";
           const detail = t.arrivals && t.atHeathrow !== "No" ? `${status}. Usual arrivals: ${t.arrivals}` : status;
-          return `<li class="${classes}" title="${esc(detail)}"><span class="rec-check" aria-hidden="true">${t.caught ? "✓" : ""}</span>${esc(t.type)}<span class="sr-only">, ${esc(detail.toLowerCase())}</span></li>`;
+          return `<li class="${classes}" title="${esc(`${t.type}: ${detail}`)}"><b>${esc(icaoCode(t.type))}</b><span>${esc(t.type)}</span><span class="sr-only">, ${esc(detail.toLowerCase())}</span></li>`;
         })
         .join("");
-      return `<section class="rec-airline${got === a.types.length ? " is-complete" : ""}">
-  <div class="rec-head">
-    <h2>${esc(a.airline)}${a.iata ? ` <span class="rec-code">${esc(a.iata)}</span>` : ""}</h2>
-    <p class="rec-meta">${esc([a.country, a.alliance].filter(Boolean).join(" · "))}</p>
-    <p class="rec-progress"><span class="rec-bar" aria-hidden="true"><span style="width:${pct}%"></span></span><strong>${got} / ${a.types.length}</strong></p>
+      return `<section class="as-row${got === a.types.length ? " is-complete" : ""}">
+  <div class="as-row-head">
+    <span class="as-tile">${esc(a.iata || "—")}</span>
+    <div class="as-row-name"><h2>${esc(a.airline)}</h2><p>${esc([a.country, a.alliance].filter(Boolean).join(" · "))}</p></div>
+    <p class="as-row-progress"><span class="as-row-count">${pad(got)}<span> / ${pad(a.types.length)}</span></span><span class="as-bar" aria-hidden="true"><span style="width:${pct}%"></span></span></p>
   </div>
-  <ul class="rec-types">${chips}</ul>
+  <ul class="as-cells">${cells}</ul>
 </section>`;
     })
     .join("\n");
-  return { html: html || `<p class="rec-empty">Nothing matches. Clear a filter or the search.</p>`, stats, shown: shown.length };
+  return { html: html || `<p class="as-empty">Nothing matches. Clear a filter or the search.</p>`, stats, shown: shown.length };
 }

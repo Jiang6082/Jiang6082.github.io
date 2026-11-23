@@ -53,7 +53,7 @@ for (const c of catches) {
 
 const page = readFileSync("dist/photography/aviation/record/index.html", "utf8");
 const heathrowAirlines = new Set(rows.filter((r) => r.atHeathrow !== "No").map((r) => r.airline));
-assert.equal((page.match(/class="rec-airline/g) || []).length, heathrowAirlines.size, "one section per Heathrow airline");
+assert.equal((page.match(/<section class="as-row[" ]/g) || []).length, heathrowAirlines.size, "one row per Heathrow airline");
 console.log(
   `Passed: ${rows.length} record rows, ${airlines.size} airlines, ${rows.filter((r) => r.atHeathrow !== "No").length} Heathrow types, type matching, and logbook ticks.`,
 );

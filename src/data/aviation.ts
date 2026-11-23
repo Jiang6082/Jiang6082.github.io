@@ -1,6 +1,7 @@
 import raw from "./aviation.csv?raw";
 import { parseCsv } from "../lib/csv.js";
-import { canonicalType } from "../lib/record.js";
+import recordCsv from "./heathrow-record.csv?raw";
+import { canonicalType, icaoCode, parseRecord } from "../lib/record.js";
 import { detailsFor, settingsLine } from "./photo-details";
 // The aviation logbook: one CSV row per photo, grouped here into airframes
 // (one per registration). Camera settings come from photo-details.json.
@@ -29,6 +30,10 @@ export interface Spot {
 
 export interface Airframe {
   key: string;
+  /** IATA airline code, e.g. "BA". */
+  iata: string;
+  /** ICAO type designator, e.g. "A388". */
+  icao: string;
   registration: string;
   airline: string;
   manufacturer: string;
@@ -76,6 +81,13 @@ export function formatDate(iso: string) {
 
 const rows = parseCsv(raw) as Record<string, string>[];
 
+// Airline codes come from the Heathrow record, matched by name.
+const iataByAirline = new Map(
+  parseRecord(recordCsv).map((r: { airline: string; iata: string }) => [r.airline.toLowerCase(), r.iata]),
+);
+export const iataFor = (airline: string) =>
+  iataByAirline.get(airline.toLowerCase()) || airline.slice(0, 2).toUpperCase();
+
 export const spots: Spot[] = rows.map((r) => ({
   file: r.file,
   registration: r.registration.toUpperCase(),
@@ -105,6 +117,8 @@ export const airframes: Airframe[] = [...byReg.values()].map((list) => {
   const [first] = sorted;
   return {
     key: `airframe-${slug(first.registration)}`,
+    iata: iataFor(first.airline),
+    icao: icaoCode(canonicalType(first.variant)),
     registration: first.registration,
     airline: first.airline,
     manufacturer: first.manufacturer,

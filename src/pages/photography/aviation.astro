@@ -3,17 +3,14 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
 import AviationTabs from "../../components/AviationTabs.astro";
+import "@fontsource/b612/400.css";
+import "@fontsource/b612/700.css";
+import "@fontsource/b612-mono/400.css";
+import "@fontsource/b612-mono/700.css";
+import "../../styles/airside.css";
 import { getImage } from "astro:assets";
-import {
-  airframes,
-  spots,
-  slug,
-  formatDate,
-  spotLine,
-  noteLine,
-  airportName,
-  type Airframe,
-} from "../../data/aviation";
+import { airframes, spots, slug, formatDate, spotLine, noteLine, type Airframe } from "../../data/aviation";
+import { flapHTML } from "../../lib/flap.js";
 
 const files = import.meta.glob("../../photos/**/*.{jpg,jpeg,png,webp,avif}", {
   eager: true,
@@ -24,7 +21,6 @@ const image = (file: string) => {
   return meta;
 };
 
-// Thumbnails for cards, full-size images for the viewer.
 const cards = await Promise.all(
   airframes.map(async (a) => {
     const meta = image(a.spots[0].file);
@@ -58,34 +54,32 @@ const cards = await Promise.all(
 );
 
 type Card = (typeof cards)[number];
-const count = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
-
-// Default view (also the no-JavaScript view): airline, then aircraft type.
+const pad = (n: number, width = 2) => String(n).padStart(width, "0");
+const plural = (n: number, word: string) => `${pad(n)} ${word}${n === 1 ? "" : "s"}`;
 const byType = (a: Airframe, b: Airframe) =>
-  a.type.localeCompare(b.type) || a.registration.localeCompare(b.registration);
+  a.icao.localeCompare(b.icao) || a.registration.localeCompare(b.registration);
+const shortDate = (iso: string) => formatDate(iso).toUpperCase();
+
+// Default view (also the no-JavaScript view): one grid per airline.
 const airlines = [...new Set(cards.map((c) => c.airline))]
   .map((name) => {
     const list = cards.filter((c) => c.airline === name).sort(byType);
-    return { name, list, types: new Set(list.map((c) => c.type)).size };
+    return { name, iata: list[0].iata, list, types: new Set(list.map((c) => c.icao)).size };
   })
   .sort((a, b) => b.list.length - a.list.length || a.name.localeCompare(b.name));
-const families = [...new Set(cards.map((c) => c.family))]
-  .map((name) => ({ name, n: cards.filter((c) => c.family === name).length }))
-  .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+const aircraft = [...new Set(cards.map((c) => c.icao))]
+  .map((icao) => {
+    const list = cards.filter((c) => c.icao === icao);
+    return { icao, name: list[0].type, n: list.length };
+  })
+  .sort((a, b) => b.n - a.n || a.icao.localeCompare(b.icao));
 
 const latest = spots.map((s) => s.date).sort().at(-1) ?? "";
-const airports = [...new Set(spots.map((s) => s.airport))];
-const stats = [
-  { label: "Airframes", value: cards.length },
-  { label: "Photos", value: spots.length },
-  { label: "Airlines", value: airlines.length },
-  { label: "Aircraft types", value: new Set(cards.map((c) => c.type)).size },
-];
 const sample = cards.some((c) => c.sample);
 const galleryGroups = cards.map((c) => ({ key: c.key, title: c.registration, items: c.items }));
 const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
 const searchText = (c: Card) =>
-  [c.registration, c.registration.replace("-", ""), c.airline, c.type, c.family, c.name, c.livery]
+  [c.registration, c.registration.replace("-", ""), c.airline, c.iata, c.type, c.icao, c.family, c.name, c.livery]
     .join(" ")
     .toLowerCase();
 ---
@@ -93,12 +87,12 @@ const searchText = (c: Card) =>
 <BaseLayout
   title="Aviation"
   description="A spotter’s logbook of aircraft photographed by Charles Jiang, by airline and type."
+  bodyClass="theme-airside"
   wide
 >
-  <header class="aviation-heading page-shell">
-    <p class="eyebrow">Photography / Aviation</p><h1>Aviation</h1><p>
-      A spotter’s logbook: every airframe I’ve photographed, by airline and
-      type.
+  <header class="av-head page-shell">
+    <p class="eyebrow">Photography / Aviation</p><h1>Aviation logbook</h1><p>
+      Every airframe I’ve photographed, filed by airline and type.
     </p>
   </header>
   <PhotoTabs current="aviation" />
@@ -106,198 +100,208 @@ const searchText = (c: Card) =>
     <AviationTabs current="logbook" />
     {
       sample && (
-        <p class="sample-banner">
-          <strong>Demo.</strong> These are sample entries with illustrated
-          placeholders, not real spots. Your Heathrow photos and their details
-          will replace them.
+        <p class="as-notice">
+          <b>NOTICE</b>
+          <span>
+            Sample entries with illustrated placeholders, not real spots. My
+            Heathrow photos will replace them.
+          </span>
         </p>
       )
     }
-    <dl class="stats">
-      {
-        stats.map((s) => (
-          <div>
-            <dt>{s.label}</dt>
-            <dd>{s.value}</dd>
-          </div>
-        ))
-      }
-      <div>
-        <dt>Latest spot</dt>
-        <dd class="small-value">
-          {formatDate(latest)}
-          <span>{airports.map((a) => airportName(a)).join(", ")}</span>
-        </dd>
-      </div>
+    <dl class="as-stats">
+      <div><dt>Airframes</dt><dd><span class="flap" set:html={flapHTML(pad(cards.length, 3))} /></dd></div>
+      <div><dt>Airlines</dt><dd><span class="flap" set:html={flapHTML(pad(airlines.length))} /></dd></div>
+      <div><dt>Aircraft types</dt><dd><span class="flap" set:html={flapHTML(pad(aircraft.length))} /></dd></div>
+      <div><dt>Last spotted · LHR</dt><dd><span class="flap" set:html={flapHTML(shortDate(latest).slice(0, 6))} /></dd></div>
     </dl>
 
-    <div class="controls" hidden>
-      <label class="search">
-        <span>Search</span>
+    <div class="as-panel" data-controls hidden>
+      <div class="as-panel-row">
+        <label class="as-label" for="logbook-search">Search</label>
         <input
+          id="logbook-search"
+          class="as-search"
           type="search"
           data-control="q"
-          placeholder="Registration, airline, or type"
+          placeholder="Reg, airline, or type"
           autocomplete="off"
         />
-      </label>
-      <div class="chips" role="group" aria-label="Filter by airline">
-        <span class="chips-label">Airline</span>
-        <button type="button" data-airline="all" aria-pressed="true">All</button>
-        {
-          airlines.map((a) => (
-            <button type="button" data-airline={slug(a.name)} aria-pressed="false">
-              {a.name} <span>{a.list.length}</span>
-            </button>
-          ))
-        }
       </div>
-      <div class="chips" role="group" aria-label="Filter by aircraft">
-        <span class="chips-label">Aircraft</span>
-        <button type="button" data-family="all" aria-pressed="true">All</button>
-        {
-          families.map((f) => (
-            <button type="button" data-family={slug(f.name)} aria-pressed="false">
-              {f.name} <span>{f.n}</span>
-            </button>
-          ))
-        }
+      <div class="as-panel-row">
+        <span class="as-label">Airline</span>
+        <div class="as-options" role="group" aria-label="Filter by airline">
+          <button type="button" class="as-tile" data-airline="all" aria-pressed="true">All</button>
+          {
+            airlines.map((a) => (
+              <button
+                type="button"
+                class="as-tile"
+                data-airline={slug(a.name)}
+                aria-pressed="false"
+                title={a.name}
+                aria-label={`${a.name}, ${a.list.length}`}
+              >
+                {a.iata}
+                <sub>{a.list.length}</sub>
+              </button>
+            ))
+          }
+        </div>
       </div>
-      <div class="view">
-        <label>
-          Group by
-          <select data-control="group">
-            <option value="airline">Airline</option>
-            <option value="type">Aircraft type</option>
-            <option value="none">No grouping</option>
-          </select>
-        </label>
-        <label>
-          Sort
-          <select data-control="sort">
-            <option value="type">Aircraft type</option>
-            <option value="newest">Newest first</option>
-            <option value="registration">Registration</option>
-          </select>
-        </label>
-        <p class="result-count" aria-live="polite"></p>
+      <div class="as-panel-row">
+        <span class="as-label">Aircraft</span>
+        <div class="as-options" role="group" aria-label="Filter by aircraft type">
+          <button type="button" class="as-tile" data-icao="all" aria-pressed="true">All</button>
+          {
+            aircraft.map((t) => (
+              <button
+                type="button"
+                class="as-tile"
+                data-icao={t.icao}
+                aria-pressed="false"
+                title={t.name}
+                aria-label={`${t.name}, ${t.n}`}
+              >
+                {t.icao}
+                <sub>{t.n}</sub>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="as-panel-row">
+        <span class="as-label">Group · Sort</span>
+        <div class="as-options as-view">
+          <div class="as-options" role="group" aria-label="Group by">
+            <button type="button" class="as-tile" data-group="airline" aria-pressed="true">Airline</button>
+            <button type="button" class="as-tile" data-group="type" aria-pressed="false">Type</button>
+            <button type="button" class="as-tile" data-group="none" aria-pressed="false">None</button>
+          </div>
+          <div class="as-options" role="group" aria-label="Sort by">
+            <button type="button" class="as-tile" data-sort="type" aria-pressed="true">Type</button>
+            <button type="button" class="as-tile" data-sort="newest" aria-pressed="false">Newest</button>
+            <button type="button" class="as-tile" data-sort="registration" aria-pressed="false">Reg</button>
+          </div>
+          <p class="as-readout" aria-live="polite"></p>
+        </div>
       </div>
     </div>
 
     <div id="logbook" class="logbook">
       {
         airlines.map((airline) => (
-          <section class="group">
+          <section class="av-group">
             <h2>
-              {airline.name}
-              <span>
-                {count(airline.list.length, "airframe")} ·{" "}
-                {count(airline.types, "type")}
+              <span class="as-tile">{airline.iata}</span>
+              <span class="av-group-name">{airline.name}</span>
+              <span class="av-group-meta">
+                {plural(airline.list.length, "airframe")} · {plural(airline.types, "type")}
               </span>
             </h2>
-            <div class="grid">
-                  {airline.list.map((c) => (
-                    <article
-                      class="airframe"
-                      data-reg={c.registration}
-                      data-airline={slug(c.airline)}
-                      data-airline-name={c.airline}
-                      data-family={slug(c.family)}
-                      data-type={c.type}
-                      data-date={c.latest}
-                      data-search={searchText(c)}
-                    >
-                      <a
-                        class="airframe-photo"
-                        href={c.items[0].full}
-                        data-group={c.key}
-                        data-index="0"
-                        aria-label={`Open ${count(c.items.length, "photo")} of ${c.registration}`}
-                      >
-                        <img
-                          src={c.thumb.src}
-                          srcset={c.thumb.srcSet.attribute}
-                          sizes="(max-width: 600px) 92vw, 300px"
-                          width={c.thumb.attributes.width}
-                          height={c.thumb.attributes.height}
-                          alt={c.items[0].alt}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                        {c.items.length > 1 && (
-                          <span class="photo-count">{count(c.items.length, "photo")}</span>
-                        )}
-                      </a>
-                      <div class="airframe-body">
-                        <p class="reg">{c.registration}</p>
-                        <p class="type">{c.type}</p>
-                        <p class="meta">
-                          {c.airline} · {c.spots[0].airport} · {formatDate(c.latest)}
-                        </p>
-                        {(c.livery || c.name) && (
-                          <ul class="badges">
-                            {c.livery && <li class="badge-livery">{c.livery}</li>}
-                            {c.name && <li>“{c.name}”</li>}
-                          </ul>
-                        )}
-                      </div>
-                    </article>
-                  ))}
+            <div class="av-grid">
+              {airline.list.map((c) => (
+                <article
+                  class="av-card"
+                  data-reg={c.registration}
+                  data-airline={slug(c.airline)}
+                  data-airline-name={c.airline}
+                  data-iata={c.iata}
+                  data-icao={c.icao}
+                  data-type={c.type}
+                  data-date={c.latest}
+                  data-search={searchText(c)}
+                >
+                  <a
+                    class="av-photo"
+                    href={c.items[0].full}
+                    data-group={c.key}
+                    data-index="0"
+                    aria-label={`Open photo of ${c.registration}`}
+                  >
+                    <img
+                      src={c.thumb.src}
+                      srcset={c.thumb.srcSet.attribute}
+                      sizes="(max-width: 600px) 46vw, 320px"
+                      width={c.thumb.attributes.width}
+                      height={c.thumb.attributes.height}
+                      alt={c.items[0].alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                  <div class="av-strip">
+                    <p class="av-reg">
+                      {c.registration}
+                      <span class="as-tile" title={c.type}>{c.icao}</span>
+                    </p>
+                    <p class="av-type">{c.type}</p>
+                    <p class="av-meta">
+                      {[c.iata, [c.spots[0].airport, c.spots[0].runway].filter(Boolean).join(" "), shortDate(c.latest)].join(" · ")}
+                    </p>
+                    {(c.livery || c.name) && (
+                      <p class="av-tags">
+                        {c.livery && <span class="av-tag is-livery">{c.livery}</span>}
+                        {c.name && <span class="av-tag">“{c.name}”</span>}
+                      </p>
+                    )}
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
         ))
       }
     </div>
-    <p class="empty" hidden>No airframes match. Clear a filter or the search.</p>
+    <p class="as-empty av-empty" hidden>No airframes match. Clear a filter or the search.</p>
   </div>
   <script is:inline set:html={`window.__GALLERY__ = ${json(galleryGroups)};`} />
   <Lightbox />
 </BaseLayout>
 <script>
   type Group = "airline" | "type" | "none";
-  type Sort = "newest" | "registration" | "type";
+  type Sort = "type" | "newest" | "registration";
 
   const root = document.getElementById("logbook")!;
-  const controls = document.querySelector<HTMLElement>(".controls")!;
-  const empty = document.querySelector<HTMLElement>(".empty")!;
-  const counter = controls.querySelector<HTMLElement>(".result-count")!;
+  const controls = document.querySelector<HTMLElement>("[data-controls]")!;
+  const empty = document.querySelector<HTMLElement>(".av-empty")!;
+  const readout = controls.querySelector<HTMLElement>(".as-readout")!;
   const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
-  const groupSelect = controls.querySelector<HTMLSelectElement>('[data-control="group"]')!;
-  const sortSelect = controls.querySelector<HTMLSelectElement>('[data-control="sort"]')!;
-  const cards = Array.from(root.querySelectorAll<HTMLElement>(".airframe"));
+  const cards = Array.from(root.querySelectorAll<HTMLElement>(".av-card"));
 
   const params = new URLSearchParams(location.search);
   const state = {
     q: params.get("q") ?? "",
     airline: params.get("airline") ?? "all",
-    family: params.get("aircraft") ?? "all",
+    icao: params.get("aircraft") ?? "all",
     group: (params.get("group") as Group) ?? "airline",
     sort: (params.get("sort") as Sort) ?? "type",
   };
   if (!["airline", "type", "none"].includes(state.group)) state.group = "airline";
-  if (!["newest", "registration", "type"].includes(state.sort)) state.sort = "type";
+  if (!["type", "newest", "registration"].includes(state.sort)) state.sort = "type";
 
-  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const plural = (n: number, word: string) => `${pad(n)} ${word}${n === 1 ? "" : "s"}`;
   const el = (tag: string, cls?: string, text?: string) => {
     const node = document.createElement(tag);
     if (cls) node.className = cls;
     if (text !== undefined) node.textContent = text;
     return node;
   };
-  const heading = (tag: "h2", title: string, meta: string) => {
-    const h = el(tag, undefined, `${title} `);
-    h.append(el("span", undefined, meta));
+  const heading = (code: string, name: string, meta: string) => {
+    const h = el("h2");
+    h.append(el("span", "as-tile", code), el("span", "av-group-name", name), el("span", "av-group-meta", meta));
     return h;
   };
   const grid = (list: HTMLElement[]) => {
-    const g = el("div", "grid");
+    const g = el("div", "av-grid");
     g.append(...list);
     return g;
   };
   const groupBy = (list: HTMLElement[], key: (c: HTMLElement) => string) => {
     const map = new Map<string, HTMLElement[]>();
     for (const c of list) map.set(key(c), [...(map.get(key(c)) ?? []), c]);
-    return [...map.entries()];
+    return [...map.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
   };
 
   function render() {
@@ -305,44 +309,37 @@ const searchText = (c: Card) =>
     const visible = cards.filter(
       (c) =>
         (state.airline === "all" || c.dataset.airline === state.airline) &&
-        (state.family === "all" || c.dataset.family === state.family) &&
+        (state.icao === "all" || c.dataset.icao === state.icao) &&
         (!q || c.dataset.search!.includes(q)),
     );
-    const reg = (a: HTMLElement, b: HTMLElement) =>
-      a.dataset.reg!.localeCompare(b.dataset.reg!);
+    const reg = (a: HTMLElement, b: HTMLElement) => a.dataset.reg!.localeCompare(b.dataset.reg!);
     visible.sort(
       state.sort === "registration"
         ? reg
-        : state.sort === "type"
-          ? (a, b) => a.dataset.type!.localeCompare(b.dataset.type!) || reg(a, b)
-          : (a, b) => b.dataset.date!.localeCompare(a.dataset.date!) || reg(a, b),
+        : state.sort === "newest"
+          ? (a, b) => b.dataset.date!.localeCompare(a.dataset.date!) || reg(a, b)
+          : (a, b) => a.dataset.icao!.localeCompare(b.dataset.icao!) || reg(a, b),
     );
 
     root.replaceChildren();
     if (state.group === "none") {
       root.append(grid(visible));
     } else if (state.group === "type") {
-      const groups = groupBy(visible, (c) => c.dataset.type!).sort(
-        (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
-      );
-      for (const [type, list] of groups) {
-        const section = el("section", "group");
-        const airlineCount = new Set(list.map((c) => c.dataset.airline)).size;
+      for (const [icao, list] of groupBy(visible, (c) => c.dataset.icao!)) {
+        const section = el("section", "av-group");
+        const airlines = new Set(list.map((c) => c.dataset.airline)).size;
         section.append(
-          heading("h2", type, `${plural(list.length, "airframe")} · ${plural(airlineCount, "airline")}`),
+          heading(icao, list[0].dataset.type!, `${plural(list.length, "airframe")} · ${plural(airlines, "airline")}`),
           grid(list),
         );
         root.append(section);
       }
     } else {
-      const groups = groupBy(visible, (c) => c.dataset.airlineName!).sort(
-        (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
-      );
-      for (const [airline, list] of groups) {
-        const section = el("section", "group");
-        const types = new Set(list.map((c) => c.dataset.type)).size;
+      for (const [airline, list] of groupBy(visible, (c) => c.dataset.airlineName!)) {
+        const section = el("section", "av-group");
+        const types = new Set(list.map((c) => c.dataset.icao)).size;
         section.append(
-          heading("h2", airline, `${plural(list.length, "airframe")} · ${plural(types, "type")}`),
+          heading(list[0].dataset.iata!, airline, `${plural(list.length, "airframe")} · ${plural(types, "type")}`),
           grid(list),
         );
         root.append(section);
@@ -350,18 +347,16 @@ const searchText = (c: Card) =>
     }
 
     empty.hidden = visible.length > 0;
-    counter.textContent = `Showing ${visible.length} of ${plural(cards.length, "airframe")}`;
-    controls.querySelectorAll<HTMLButtonElement>("[data-airline]").forEach((b) =>
-      b.setAttribute("aria-pressed", String(b.dataset.airline === state.airline)),
-    );
-    controls.querySelectorAll<HTMLButtonElement>("[data-family]").forEach((b) =>
-      b.setAttribute("aria-pressed", String(b.dataset.family === state.family)),
-    );
+    readout.textContent = `Showing ${pad(visible.length)} of ${pad(cards.length)}`;
+    for (const key of ["airline", "icao", "group", "sort"] as const)
+      controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset[key] === state[key])),
+      );
 
     const next = new URLSearchParams();
     if (state.q) next.set("q", state.q);
     if (state.airline !== "all") next.set("airline", state.airline);
-    if (state.family !== "all") next.set("aircraft", state.family);
+    if (state.icao !== "all") next.set("aircraft", state.icao);
     if (state.group !== "airline") next.set("group", state.group);
     if (state.sort !== "type") next.set("sort", state.sort);
     const query = next.toString();
@@ -369,274 +364,163 @@ const searchText = (c: Card) =>
   }
 
   search.value = state.q;
-  groupSelect.value = state.group;
-  sortSelect.value = state.sort;
   search.addEventListener("input", () => {
     state.q = search.value;
     render();
   });
-  groupSelect.addEventListener("change", () => {
-    state.group = groupSelect.value as Group;
-    render();
-  });
-  sortSelect.addEventListener("change", () => {
-    state.sort = sortSelect.value as Sort;
-    render();
-  });
-  controls.querySelectorAll<HTMLButtonElement>("[data-airline]").forEach((b) =>
-    b.addEventListener("click", () => {
-      state.airline = b.dataset.airline!;
-      render();
-    }),
-  );
-  controls.querySelectorAll<HTMLButtonElement>("[data-family]").forEach((b) =>
-    b.addEventListener("click", () => {
-      state.family = b.dataset.family!;
-      render();
-    }),
-  );
+  for (const key of ["airline", "icao", "group", "sort"] as const)
+    controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
+      b.addEventListener("click", () => {
+        (state as Record<string, string>)[key] = b.dataset[key]!;
+        render();
+      }),
+    );
   controls.hidden = false;
   render();
 </script>
 <style>
-  .aviation-heading {
+  .av-head {
     padding: 1rem 0 2.5rem;
   }
-  .aviation-heading h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    margin: 1.8rem 0 1rem;
+  .av-head h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.05;
+    margin: 1.6rem 0 1rem;
   }
-  .aviation-heading > p:last-child {
-    font-size: 1.15rem;
+  .av-head > p:last-child {
+    font-size: 1.05rem;
     color: var(--muted);
     max-width: 36rem;
   }
-  .sample-banner {
-    border: 1px dashed var(--accent);
-    background: var(--accent-soft);
-    padding: 0.9rem 1.1rem;
-    font-size: 0.9rem;
-    margin: 0 0 2rem;
-  }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 1.5rem;
-    margin: 0 0 2.5rem;
-    padding: 1.5rem 0;
-    border-block: 1px solid var(--border);
-  }
-  .stats div {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 0.35rem;
-  }
-  .stats dt {
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .stats dd {
-    margin: 0;
-    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-    letter-spacing: -0.025em;
-    font-variant-numeric: tabular-nums;
-  }
-  .stats .small-value {
-    font-size: 1.1rem;
-    letter-spacing: 0;
-    line-height: 1.4;
-  }
-  .stats .small-value span {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .controls {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-  }
-  .controls[hidden] {
-    display: none;
-  }
-  .search {
-    display: grid;
-    gap: 0.4rem;
-    max-width: 28rem;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .search input {
-    font-size: 1rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--fg);
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .chips-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    min-width: 4.5rem;
-  }
-  .chips button {
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--fg);
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    border-radius: 999px;
-  }
-  .chips button span {
-    color: var(--muted);
-    margin-left: 0.25rem;
-    font-size: 0.75rem;
-  }
-  .chips button[aria-pressed="true"] {
-    background: var(--fg);
-    border-color: var(--fg);
-    color: var(--bg);
-  }
-  .chips button[aria-pressed="true"] span {
-    color: var(--bg);
-    opacity: 0.75;
-  }
-  .view {
-    display: flex;
-    flex-wrap: wrap;
+  .as-view {
     align-items: center;
     gap: 0.75rem 1.5rem;
-    font-size: 0.85rem;
-    color: var(--muted);
   }
-  .view label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .view select {
-    font: inherit;
-    color: var(--fg);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 0.35rem 0.5rem;
-  }
-  .result-count {
+  .as-view .as-readout {
     margin: 0 0 0 auto;
   }
-  .logbook :global(.group) {
-    border-top: 1px solid var(--border);
-    padding: 1.75rem 0 1rem;
+  .logbook :global(.av-group) {
+    padding: 0 0 2.5rem;
   }
-  .logbook :global(h2) {
-    font-size: 1.6rem;
-    font-weight: 500;
-    margin: 0 0 1.25rem;
+  .logbook :global(.av-group h2) {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
   }
-  .logbook :global(h2 span) {
-    font: 0.8125rem var(--font-mono);
-    color: var(--muted);
-    margin-left: 0.5rem;
-    letter-spacing: 0;
+  .logbook :global(.av-group h2 .as-tile) {
+    background: var(--as-sign);
+    border-color: var(--as-sign);
+    color: var(--as-ink);
+    font-size: 0.85rem;
   }
-  .logbook :global(.grid) {
+  .logbook :global(.av-group-meta) {
+    margin-left: auto;
+    font: 0.8rem var(--font-mono);
+    color: var(--as-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .logbook :global(.av-grid) {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 4px;
   }
-  .airframe {
+  .av-card {
     border: 1px solid var(--border);
     background: var(--surface);
     display: flex;
     flex-direction: column;
   }
-  .airframe-photo {
+  .av-photo {
     display: block;
-    position: relative;
-    background: var(--surface-2);
+    background: #0b0c0d;
   }
-  .airframe-photo img {
+  .av-photo img {
     width: 100%;
     aspect-ratio: 3 / 2;
     object-fit: cover;
+    transition: opacity 0.15s;
   }
-  .photo-count {
-    position: absolute;
-    right: 0.6rem;
-    bottom: 0.6rem;
-    background: rgb(37 40 34 / 0.78);
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
+  .av-photo:hover img {
+    opacity: 0.85;
   }
-  .airframe-body {
-    padding: 0.9rem 1rem 1rem;
+  .av-card:hover {
+    border-color: var(--as-sign);
   }
-  .airframe-body p {
+  .av-strip {
+    padding: 0.85rem 0.9rem 1rem;
+    border-top: 2px solid #000;
+  }
+  .av-strip p {
     margin: 0;
   }
-  .reg {
-    font: 600 1.15rem var(--font-mono);
-    letter-spacing: 0.02em;
+  .av-reg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font: 700 1.3rem/1 var(--font-mono);
+    color: var(--as-sign);
+    letter-spacing: 0.04em;
   }
-  .type {
-    margin-top: 0.2rem !important;
-    font-size: 0.95rem;
+  .av-reg .as-tile {
+    min-width: 0;
+    font-size: 0.75rem;
+    color: var(--fg);
   }
-  .meta {
-    margin-top: 0.35rem !important;
-    font-size: 0.8rem;
-    color: var(--muted);
+  .av-type {
+    margin-top: 0.55rem !important;
+    font-size: 0.9rem;
   }
-  .badges {
-    list-style: none;
-    padding: 0;
-    margin: 0.7rem 0 0;
+  .av-meta {
+    margin-top: 0.3rem !important;
+    font: 0.75rem var(--font-mono);
+    color: var(--as-dim);
+    letter-spacing: 0.06em;
+  }
+  .av-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
+    gap: 4px;
+    margin-top: 0.7rem !important;
   }
-  .badges li {
-    font-size: 0.75rem;
+  .av-tag {
+    font: 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.25em 0.5em;
     border: 1px solid var(--border);
-    padding: 0.15rem 0.55rem;
-    border-radius: 999px;
     color: var(--muted);
   }
-  .badges .badge-livery {
-    border-color: var(--accent);
-    color: var(--accent);
+  .av-tag.is-livery {
+    border-color: var(--as-sign);
+    color: var(--as-sign);
   }
-  .empty {
+  .av-empty {
     color: var(--muted);
     padding: 2rem 0;
   }
   @media (max-width: 760px) {
-    .stats {
+    .logbook :global(.av-grid) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .logbook :global(.grid) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
+    .av-strip {
+      padding: 0.7rem 0.7rem 0.8rem;
     }
-    .airframe-body {
-      padding: 0.7rem 0.75rem 0.8rem;
+    .av-reg {
+      font-size: 1.05rem;
     }
-    .reg {
-      font-size: 1rem;
+    .av-type {
+      font-size: 0.8rem;
     }
-    .type {
-      font-size: 0.85rem;
-    }
-    .result-count {
+    .as-view .as-readout {
       margin-left: 0;
       width: 100%;
     }

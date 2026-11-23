@@ -33,9 +33,9 @@ for (const g of groups)
     assert(item.heading && item.place, `${g.title}: viewer needs a heading and place`);
   }
 const airlines = new Set(rows.map((r) => r.airline));
-assert.equal((page.match(/<section class="group"/g) || []).length, airlines.size, "no-JS view groups by airline");
+assert.equal((page.match(/<section class="av-group"/g) || []).length, airlines.size, "no-JS view groups by airline");
 const sample = rows.some((r) => /^(yes|true|1)$/i.test(r.sample));
-assert.equal(page.includes("sample-banner"), sample, "demo banner shows only while sample rows exist");
+assert.equal(page.includes('class="as-notice"'), sample, "demo notice shows only while sample rows exist");
 
 console.log(
   `Passed: ${rows.length} aviation photos, ${airframes.size} airframes, ${airlines.size} airlines, viewer details, and grouping.`,

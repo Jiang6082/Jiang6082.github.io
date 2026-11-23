@@ -2,10 +2,16 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PhotoTabs from "../../../components/PhotoTabs.astro";
 import AviationTabs from "../../../components/AviationTabs.astro";
+import "@fontsource/b612/400.css";
+import "@fontsource/b612/700.css";
+import "@fontsource/b612-mono/400.css";
+import "@fontsource/b612-mono/700.css";
+import "../../../styles/airside.css";
 import { AVIATION } from "../../../config";
 import { catches } from "../../../data/aviation";
 import recordCsv from "../../../data/heathrow-record.csv?raw";
 import { parseRecord, buildRecord, renderRecord, defaultState } from "../../../lib/record.js";
+import { flapHTML } from "../../../lib/flap.js";
 
 const rows = parseRecord(recordCsv);
 const model = buildRecord(rows, catches);
@@ -15,20 +21,20 @@ const alliances = [...new Set(model.map((a) => a.alliance))].sort((a, b) =>
 );
 const sampleTicks = catches.some((c) => c.sample);
 const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
+const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
 ---
 
 <BaseLayout
   title="Heathrow record"
   description="Every airline at London Heathrow and the aircraft they fly, ticked off as Charles Jiang photographs them."
+  bodyClass="theme-airside"
   wide
 >
-  <header class="record-heading page-shell">
-    <p class="eyebrow">Photography / Aviation / Record</p><h1>
-      Heathrow record
-    </h1><p>
-      Every airline flying to London Heathrow and the aircraft they operate. A
-      type gets ticked once I’ve photographed it.
+  <header class="rec-head page-shell">
+    <p class="eyebrow">Photography / Aviation / Record</p><h1>Heathrow record</h1><p>
+      Every airline flying to London Heathrow and the aircraft it operates. A
+      type lights up once I’ve photographed it.
     </p>
   </header>
   <PhotoTabs current="aviation" />
@@ -36,125 +42,115 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     <AviationTabs current="record" />
     {
       sampleTicks && (
-        <p class="sample-banner">
-          <strong>Demo.</strong> Ticks marked here come from the sample logbook
-          entries and will disappear with them. Real ticks come from your Google
-          Sheet and your logbook photos.
+        <p class="as-notice">
+          <b>NOTICE</b>
+          <span>
+            Lit types come from the sample logbook entries and will go dark with
+            them. Real ticks come from my Google Sheet and logbook photos.
+          </span>
         </p>
       )
     }
-    <dl class="record-stats" data-stats>
+    <dl class="as-stats">
       <div>
         <dt>Types photographed</dt>
-        <dd>
-          <span data-stat="caught">{first.stats.caught}</span>
-          <small>/ <span data-stat="types">{first.stats.types}</span></small>
-        </dd>
+        <dd><span class="flap" data-stat="caught" set:html={flapHTML(`${pad(first.stats.caught, 3)}/${pad(first.stats.types, 3)}`)} /></dd>
       </div>
       <div>
         <dt>Complete</dt>
-        <dd>
-          <span data-stat="pct">{pct(first.stats.caught, first.stats.types)}</span><small
-            >%</small
-          >
-        </dd>
+        <dd><span class="flap" data-stat="pct" set:html={flapHTML(`${pad(pct(first.stats.caught, first.stats.types))}%`)} /></dd>
       </div>
       <div>
         <dt>Airlines started</dt>
-        <dd>
-          <span data-stat="started">{first.stats.started}</span>
-          <small>/ <span data-stat="airlines">{first.stats.airlines}</span></small>
-        </dd>
+        <dd><span class="flap" data-stat="started" set:html={flapHTML(`${pad(first.stats.started)}/${pad(first.stats.airlines)}`)} /></dd>
       </div>
       <div>
         <dt>Airlines finished</dt>
-        <dd><span data-stat="complete">{first.stats.complete}</span></dd>
+        <dd><span class="flap" data-stat="complete" set:html={flapHTML(pad(first.stats.complete))} /></dd>
       </div>
     </dl>
 
-    <div class="record-controls" hidden>
-      <label class="search">
-        <span>Search</span>
+    <div class="as-panel" data-controls hidden>
+      <div class="as-panel-row">
+        <label class="as-label" for="record-search">Search</label>
         <input
+          id="record-search"
+          class="as-search"
           type="search"
           data-control="q"
           placeholder="Airline, code, or aircraft"
           autocomplete="off"
         />
-      </label>
-      <div class="chips" role="group" aria-label="Show">
-        <span class="chips-label">Show</span>
-        <button type="button" data-show="all" aria-pressed="true">All</button>
-        <button type="button" data-show="caught" aria-pressed="false">Photographed</button>
-        <button type="button" data-show="missing" aria-pressed="false">Still to find</button>
       </div>
-      <div class="chips" role="group" aria-label="Alliance">
-        <span class="chips-label">Alliance</span>
-        <button type="button" data-alliance="all" aria-pressed="true">All</button>
-        {
-          alliances.map((a) => (
-            <button type="button" data-alliance={a} aria-pressed="false">
-              {a}
-            </button>
-          ))
-        }
+      <div class="as-panel-row">
+        <span class="as-label">Show</span>
+        <div class="as-options" role="group" aria-label="Show">
+          <button type="button" class="as-tile" data-show="all" aria-pressed="true">All</button>
+          <button type="button" class="as-tile" data-show="caught" aria-pressed="false">Photographed</button>
+          <button type="button" class="as-tile" data-show="missing" aria-pressed="false">To find</button>
+        </div>
       </div>
-      <div class="view">
-        <label>
-          Aircraft
-          <select data-control="scope">
-            <option value="heathrow">Types seen at Heathrow</option>
-            <option value="fleet">Whole fleet</option>
-          </select>
-        </label>
-        <label>
-          Sort
-          <select data-control="sort">
-            <option value="az">Airline A–Z</option>
-            <option value="caught">Most photographed</option>
-            <option value="progress">Closest to complete</option>
-          </select>
-        </label>
-        <p class="source" data-source>
-          {AVIATION.recordSheetCsv ? "Loading the latest sheet…" : "From the last site update"}
-        </p>
+      <div class="as-panel-row">
+        <span class="as-label">Alliance</span>
+        <div class="as-options" role="group" aria-label="Alliance">
+          <button type="button" class="as-tile" data-alliance="all" aria-pressed="true">All</button>
+          {
+            alliances.map((a) => (
+              <button type="button" class="as-tile" data-alliance={a} aria-pressed="false">
+                {a}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="as-panel-row">
+        <span class="as-label">Aircraft · Sort</span>
+        <div class="as-options rec-view">
+          <div class="as-options" role="group" aria-label="Aircraft">
+            <button type="button" class="as-tile" data-scope="heathrow" aria-pressed="true">Seen at LHR</button>
+            <button type="button" class="as-tile" data-scope="fleet" aria-pressed="false">Whole fleet</button>
+          </div>
+          <div class="as-options" role="group" aria-label="Sort by">
+            <button type="button" class="as-tile" data-sort="az" aria-pressed="true">A–Z</button>
+            <button type="button" class="as-tile" data-sort="caught" aria-pressed="false">Most lit</button>
+            <button type="button" class="as-tile" data-sort="progress" aria-pressed="false">Closest</button>
+          </div>
+          <p class="as-readout" data-source>
+            {AVIATION.recordSheetCsv ? "Loading the latest sheet…" : "Source: last site update"}
+          </p>
+        </div>
       </div>
     </div>
 
-    <ul class="legend" aria-label="Key">
-      <li><span class="rec-type is-caught"><span class="rec-check">✓</span>Photographed</span></li>
-      <li><span class="rec-type">Flies to Heathrow</span></li>
-      <li><span class="rec-type is-occasional">Occasional</span></li>
+    <ul class="rec-legend" aria-label="Key">
+      <li class="as-cell is-caught"><b>A388</b><span>Photographed</span></li>
+      <li class="as-cell"><b>B789</b><span>Flies to LHR</span></li>
+      <li class="as-cell is-occasional"><b>A21N</b><span>Occasional</span></li>
     </ul>
 
-    <div
-      id="record"
-      class="record"
-      data-sheet={AVIATION.recordSheetCsv}
-      set:html={first.html}
-    />
-    <p class="record-note">
-      Airlines and aircraft come from public schedule and fleet information as
-      of November 2026, and some types are best guesses. “Occasional” means
-      seasonal or substitute aircraft; “Whole fleet” adds types that don’t
-      usually come to Heathrow. Hover over an aircraft to see when it usually
-      arrives (UK time); ≈ marks times that haven’t been checked against a
-      timetable.
+    <div id="record" class="as-board" data-sheet={AVIATION.recordSheetCsv} set:html={first.html} />
+    <p class="as-note">
+      Codes are ICAO aircraft types: A388 is the A380-800, B77W the 777-300ER.
+      Hover over one for the full name and when it usually arrives (UK time; ≈
+      marks times that haven’t been checked against a timetable). Airlines and
+      aircraft come from public schedule and fleet information as of November
+      2026, and some are best guesses.
     </p>
   </div>
   <script type="application/json" id="record-data" set:html={json({ rows, catches })} />
 </BaseLayout>
 <script>
   import { parseRecord, buildRecord, renderRecord, defaultState } from "../../../lib/record.js";
+  import { flapHTML } from "../../../lib/flap.js";
 
   const root = document.getElementById("record")!;
-  const controls = document.querySelector<HTMLElement>(".record-controls")!;
+  const controls = document.querySelector<HTMLElement>("[data-controls]")!;
   const source = controls.querySelector<HTMLElement>("[data-source]")!;
   const { rows, catches } = JSON.parse(document.getElementById("record-data")!.textContent!);
   let model = buildRecord(rows, catches);
 
   const params = new URLSearchParams(location.search);
-  const state = {
+  const state: Record<string, string> = {
     ...defaultState,
     q: params.get("q") ?? "",
     show: params.get("show") ?? "all",
@@ -162,22 +158,23 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     alliance: params.get("alliance") ?? "all",
     sort: params.get("sort") ?? "az",
   };
-
-  const set = (name: string, value: number) => {
+  const pad = (n: number, w = 2) => String(n).padStart(w, "0");
+  const set = (name: string, text: string) => {
     const el = document.querySelector(`[data-stat="${name}"]`);
-    if (el) el.textContent = String(value);
+    if (el) {
+      el.innerHTML = flapHTML(text);
+      el.setAttribute("aria-label", text);
+    }
   };
 
   function render() {
-    const { html, stats } = renderRecord(model, state);
+    const { html, stats } = renderRecord(model, state as typeof defaultState);
     root.innerHTML = html;
-    set("caught", stats.caught);
-    set("types", stats.types);
-    set("pct", stats.types ? Math.round((stats.caught / stats.types) * 100) : 0);
-    set("started", stats.started);
-    set("airlines", stats.airlines);
-    set("complete", stats.complete);
-    for (const key of ["show", "alliance"] as const)
+    set("caught", `${pad(stats.caught, 3)}/${pad(stats.types, 3)}`);
+    set("pct", `${pad(stats.types ? Math.round((stats.caught / stats.types) * 100) : 0)}%`);
+    set("started", `${pad(stats.started)}/${pad(stats.airlines)}`);
+    set("complete", pad(stats.complete));
+    for (const key of ["show", "alliance", "scope", "sort"])
       controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset[key] === state[key])),
       );
@@ -189,20 +186,12 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   }
 
   const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
-  const scope = controls.querySelector<HTMLSelectElement>('[data-control="scope"]')!;
-  const sort = controls.querySelector<HTMLSelectElement>('[data-control="sort"]')!;
   search.value = state.q;
-  scope.value = state.scope;
-  sort.value = state.sort;
   search.addEventListener("input", () => ((state.q = search.value), render()));
-  scope.addEventListener("change", () => ((state.scope = scope.value), render()));
-  sort.addEventListener("change", () => ((state.sort = sort.value), render()));
-  controls.querySelectorAll<HTMLButtonElement>("[data-show]").forEach((b) =>
-    b.addEventListener("click", () => ((state.show = b.dataset.show!), render())),
-  );
-  controls.querySelectorAll<HTMLButtonElement>("[data-alliance]").forEach((b) =>
-    b.addEventListener("click", () => ((state.alliance = b.dataset.alliance!), render())),
-  );
+  for (const key of ["show", "alliance", "scope", "sort"])
+    controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
+      b.addEventListener("click", () => ((state[key] = b.dataset[key]!), render())),
+    );
   controls.hidden = false;
   render();
 
@@ -216,239 +205,183 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
         const live = parseRecord(text);
         if (!live.length) throw new Error("empty sheet");
         model = buildRecord(live, catches);
-        source.textContent = "Live from my Google Sheet";
+        source.textContent = "Source: live Google Sheet";
         render();
       })
       .catch(() => {
-        source.textContent = "From the last site update (the live sheet didn’t load)";
+        source.textContent = "Source: last site update (live sheet didn’t load)";
       });
   }
 </script>
 <style>
-  .record-heading {
+  .rec-head {
     padding: 1rem 0 2.5rem;
   }
-  .record-heading h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    margin: 1.8rem 0 1rem;
+  .rec-head h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.05;
+    margin: 1.6rem 0 1rem;
   }
-  .record-heading > p:last-child {
-    font-size: 1.15rem;
+  .rec-head > p:last-child {
+    font-size: 1.05rem;
     color: var(--muted);
     max-width: 40rem;
   }
-  .sample-banner {
-    border: 1px dashed var(--accent);
-    background: var(--accent-soft);
-    padding: 0.9rem 1.1rem;
-    font-size: 0.9rem;
-    margin: 0 0 2rem;
-  }
-  .record-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.5rem;
-    margin: 0 0 2.5rem;
-    padding: 1.5rem 0;
-    border-block: 1px solid var(--border);
-  }
-  .record-stats div {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 0.35rem;
-  }
-  .record-stats dt {
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .record-stats dd {
-    margin: 0;
-    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-    letter-spacing: -0.025em;
-    font-variant-numeric: tabular-nums;
-  }
-  .record-stats small {
-    font-size: 0.5em;
-    color: var(--muted);
-    letter-spacing: 0;
-  }
-  .record-controls {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .record-controls[hidden] {
-    display: none;
-  }
-  .search {
-    display: grid;
-    gap: 0.4rem;
-    max-width: 28rem;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .search input {
-    font-size: 1rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--fg);
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .chips-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    min-width: 4.5rem;
-  }
-  .chips button {
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--fg);
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    border-radius: 999px;
-  }
-  .chips button[aria-pressed="true"] {
-    background: var(--fg);
-    border-color: var(--fg);
-    color: var(--bg);
-  }
-  .view {
-    display: flex;
-    flex-wrap: wrap;
+  .rec-view {
     align-items: center;
     gap: 0.75rem 1.5rem;
-    font-size: 0.85rem;
-    color: var(--muted);
   }
-  .view label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .view select {
-    font: inherit;
-    color: var(--fg);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 0.35rem 0.5rem;
-  }
-  .source {
+  .rec-view .as-readout {
     margin: 0 0 0 auto;
   }
-  .legend {
+  .rec-legend {
     list-style: none;
-    padding: 0;
-    margin: 0 0 1.5rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    font-size: 0.8rem;
+    gap: 4px;
+    padding: 0;
+    margin: 0 0 1rem;
   }
-  .record :global(.rec-airline) {
+  /* Board rows are rendered by src/lib/record.js, so these are global. */
+  .as-board :global(.as-row),
+  .rec-legend {
+    --cell: 5.6rem;
+  }
+  .as-board {
+    border-top: 2px solid var(--as-sign);
+  }
+  .as-board :global(.as-row) {
     display: grid;
-    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+    grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
     gap: 1rem 2rem;
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--border);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
   }
-  .record :global(.rec-head h2) {
-    font-size: 1.15rem;
-    font-weight: 500;
+  .as-board :global(.as-row-head) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.25rem 0.8rem;
+    align-content: start;
+  }
+  .as-board :global(.as-row-head .as-tile) {
+    grid-row: span 2;
+    align-self: start;
+    background: var(--surface-2);
+  }
+  .as-board :global(.as-row.is-complete .as-row-head .as-tile) {
+    background: var(--as-sign);
+    border-color: var(--as-sign);
+    color: var(--as-ink);
+  }
+  .as-board :global(.as-row-name h2) {
+    font-size: 1.05rem;
+    font-weight: 700;
     margin: 0;
+    line-height: 1.25;
   }
-  .record :global(.rec-code) {
+  .as-board :global(.as-row-name p) {
     font: 0.75rem var(--font-mono);
-    color: var(--muted);
-    margin-left: 0.35rem;
+    color: var(--as-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0.2rem 0 0;
   }
-  .record :global(.rec-meta) {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin: 0.2rem 0 0.6rem;
-  }
-  .record :global(.rec-progress) {
+  .as-board :global(.as-row-progress) {
+    grid-column: 2;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    margin: 0;
-    font-size: 0.8rem;
+    margin: 0.35rem 0 0;
   }
-  .record :global(.rec-progress strong) {
-    font: 500 0.8rem var(--font-mono);
+  .as-board :global(.as-row-count) {
+    font: 700 0.85rem var(--font-mono);
+    color: var(--as-sign);
     white-space: nowrap;
   }
-  .record :global(.rec-bar) {
-    flex: 1;
-    max-width: 9rem;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--surface-2);
-    overflow: hidden;
+  .as-board :global(.as-row-count span) {
+    color: var(--as-dim);
+    font-weight: 400;
   }
-  .record :global(.rec-bar span) {
+  .as-board :global(.as-bar) {
+    flex: 1;
+    max-width: 8rem;
+    height: 4px;
+    background: var(--surface-2);
+  }
+  .as-board :global(.as-bar span) {
     display: block;
     height: 100%;
-    background: var(--accent);
+    background: var(--as-sign);
   }
-  .record :global(.rec-types) {
+  .as-board :global(.as-cells) {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--cell), 1fr));
+    gap: 4px;
     align-content: start;
   }
-  .record :global(.rec-type),
-  .legend .rec-type {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
+  .as-board :global(.as-cell),
+  .rec-legend .as-cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.55rem 0.55rem;
     border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.25rem 0.7rem;
-    font-size: 0.8rem;
-    color: var(--fg);
-    background: var(--bg);
+    background: var(--surface);
   }
-  .record :global(.rec-check),
-  .legend .rec-check {
+  .rec-legend .as-cell {
+    min-width: var(--cell);
+  }
+  .as-board :global(.as-cell b),
+  .rec-legend .as-cell b {
+    font: 700 1rem/1 var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .as-board :global(.as-cell span:not(.sr-only)),
+  .rec-legend .as-cell span {
     font-size: 0.75rem;
-  }
-  .record :global(.rec-check:empty) {
-    display: none;
-  }
-  .record :global(.rec-type.is-caught),
-  .legend .rec-type.is-caught {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-  .record :global(.rec-type.is-occasional),
-  .legend .rec-type.is-occasional {
-    border-style: dashed;
-  }
-  .record :global(.rec-type.is-elsewhere) {
+    line-height: 1.2;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .as-board :global(.as-cell.is-caught),
+  .rec-legend .as-cell.is-caught {
+    background: var(--as-sign);
+    border-color: var(--as-sign);
+    color: var(--as-ink);
+  }
+  .as-board :global(.as-cell.is-caught span:not(.sr-only)),
+  .rec-legend .as-cell.is-caught span {
+    color: #4a4206;
+  }
+  .as-board :global(.as-cell.is-caught)::after,
+  .rec-legend .as-cell.is-caught::after {
+    content: "✓";
+    content: "✓" / "";
+    position: absolute;
+    top: 0.4rem;
+    right: 0.5rem;
+    font: 700 0.8rem/1 var(--font-mono);
+  }
+  .as-board :global(.as-cell.is-occasional),
+  .rec-legend .as-cell.is-occasional {
+    border-style: dashed;
+    border-color: #4a4e52;
+  }
+  .as-board :global(.as-cell.is-elsewhere) {
     background: transparent;
+    color: var(--as-dim);
   }
-  .record :global(.rec-airline.is-complete .rec-head h2)::after {
-    content: " ✓";
-    color: var(--accent);
-  }
-  .record :global(.rec-empty) {
+  .as-board :global(.as-empty) {
     color: var(--muted);
     padding: 2rem 0;
   }
-  .record :global(.sr-only) {
+  .as-board :global(.sr-only) {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -456,22 +389,16 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
-  .record-note {
-    font-size: 0.8rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
   @media (max-width: 760px) {
-    .record-stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .record :global(.rec-airline) {
+    .as-board :global(.as-row) {
       grid-template-columns: 1fr;
-      gap: 0.75rem;
+      gap: 0.8rem;
     }
-    .source {
+    .as-board :global(.as-row),
+    .rec-legend {
+      --cell: 5.4rem;
+    }
+    .rec-view .as-readout {
       margin-left: 0;
       width: 100%;
     }

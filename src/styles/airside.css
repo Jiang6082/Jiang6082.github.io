@@ -1,0 +1,238 @@
+/* Airside: the look of the aviation pages, taken from airport wayfinding
+   signs (black on signage yellow) and flight-information displays.
+   Pages opt in with <BaseLayout bodyClass="theme-airside">. Typefaces are
+   B612 and B612 Mono, which Airbus designed for cockpit displays. */
+
+.theme-airside {
+  --bg: #0e0f10;
+  --surface: #151719;
+  --surface-2: #1c1f22;
+  --fg: #eeeee8;
+  --muted: #9a9ea1;
+  --border: #2b2e31;
+  --accent: #ffd100;
+  --accent-fg: #111214;
+  --accent-soft: #29240b;
+  --as-sign: #ffd100;
+  --as-ink: #111214;
+  --as-dim: #7d8185;
+  --font-mono: "B612 Mono", ui-monospace, Menlo, monospace;
+  background: var(--bg);
+  color: var(--fg);
+}
+html:has(> body.theme-airside) {
+  background: #0e0f10;
+}
+.theme-airside main {
+  font-family: "B612", "Schibsted Grotesk Variable", Arial, sans-serif;
+}
+.theme-airside main h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Section switch: direction-sign plates, square, black on yellow. */
+.as-signs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 0 0 2.5rem;
+}
+.as-signs a {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 1.1rem;
+  background: var(--surface-2);
+  color: var(--as-sign);
+  font: 700 0.8rem/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.as-signs a::after {
+  content: "→";
+  content: "→" / "";
+  font-size: 1rem;
+}
+.as-signs a:hover {
+  text-decoration: none;
+  background: #26292d;
+}
+.as-signs a[aria-current] {
+  background: var(--as-sign);
+  color: var(--as-ink);
+}
+
+/* Split-flap numbers: one dark cell per character, split across the middle. */
+.flap {
+  display: inline-flex;
+  gap: 3px;
+  font: 700 clamp(1.4rem, 2.8vw, 2rem) / 1 var(--font-mono);
+  color: var(--as-sign);
+  font-variant-numeric: tabular-nums;
+}
+.flap-c {
+  display: inline-block;
+  min-width: 1.15ch;
+  padding: 0.18em 0.14em;
+  text-align: center;
+  background:
+    linear-gradient(to bottom, transparent calc(50% - 1px), #0b0c0d calc(50% - 1px), #0b0c0d calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(to bottom, #2a2e32, #1f2226);
+  border-radius: 2px;
+}
+.flap-gap {
+  width: 0.45ch;
+}
+.as-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 0 0 2rem;
+}
+.as-stats > div {
+  background: var(--surface);
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.7rem;
+}
+.as-stats dt {
+  font: 0.75rem var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--as-dim);
+}
+.as-stats dd {
+  margin: 0;
+}
+
+/* Code tiles: IATA airline and ICAO aircraft codes, square, never pills. */
+.as-tile {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35em;
+  min-width: 3.4em;
+  padding: 0.45em 0.6em;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  font: 700 0.8rem/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.as-tile sub {
+  font-size: 0.7em;
+  font-weight: 400;
+  color: var(--as-dim);
+  vertical-align: baseline;
+}
+button.as-tile {
+  cursor: pointer;
+}
+button.as-tile:hover {
+  border-color: var(--muted);
+}
+button.as-tile[aria-pressed="true"] {
+  background: var(--as-sign);
+  border-color: var(--as-sign);
+  color: var(--as-ink);
+}
+button.as-tile[aria-pressed="true"] sub {
+  color: var(--as-ink);
+}
+
+/* Control panel: rows of labelled options, like a display board. */
+.as-panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin: 0 0 2rem;
+}
+.as-panel[hidden] {
+  display: none;
+}
+.as-panel-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+}
+.as-panel-row:first-child {
+  border-top: 0;
+}
+.as-label {
+  font: 0.75rem var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--as-dim);
+}
+.as-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.as-search {
+  width: 100%;
+  max-width: 30rem;
+  background: #0b0c0d;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font: 0.95rem var(--font-mono);
+  padding: 0.65rem 0.8rem;
+  border-radius: 0;
+}
+.as-search::placeholder {
+  color: var(--as-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+}
+.as-search:focus-visible {
+  outline: 2px solid var(--as-sign);
+  outline-offset: 0;
+}
+.as-readout {
+  font: 0.8rem var(--font-mono);
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+/* Notice strip for demo data. */
+.as-notice {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  border-left: 4px solid var(--as-sign);
+  background: var(--surface);
+  padding: 0.8rem 1rem;
+  margin: 0 0 2rem;
+  font-size: 0.9rem;
+}
+.as-notice b {
+  font: 700 0.75rem var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--as-sign);
+}
+
+.as-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .as-panel-row {
+    grid-template-columns: 1fr;
+  }
+  .as-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
