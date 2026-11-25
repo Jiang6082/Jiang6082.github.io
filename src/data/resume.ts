@@ -1,5 +1,4 @@
-// Web version of my résumé (also /resume.pdf, built from the same data).
-// The phone number is intentionally left off the public site.
+// Web version of my résumé. The phone number is intentionally left off the public site.
 import { project } from "./projects";
 
 interface ResumeProject {

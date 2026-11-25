@@ -30,7 +30,7 @@ npm run preview
 | Name, links, analytics | `src/config.ts`                                       |
 | Projects (titles, dates, tools, results) | `src/data/projects.ts`, the one record each page reads |
 | Project walkthroughs   | `src/data/research.ts`                                |
-| Résumé                 | `src/data/resume.ts`; the page and `/resume.pdf` are both built from it |
+| Résumé                 | `src/data/resume.ts`                                  |
 | Notes                  | `src/content/blog/`                                   |
 | Photos and their details | `npm run photos` or `npm run photos:manage` (see `PHOTO-MANAGER.md`) |
 | Aviation logbook       | `src/data/aviation.csv`, photos in `src/photos/aviation/` (see `PHOTO-MANAGER.md`) |

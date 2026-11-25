@@ -31,9 +31,7 @@ const site = short(SITE.url);
           ><a href={social("GitHub")} target="_blank" rel="noopener noreferrer"
             >{short(social("GitHub"))}</a
           ><a class="print-only" href={SITE.url}>{site}</a>
-        </div><a class="text-link pdf-link" href={`${base}/resume.pdf`} download
-          >Download PDF <span aria-hidden="true">↓</span></a
-        >
+        </div>
       </header>
       <section id="education">
         <h2>Education</h2>{
@@ -186,9 +184,6 @@ const site = short(SITE.url);
   }
   .print-only {
     display: none;
-  }
-  .pdf-link {
-    margin-top: 1.25rem;
   }
   header {
     padding-bottom: 2rem;
@@ -353,7 +348,6 @@ const site = short(SITE.url);
       display: inline;
     }
     /* Links show where they go; arrows and the timeline are screen-only. */
-    .pdf-link,
     [aria-hidden="true"] {
       display: none !important;
     }

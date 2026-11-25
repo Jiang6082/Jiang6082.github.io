@@ -73,10 +73,8 @@ for (const h3 of [...home.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/g)].map((m) => tex
   assert([...titles.values()].includes(h3), `homepage project "${h3}" matches /projects`);
 for (const name of ["Poker Opponent Modeling", "Treasury Yield-Curve Research", "Market Volatility Forecasting", "Property Search Platform"])
   assert(resumePage.includes(name) && [...titles.values()].includes(name), `résumé and /projects agree on "${name}"`);
-// The résumé PDF is built from the same data.
-const pdf = readFileSync(join(root, "resume.pdf"));
-assert.equal(pdf.subarray(0, 5).toString(), "%PDF-", "résumé PDF is built");
-assert(resumePage.includes('href="/resume.pdf"'), "résumé page links to the PDF");
+// No generated PDF on the site.
+assert(!existsSync(join(root, "resume.pdf")) && !resumePage.includes("resume.pdf"), "no résumé PDF");
 // Private repositories must never be linked from any page.
 const privateRepos = ["Project-Olsen", "poker", "treasury-yield-curve-research"];
 for (const file of htmls) {
