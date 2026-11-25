@@ -160,12 +160,12 @@ export function renderRecord(model, state = defaultState) {
 
   const pad = (n) => String(n).padStart(2, "0");
   const html = shown
-    .map((shownAirline) => {
+    .map((shownAirline, row) => {
       const a = full.get(shownAirline.airline);
       const got = progress(a);
       const pct = Math.round((got / a.types.length) * 100);
       const cells = shownAirline.types
-        .map((t) => {
+        .map((t, col) => {
           const classes = ["as-cell", t.caught && "is-caught", t.atHeathrow === "Occasional" && "is-occasional", t.atHeathrow === "No" && "is-elsewhere"]
             .filter(Boolean)
             .join(" ");
@@ -177,12 +177,12 @@ export function renderRecord(model, state = defaultState) {
                 ? "Not usually at Heathrow"
                 : "Not photographed yet";
           const detail = t.arrivals && t.atHeathrow !== "No" ? `${status}. Usual arrivals: ${t.arrivals}` : status;
-          return `<li class="${classes}" title="${esc(`${t.type}: ${detail}`)}"><b>${esc(icaoCode(t.type))}</b><span>${esc(t.type)}</span><span class="sr-only">, ${esc(detail.toLowerCase())}</span></li>`;
+          return `<li class="${classes}" style="--r:${row};--c:${col}" title="${esc(`${t.type}: ${detail}`)}"><b>${esc(icaoCode(t.type))}</b><span>${esc(t.type)}</span><span class="sr-only">, ${esc(detail.toLowerCase())}</span></li>`;
         })
         .join("");
       return `<section class="as-row${got === a.types.length ? " is-complete" : ""}">
   <div class="as-row-head">
-    <span class="as-tile">${esc(a.iata || "—")}</span>
+    <span class="ph-tile">${esc(a.iata || "—")}</span>
     <div class="as-row-name"><h2>${esc(a.airline)}</h2><p>${esc([a.country, a.alliance].filter(Boolean).join(" · "))}</p></div>
     <p class="as-row-progress"><span class="as-row-count">${pad(got)}<span> / ${pad(a.types.length)}</span></span><span class="as-bar" aria-hidden="true"><span style="width:${pct}%"></span></span></p>
   </div>
@@ -190,5 +190,5 @@ export function renderRecord(model, state = defaultState) {
 </section>`;
     })
     .join("\n");
-  return { html: html || `<p class="as-empty">Nothing matches. Clear a filter or the search.</p>`, stats, shown: shown.length };
+  return { html: html || `<p class="ph-empty">Nothing matches. Clear a filter or the search.</p>`, stats, shown: shown.length };
 }

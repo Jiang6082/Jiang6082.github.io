@@ -72,6 +72,9 @@
 
   let current: Item[] = [];
   let index = 0;
+  // Direction of the last step (-1, 0 for open, 1) for the slide animation.
+  let step = 0;
+  const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let lastFocus: HTMLElement | null = null;
 
   let scale = 1;
@@ -114,6 +117,19 @@
       media.appendChild(img);
       curImg = img;
       applyTransform();
+      if (!still())
+        img.animate(
+          step
+            ? [
+                { opacity: 0, transform: `translateX(${step * 36}px)` },
+                { opacity: 1, transform: "translateX(0)" },
+              ]
+            : [
+                { opacity: 0, transform: "scale(0.94)" },
+                { opacity: 1, transform: "scale(1)" },
+              ],
+          { duration: step ? 280 : 360, easing: "cubic-bezier(.2,.7,.2,1)" },
+        );
     }
     elTitle.textContent = "";
     elTitle.style.display = "none";
@@ -141,6 +157,7 @@
     lastFocus = document.activeElement as HTMLElement;
     lb.hidden = false;
     document.body.style.overflow = "hidden";
+    step = 0;
     render();
     btnClose.focus();
   }
@@ -152,10 +169,12 @@
   }
   const next = () => {
     index = (index + 1) % current.length;
+    step = 1;
     render();
   };
   const prev = () => {
     index = (index - 1 + current.length) % current.length;
+    step = -1;
     render();
   };
 

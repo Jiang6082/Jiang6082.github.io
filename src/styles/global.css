@@ -190,6 +190,26 @@ hr {
 .skip-link:focus {
   top: 1rem;
 }
+/* Page transitions: browsers that support cross-document view transitions
+   cross-fade between pages; the header stays put and the active tab marker
+   slides to its new place. Others simply load the next page. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.32s;
+}
+.site-header {
+  view-transition-name: site-header;
+}
+.tab-mark {
+  view-transition-name: tab-mark;
+}
+::view-transition-group(tab-mark) {
+  animation-duration: 0.38s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -198,7 +218,14 @@ hr {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

@@ -3,6 +3,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getImage } from "astro:assets";
 import { collections, singles, type Photo } from "../data/photos";
 import { detailsFor, settingsLine } from "../data/photo-details";
+import "@fontsource/b612-mono/400.css";
+import "@fontsource/b612-mono/700.css";
+import "../styles/darkroom.css";
+import DarkroomMotion from "../components/DarkroomMotion.astro";
 
 // All images under src/photos are imported so Astro can optimize them and
 // expose their real dimensions. Files are resolved by `src` at build time.
@@ -78,7 +82,12 @@ if (singles.length) {
 }
 ---
 
-<BaseLayout title="Photography · Grid" description="Classic grid view." wide>
+<BaseLayout
+  title="Photography · Grid"
+  description="Classic grid view."
+  bodyClass="theme-darkroom"
+  wide
+>
   <header class="pg-head">
     <h1>Photography</h1>
     <p class="muted">
@@ -149,6 +158,7 @@ if (singles.length) {
     is:inline
     set:html={`window.__GALLERY__ = ${JSON.stringify(groups)};`}
   />
+  <DarkroomMotion />
 </BaseLayout>
 
 <script>

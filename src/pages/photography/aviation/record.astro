@@ -2,10 +2,12 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PhotoTabs from "../../../components/PhotoTabs.astro";
 import AviationTabs from "../../../components/AviationTabs.astro";
+import DarkroomMotion from "../../../components/DarkroomMotion.astro";
 import "@fontsource/b612/400.css";
 import "@fontsource/b612/700.css";
 import "@fontsource/b612-mono/400.css";
 import "@fontsource/b612-mono/700.css";
+import "../../../styles/darkroom.css";
 import "../../../styles/airside.css";
 import { AVIATION } from "../../../config";
 import { catches } from "../../../data/aviation";
@@ -28,10 +30,10 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
 <BaseLayout
   title="Heathrow record"
   description="Every airline at London Heathrow and the aircraft they fly, ticked off as Charles Jiang photographs them."
-  bodyClass="theme-airside"
+  bodyClass="theme-darkroom theme-airside"
   wide
 >
-  <header class="rec-head page-shell">
+  <header class="ph-head page-shell">
     <p class="eyebrow">Photography / Aviation / Record</p><h1>Heathrow record</h1><p>
       Every airline flying to London Heathrow and the aircraft it operates. A
       type lights up once I’ve photographed it.
@@ -42,7 +44,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     <AviationTabs current="record" />
     {
       sampleTicks && (
-        <p class="as-notice">
+        <p class="ph-notice">
           <b>NOTICE</b>
           <span>
             Lit types come from the sample logbook entries and will go dark with
@@ -51,71 +53,71 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
         </p>
       )
     }
-    <dl class="as-stats">
+    <dl class="ph-stats">
       <div>
         <dt>Types photographed</dt>
-        <dd><span class="flap" data-stat="caught" set:html={flapHTML(`${pad(first.stats.caught, 3)}/${pad(first.stats.types, 3)}`)} /></dd>
+        <dd><span class="flap" data-stat="caught" aria-label={`${pad(first.stats.caught, 3)}/${pad(first.stats.types, 3)}`} set:html={flapHTML(`${pad(first.stats.caught, 3)}/${pad(first.stats.types, 3)}`)} /></dd>
       </div>
       <div>
         <dt>Complete</dt>
-        <dd><span class="flap" data-stat="pct" set:html={flapHTML(`${pad(pct(first.stats.caught, first.stats.types))}%`)} /></dd>
+        <dd><span class="flap" data-stat="pct" aria-label={`${pad(pct(first.stats.caught, first.stats.types))}%`} set:html={flapHTML(`${pad(pct(first.stats.caught, first.stats.types))}%`)} /></dd>
       </div>
       <div>
         <dt>Airlines started</dt>
-        <dd><span class="flap" data-stat="started" set:html={flapHTML(`${pad(first.stats.started)}/${pad(first.stats.airlines)}`)} /></dd>
+        <dd><span class="flap" data-stat="started" aria-label={`${pad(first.stats.started)}/${pad(first.stats.airlines)}`} set:html={flapHTML(`${pad(first.stats.started)}/${pad(first.stats.airlines)}`)} /></dd>
       </div>
       <div>
         <dt>Airlines finished</dt>
-        <dd><span class="flap" data-stat="complete" set:html={flapHTML(pad(first.stats.complete))} /></dd>
+        <dd><span class="flap" data-stat="complete" aria-label={pad(first.stats.complete)} set:html={flapHTML(pad(first.stats.complete))} /></dd>
       </div>
     </dl>
 
-    <div class="as-panel" data-controls hidden>
-      <div class="as-panel-row">
-        <label class="as-label" for="record-search">Search</label>
+    <div class="ph-panel" data-controls hidden>
+      <div class="ph-panel-row">
+        <label class="ph-label" for="record-search">Search</label>
         <input
           id="record-search"
-          class="as-search"
+          class="ph-search"
           type="search"
           data-control="q"
           placeholder="Airline, code, or aircraft"
           autocomplete="off"
         />
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Show</span>
-        <div class="as-options" role="group" aria-label="Show">
-          <button type="button" class="as-tile" data-show="all" aria-pressed="true">All</button>
-          <button type="button" class="as-tile" data-show="caught" aria-pressed="false">Photographed</button>
-          <button type="button" class="as-tile" data-show="missing" aria-pressed="false">To find</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Show</span>
+        <div class="ph-options" role="group" aria-label="Show">
+          <button type="button" class="ph-tile" data-show="all" aria-pressed="true">All</button>
+          <button type="button" class="ph-tile" data-show="caught" aria-pressed="false">Photographed</button>
+          <button type="button" class="ph-tile" data-show="missing" aria-pressed="false">To find</button>
         </div>
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Alliance</span>
-        <div class="as-options" role="group" aria-label="Alliance">
-          <button type="button" class="as-tile" data-alliance="all" aria-pressed="true">All</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Alliance</span>
+        <div class="ph-options" role="group" aria-label="Alliance">
+          <button type="button" class="ph-tile" data-alliance="all" aria-pressed="true">All</button>
           {
             alliances.map((a) => (
-              <button type="button" class="as-tile" data-alliance={a} aria-pressed="false">
+              <button type="button" class="ph-tile" data-alliance={a} aria-pressed="false">
                 {a}
               </button>
             ))
           }
         </div>
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Aircraft · Sort</span>
-        <div class="as-options rec-view">
-          <div class="as-options" role="group" aria-label="Aircraft">
-            <button type="button" class="as-tile" data-scope="heathrow" aria-pressed="true">Seen at LHR</button>
-            <button type="button" class="as-tile" data-scope="fleet" aria-pressed="false">Whole fleet</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Aircraft · Sort</span>
+        <div class="ph-options rec-view">
+          <div class="ph-options" role="group" aria-label="Aircraft">
+            <button type="button" class="ph-tile" data-scope="heathrow" aria-pressed="true">Seen at LHR</button>
+            <button type="button" class="ph-tile" data-scope="fleet" aria-pressed="false">Whole fleet</button>
           </div>
-          <div class="as-options" role="group" aria-label="Sort by">
-            <button type="button" class="as-tile" data-sort="az" aria-pressed="true">A–Z</button>
-            <button type="button" class="as-tile" data-sort="caught" aria-pressed="false">Most lit</button>
-            <button type="button" class="as-tile" data-sort="progress" aria-pressed="false">Closest</button>
+          <div class="ph-options" role="group" aria-label="Sort by">
+            <button type="button" class="ph-tile" data-sort="az" aria-pressed="true">A–Z</button>
+            <button type="button" class="ph-tile" data-sort="caught" aria-pressed="false">Most lit</button>
+            <button type="button" class="ph-tile" data-sort="progress" aria-pressed="false">Closest</button>
           </div>
-          <p class="as-readout" data-source>
+          <p class="ph-readout" data-source>
             {AVIATION.recordSheetCsv ? "Loading the latest sheet…" : "Source: last site update"}
           </p>
         </div>
@@ -129,7 +131,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     </ul>
 
     <div id="record" class="as-board" data-sheet={AVIATION.recordSheetCsv} set:html={first.html} />
-    <p class="as-note">
+    <p class="ph-note">
       Codes are ICAO aircraft types: A388 is the A380-800, B77W the 777-300ER.
       Hover over one for the full name and when it usually arrives (UK time; ≈
       marks times that haven’t been checked against a timetable). Airlines and
@@ -138,10 +140,11 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     </p>
   </div>
   <script type="application/json" id="record-data" set:html={json({ rows, catches })} />
+  <DarkroomMotion />
 </BaseLayout>
 <script>
   import { parseRecord, buildRecord, renderRecord, defaultState } from "../../../lib/record.js";
-  import { flapHTML } from "../../../lib/flap.js";
+  import { rollFlap } from "../../../lib/flap.js";
 
   const root = document.getElementById("record")!;
   const controls = document.querySelector<HTMLElement>("[data-controls]")!;
@@ -161,10 +164,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   const pad = (n: number, w = 2) => String(n).padStart(w, "0");
   const set = (name: string, text: string) => {
     const el = document.querySelector(`[data-stat="${name}"]`);
-    if (el) {
-      el.innerHTML = flapHTML(text);
-      el.setAttribute("aria-label", text);
-    }
+    if (el && el.getAttribute("aria-label") !== text) rollFlap(el as HTMLElement, text);
   };
 
   function render() {
@@ -214,24 +214,11 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   }
 </script>
 <style>
-  .rec-head {
-    padding: 1rem 0 2.5rem;
-  }
-  .rec-head h1 {
-    font-size: clamp(2.4rem, 5vw, 3.8rem);
-    line-height: 1.05;
-    margin: 1.6rem 0 1rem;
-  }
-  .rec-head > p:last-child {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 40rem;
-  }
   .rec-view {
     align-items: center;
     gap: 0.75rem 1.5rem;
   }
-  .rec-view .as-readout {
+  .rec-view .ph-readout {
     margin: 0 0 0 auto;
   }
   .rec-legend {
@@ -248,7 +235,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     --cell: 5.6rem;
   }
   .as-board {
-    border-top: 2px solid var(--as-sign);
+    border-top: 2px solid var(--accent);
   }
   .as-board :global(.as-row) {
     display: grid;
@@ -263,15 +250,15 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     gap: 0.25rem 0.8rem;
     align-content: start;
   }
-  .as-board :global(.as-row-head .as-tile) {
+  .as-board :global(.as-row-head .ph-tile) {
     grid-row: span 2;
     align-self: start;
     background: var(--surface-2);
   }
-  .as-board :global(.as-row.is-complete .as-row-head .as-tile) {
-    background: var(--as-sign);
-    border-color: var(--as-sign);
-    color: var(--as-ink);
+  .as-board :global(.as-row.is-complete .as-row-head .ph-tile) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
   }
   .as-board :global(.as-row-name h2) {
     font-size: 1.05rem;
@@ -281,7 +268,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   }
   .as-board :global(.as-row-name p) {
     font: 0.75rem var(--font-mono);
-    color: var(--as-dim);
+    color: var(--dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     margin: 0.2rem 0 0;
@@ -295,11 +282,11 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   }
   .as-board :global(.as-row-count) {
     font: 700 0.85rem var(--font-mono);
-    color: var(--as-sign);
+    color: var(--accent);
     white-space: nowrap;
   }
   .as-board :global(.as-row-count span) {
-    color: var(--as-dim);
+    color: var(--dim);
     font-weight: 400;
   }
   .as-board :global(.as-bar) {
@@ -311,7 +298,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   .as-board :global(.as-bar span) {
     display: block;
     height: 100%;
-    background: var(--as-sign);
+    background: var(--accent);
   }
   .as-board :global(.as-cells) {
     list-style: none;
@@ -351,9 +338,9 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   }
   .as-board :global(.as-cell.is-caught),
   .rec-legend .as-cell.is-caught {
-    background: var(--as-sign);
-    border-color: var(--as-sign);
-    color: var(--as-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
   }
   .as-board :global(.as-cell.is-caught span:not(.sr-only)),
   .rec-legend .as-cell.is-caught span {
@@ -373,11 +360,35 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     border-style: dashed;
     border-color: #4a4e52;
   }
+  .as-board :global(.as-cell) {
+    animation: cell-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(min(var(--r, 0), 10) * 40ms + min(var(--c, 0), 16) * 18ms);
+  }
+  .as-board :global(.as-cell.is-caught) {
+    animation-name: cell-in, cell-lit;
+    animation-duration: 0.4s, 0.9s;
+  }
+  @keyframes cell-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+  @keyframes cell-lit {
+    from {
+      background: var(--surface);
+      color: var(--fg);
+      box-shadow: 0 0 0 0 rgb(255 209 0 / 0.6);
+    }
+    60% {
+      box-shadow: 0 0 0 6px rgb(255 209 0 / 0);
+    }
+  }
   .as-board :global(.as-cell.is-elsewhere) {
     background: transparent;
-    color: var(--as-dim);
+    color: var(--dim);
   }
-  .as-board :global(.as-empty) {
+  .as-board :global(.ph-empty) {
     color: var(--muted);
     padding: 2rem 0;
   }
@@ -398,7 +409,7 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     .rec-legend {
       --cell: 5.4rem;
     }
-    .rec-view .as-readout {
+    .rec-view .ph-readout {
       margin-left: 0;
       width: 100%;
     }

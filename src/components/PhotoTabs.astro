@@ -14,6 +14,7 @@ const tabs = [
     tabs.map((t) => (
       <a href={t.href} aria-current={t.id === current ? "page" : undefined}>
         {t.label}
+        {t.id === current && <span class="tab-mark" aria-hidden="true" />}
       </a>
     ))
   }
@@ -26,11 +27,20 @@ const tabs = [
     margin-bottom: 2rem;
   }
   a {
+    position: relative;
     color: var(--muted);
     padding: 0.75rem 0;
     margin-bottom: -1px;
-    border-bottom: 2px solid transparent;
     font-size: 0.95rem;
+    transition: color 0.15s;
+  }
+  .tab-mark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
   }
   a:hover {
     color: var(--fg);
@@ -38,6 +48,5 @@ const tabs = [
   }
   a[aria-current] {
     color: var(--fg);
-    border-bottom-color: var(--accent);
   }
 </style>

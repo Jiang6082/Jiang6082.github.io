@@ -2,10 +2,15 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
 import PhotoTabs from "../components/PhotoTabs.astro";
+import DarkroomMotion from "../components/DarkroomMotion.astro";
 import { collections, singles } from "../data/photos";
 import { detailsFor, settingsLine } from "../data/photo-details";
 import { SITE } from "../config";
 import { getImage } from "astro:assets";
+import { flapHTML } from "../lib/flap.js";
+import "@fontsource/b612-mono/400.css";
+import "@fontsource/b612-mono/700.css";
+import "../styles/darkroom.css";
 const files = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
   eager: true,
 }) as Record<string, { default: ImageMetadata }>;
@@ -72,58 +77,66 @@ const galleryGroups = [
   })),
 ];
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const pad = (n: number, w = 2) => String(n).padStart(w, "0");
+const cities = new Set(items.map((it) => it.place).filter(Boolean)).size;
 ---
 
 <BaseLayout
   title="Photography"
   description="A personal collection of photographs by Charles Jiang."
+  bodyClass="theme-darkroom"
   wide
 >
-  <header class="gallery-heading page-shell">
-    <p class="eyebrow">
-      Away from the screen / {String(items.length).padStart(2, "0")} frames
-    </p><div>
-      <h1>Photography</h1><p>
-        Trains, planes, coastlines,<br />gardens, and streets.
-      </p>
-    </div>
+  <header class="ph-head page-shell">
+    <p class="eyebrow">Photography / Gallery</p><h1>Photography</h1><p>
+      Trains, planes, coastlines, gardens, and streets.
+    </p>
   </header>
   <PhotoTabs current="gallery" />
-  <div class="gallery-toolbar page-shell">
-    <div class="album-switch" role="group" aria-label="Filter by album" hidden>
-      <button type="button" data-album="all" aria-pressed="true"
-        >All photographs <span>{items.length}</span></button
-      >{
-        albums.map((a) => (
-          <button
-            type="button"
-            data-album={a.id}
-            data-description={a.description}
-            aria-pressed="false"
+  <div class="page-shell">
+    <dl class="ph-stats" style={`--n:${cities ? 3 : 2}`}>
+      <div><dt>Frames</dt><dd><span class="flap" set:html={flapHTML(pad(items.length, 3))} /></dd></div>
+      <div><dt>Albums</dt><dd><span class="flap" set:html={flapHTML(pad(albums.length))} /></dd></div>
+      {cities > 0 && <div><dt>Cities</dt><dd><span class="flap" set:html={flapHTML(pad(cities))} /></dd></div>}
+    </dl>
+    <div class="ph-panel gallery-panel">
+      <div class="ph-panel-row">
+        <span class="ph-label">Album</span>
+        <div class="ph-options album-switch" role="group" aria-label="Filter by album" hidden>
+          <button type="button" class="ph-tile" data-album="all" aria-pressed="true"
+            >All <sub>{items.length}</sub></button
+          >{
+            albums.map((a) => (
+              <button
+                type="button"
+                class="ph-tile"
+                data-album={a.id}
+                data-description={a.description}
+                aria-pressed="false"
+              >
+                {a.title} <sub>{items.filter((it) => it.album === a.id).length}</sub>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="ph-panel-row">
+        <span class="ph-label">View</span>
+        <div class="ph-options view-row">
+          <div class="ph-options view-switch" role="group" aria-label="Gallery view" hidden>
+            <button type="button" class="ph-tile" data-view="strip" aria-pressed="false"
+              >3D filmstrip</button
+            ><button type="button" class="ph-tile" data-view="sheet" aria-pressed="true"
+              >Contact sheet</button
+            >
+          </div>
+          <p class="ph-readout" id="album-description">All photographs</p>
+          <a class="classic-link" href={`${base}/photography-classic`}
+            >Classic view <span aria-hidden="true">↗</span></a
           >
-            {a.title}{" "}
-            <span>{items.filter((it) => it.album === a.id).length}</span>
-          </button>
-        ))
-      }
-    </div><div
-      class="view-switch"
-      role="group"
-      aria-label="Gallery view"
-      hidden
-    >
-      <button type="button" data-view="strip" aria-pressed="false"
-        >3D filmstrip</button
-      ><button type="button" data-view="sheet" aria-pressed="true"
-        >Contact sheet</button
-      >
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="album-summary page-shell">
-    <p id="album-description">All photographs</p><a
-      href={`${base}/photography-classic`}
-      >Classic view <span aria-hidden="true">↗</span></a
-    >
   </div>
   <div class="strip-shell page-shell">
     <section
@@ -135,7 +148,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     >
       {
         items.map((it, i) => (
-          <figure data-album-id={it.album} data-photo-index={i}>
+          <figure data-album-id={it.album} data-photo-index={i} style={`--i:${i}`}>
             <>
               <a
                 href={it.full}
@@ -153,6 +166,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                     width={it.width}
                     height={it.height}
                     loading={i < 2 ? "eager" : "lazy"}
+                    class="ph-img"
                     draggable="false"
                   />
                   <span class="open-hint" aria-hidden="true">
@@ -170,6 +184,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <div class="step-controls">
       <button
         type="button"
+        class="ph-tile"
         id="previous-photo"
         aria-label="Previous photograph"
         aria-controls="photo-collection">←</button
@@ -180,13 +195,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         aria-atomic="true">1 / {items.length}</span
       ><button
         type="button"
+        class="ph-tile"
         id="next-photo"
         aria-label="Next photograph"
         aria-controls="photo-collection">→</button
       >
     </div><p id="gallery-help">
       Scroll up or down to browse. You can also swipe or use the arrow keys.
-    </p><button class="depth-toggle" type="button" aria-pressed="true"
+    </p><button class="depth-toggle ph-tile" type="button" aria-pressed="true"
       >Depth on</button
     >
   </div>
@@ -199,77 +215,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     is:inline
     set:html={`window.__GALLERY__ = ${JSON.stringify(galleryGroups).replace(/</g, "\\u003c")};`}
   /><Lightbox />
+  <DarkroomMotion />
 </BaseLayout>
 <script src="../scripts/photography.ts"></script>
 <style>
-  .gallery-heading {
-    padding: 1rem 0 3rem;
+  .view-row {
+    gap: 0.75rem 1.25rem;
   }
-  .gallery-heading > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    align-items: end;
+  .view-row .ph-readout {
+    flex: 1;
+    min-width: 12rem;
   }
-  .gallery-heading h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    margin: 1.8rem 0 0;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-  }
-  .gallery-heading > div > p {
-    font-size: 1.15rem;
+  .classic-link {
+    font: 0.8rem var(--font-mono);
     color: var(--muted);
+    letter-spacing: 0.04em;
   }
-  .gallery-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    padding: 0 0 1.2rem;
-  }
-  .album-switch,
-  .view-switch {
-    display: flex;
-    gap: 0.4rem 1.3rem;
-    flex-wrap: wrap;
-  }
-  .gallery-toolbar button,
-  .depth-toggle {
-    background: none;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    padding: 0.6rem 0;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-  .gallery-toolbar button[aria-pressed="true"] {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  .album-switch span {
-    font-size: 0.75rem;
-    margin-left: 0.35rem;
-    color: var(--muted);
-  }
-  .album-switch[hidden],
-  .view-switch[hidden],
   .gallery-controls[hidden] {
     display: none;
-  }
-  .album-summary {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-  .album-summary p {
-    margin-bottom: 0;
-  }
-  .album-summary a {
-    color: inherit;
   }
   .photo-collection {
     display: grid;
@@ -281,6 +244,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     margin: 0;
     min-width: 0;
     perspective: 1300px;
+    animation: ph-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(min(var(--i, 0), 12) * 45ms);
   }
   .photo-collection figure:nth-child(3n + 2) {
     padding-top: 4rem;
@@ -291,6 +256,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   .photo-open {
     display: block;
     position: relative;
+    overflow: hidden;
     background: var(--surface-2);
     transition: transform 0.18s ease-out;
     transform-origin: center;
@@ -300,20 +266,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     width: 100%;
     height: auto;
   }
+  .photo-collection:not(.filmstrip) .photo-open img {
+    transition:
+      opacity 0.6s ease,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .photo-collection:not(.filmstrip) .photo-open:hover img {
+    transform: scale(1.035);
+  }
   .open-hint {
     position: absolute;
     bottom: 1rem;
     right: 1rem;
-    color: #fff;
-    background: #222d;
-    padding: 0.5rem 1rem;
-    font-size: 0.8125rem;
+    color: var(--fg);
+    background: rgb(15 15 14 / 0.85);
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.7rem;
+    font: 700 0.75rem var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     opacity: 0;
-    transition: opacity 0.2s;
+    transform: translateY(4px);
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
   .photo-open:hover .open-hint,
   .photo-open:focus-visible .open-hint {
     opacity: 1;
+    transform: none;
   }
   .strip-shell {
     --frame-width: min(64vw, 680px);
@@ -365,20 +346,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     gap: 1rem;
     align-items: center;
   }
-  .step-controls button {
+  .step-controls .ph-tile {
     width: 44px;
     height: 44px;
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--fg);
-    border-radius: 50%;
-    font-size: 1.25rem;
+    min-width: 0;
+    padding: 0;
+    align-items: center;
+    font-size: 1.1rem;
   }
   .step-controls button:disabled {
     opacity: 0.35;
   }
   .step-controls span {
-    font: 0.8125rem var(--font-mono);
+    font: 700 0.85rem var(--font-mono);
+    color: var(--accent);
     min-width: 4rem;
     text-align: center;
   }

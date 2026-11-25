@@ -3,10 +3,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
 import AviationTabs from "../../components/AviationTabs.astro";
+import DarkroomMotion from "../../components/DarkroomMotion.astro";
 import "@fontsource/b612/400.css";
 import "@fontsource/b612/700.css";
 import "@fontsource/b612-mono/400.css";
 import "@fontsource/b612-mono/700.css";
+import "../../styles/darkroom.css";
 import "../../styles/airside.css";
 import { getImage } from "astro:assets";
 import { airframes, spots, slug, formatDate, spotLine, noteLine, type Airframe } from "../../data/aviation";
@@ -87,10 +89,10 @@ const searchText = (c: Card) =>
 <BaseLayout
   title="Aviation"
   description="A spotter’s logbook of aircraft photographed by Charles Jiang, by airline and type."
-  bodyClass="theme-airside"
+  bodyClass="theme-darkroom theme-airside"
   wide
 >
-  <header class="av-head page-shell">
+  <header class="ph-head page-shell">
     <p class="eyebrow">Photography / Aviation</p><h1>Aviation logbook</h1><p>
       Every airframe I’ve photographed, filed by airline and type.
     </p>
@@ -100,7 +102,7 @@ const searchText = (c: Card) =>
     <AviationTabs current="logbook" />
     {
       sample && (
-        <p class="as-notice">
+        <p class="ph-notice">
           <b>NOTICE</b>
           <span>
             Sample entries with illustrated placeholders, not real spots. My
@@ -109,34 +111,34 @@ const searchText = (c: Card) =>
         </p>
       )
     }
-    <dl class="as-stats">
+    <dl class="ph-stats">
       <div><dt>Airframes</dt><dd><span class="flap" set:html={flapHTML(pad(cards.length, 3))} /></dd></div>
       <div><dt>Airlines</dt><dd><span class="flap" set:html={flapHTML(pad(airlines.length))} /></dd></div>
       <div><dt>Aircraft types</dt><dd><span class="flap" set:html={flapHTML(pad(aircraft.length))} /></dd></div>
       <div><dt>Last spotted · LHR</dt><dd><span class="flap" set:html={flapHTML(shortDate(latest).slice(0, 6))} /></dd></div>
     </dl>
 
-    <div class="as-panel" data-controls hidden>
-      <div class="as-panel-row">
-        <label class="as-label" for="logbook-search">Search</label>
+    <div class="ph-panel" data-controls hidden>
+      <div class="ph-panel-row">
+        <label class="ph-label" for="logbook-search">Search</label>
         <input
           id="logbook-search"
-          class="as-search"
+          class="ph-search"
           type="search"
           data-control="q"
           placeholder="Reg, airline, or type"
           autocomplete="off"
         />
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Airline</span>
-        <div class="as-options" role="group" aria-label="Filter by airline">
-          <button type="button" class="as-tile" data-airline="all" aria-pressed="true">All</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Airline</span>
+        <div class="ph-options" role="group" aria-label="Filter by airline">
+          <button type="button" class="ph-tile" data-airline="all" aria-pressed="true">All</button>
           {
             airlines.map((a) => (
               <button
                 type="button"
-                class="as-tile"
+                class="ph-tile"
                 data-airline={slug(a.name)}
                 aria-pressed="false"
                 title={a.name}
@@ -149,15 +151,15 @@ const searchText = (c: Card) =>
           }
         </div>
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Aircraft</span>
-        <div class="as-options" role="group" aria-label="Filter by aircraft type">
-          <button type="button" class="as-tile" data-icao="all" aria-pressed="true">All</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Aircraft</span>
+        <div class="ph-options" role="group" aria-label="Filter by aircraft type">
+          <button type="button" class="ph-tile" data-icao="all" aria-pressed="true">All</button>
           {
             aircraft.map((t) => (
               <button
                 type="button"
-                class="as-tile"
+                class="ph-tile"
                 data-icao={t.icao}
                 aria-pressed="false"
                 title={t.name}
@@ -170,20 +172,20 @@ const searchText = (c: Card) =>
           }
         </div>
       </div>
-      <div class="as-panel-row">
-        <span class="as-label">Group · Sort</span>
-        <div class="as-options as-view">
-          <div class="as-options" role="group" aria-label="Group by">
-            <button type="button" class="as-tile" data-group="airline" aria-pressed="true">Airline</button>
-            <button type="button" class="as-tile" data-group="type" aria-pressed="false">Type</button>
-            <button type="button" class="as-tile" data-group="none" aria-pressed="false">None</button>
+      <div class="ph-panel-row">
+        <span class="ph-label">Group · Sort</span>
+        <div class="ph-options as-view">
+          <div class="ph-options" role="group" aria-label="Group by">
+            <button type="button" class="ph-tile" data-group="airline" aria-pressed="true">Airline</button>
+            <button type="button" class="ph-tile" data-group="type" aria-pressed="false">Type</button>
+            <button type="button" class="ph-tile" data-group="none" aria-pressed="false">None</button>
           </div>
-          <div class="as-options" role="group" aria-label="Sort by">
-            <button type="button" class="as-tile" data-sort="type" aria-pressed="true">Type</button>
-            <button type="button" class="as-tile" data-sort="newest" aria-pressed="false">Newest</button>
-            <button type="button" class="as-tile" data-sort="registration" aria-pressed="false">Reg</button>
+          <div class="ph-options" role="group" aria-label="Sort by">
+            <button type="button" class="ph-tile" data-sort="type" aria-pressed="true">Type</button>
+            <button type="button" class="ph-tile" data-sort="newest" aria-pressed="false">Newest</button>
+            <button type="button" class="ph-tile" data-sort="registration" aria-pressed="false">Reg</button>
           </div>
-          <p class="as-readout" aria-live="polite"></p>
+          <p class="ph-readout" aria-live="polite"></p>
         </div>
       </div>
     </div>
@@ -193,16 +195,17 @@ const searchText = (c: Card) =>
         airlines.map((airline) => (
           <section class="av-group">
             <h2>
-              <span class="as-tile">{airline.iata}</span>
+              <span class="ph-tile">{airline.iata}</span>
               <span class="av-group-name">{airline.name}</span>
               <span class="av-group-meta">
                 {plural(airline.list.length, "airframe")} · {plural(airline.types, "type")}
               </span>
             </h2>
             <div class="av-grid">
-              {airline.list.map((c) => (
+              {airline.list.map((c, i) => (
                 <article
-                  class="av-card"
+                  class="av-card ph-rise"
+                  style={`--i:${i}`}
                   data-reg={c.registration}
                   data-airline={slug(c.airline)}
                   data-airline-name={c.airline}
@@ -226,6 +229,7 @@ const searchText = (c: Card) =>
                       width={c.thumb.attributes.width}
                       height={c.thumb.attributes.height}
                       alt={c.items[0].alt}
+                      class="ph-img"
                       loading="lazy"
                       decoding="async"
                     />
@@ -233,7 +237,7 @@ const searchText = (c: Card) =>
                   <div class="av-strip">
                     <p class="av-reg">
                       {c.registration}
-                      <span class="as-tile" title={c.type}>{c.icao}</span>
+                      <span class="ph-tile" title={c.type}>{c.icao}</span>
                     </p>
                     <p class="av-type">{c.type}</p>
                     <p class="av-meta">
@@ -253,19 +257,21 @@ const searchText = (c: Card) =>
         ))
       }
     </div>
-    <p class="as-empty av-empty" hidden>No airframes match. Clear a filter or the search.</p>
+    <p class="ph-empty av-empty" hidden>No airframes match. Clear a filter or the search.</p>
   </div>
   <script is:inline set:html={`window.__GALLERY__ = ${json(galleryGroups)};`} />
   <Lightbox />
+  <DarkroomMotion />
 </BaseLayout>
 <script>
+  import { flip } from "../../lib/motion.js";
   type Group = "airline" | "type" | "none";
   type Sort = "type" | "newest" | "registration";
 
   const root = document.getElementById("logbook")!;
   const controls = document.querySelector<HTMLElement>("[data-controls]")!;
   const empty = document.querySelector<HTMLElement>(".av-empty")!;
-  const readout = controls.querySelector<HTMLElement>(".as-readout")!;
+  const readout = controls.querySelector<HTMLElement>(".ph-readout")!;
   const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
   const cards = Array.from(root.querySelectorAll<HTMLElement>(".av-card"));
 
@@ -290,7 +296,7 @@ const searchText = (c: Card) =>
   };
   const heading = (code: string, name: string, meta: string) => {
     const h = el("h2");
-    h.append(el("span", "as-tile", code), el("span", "av-group-name", name), el("span", "av-group-meta", meta));
+    h.append(el("span", "ph-tile", code), el("span", "av-group-name", name), el("span", "av-group-meta", meta));
     return h;
   };
   const grid = (list: HTMLElement[]) => {
@@ -321,6 +327,11 @@ const searchText = (c: Card) =>
           : (a, b) => a.dataset.icao!.localeCompare(b.dataset.icao!) || reg(a, b),
     );
 
+    flip(cards, () => build(visible));
+    finish(visible);
+  }
+
+  function build(visible: HTMLElement[]) {
     root.replaceChildren();
     if (state.group === "none") {
       root.append(grid(visible));
@@ -346,6 +357,9 @@ const searchText = (c: Card) =>
       }
     }
 
+  }
+
+  function finish(visible: HTMLElement[]) {
     empty.hidden = visible.length > 0;
     readout.textContent = `Showing ${pad(visible.length)} of ${pad(cards.length)}`;
     for (const key of ["airline", "icao", "group", "sort"] as const)
@@ -379,24 +393,11 @@ const searchText = (c: Card) =>
   render();
 </script>
 <style>
-  .av-head {
-    padding: 1rem 0 2.5rem;
-  }
-  .av-head h1 {
-    font-size: clamp(2.4rem, 5vw, 3.8rem);
-    line-height: 1.05;
-    margin: 1.6rem 0 1rem;
-  }
-  .av-head > p:last-child {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 36rem;
-  }
   .as-view {
     align-items: center;
     gap: 0.75rem 1.5rem;
   }
-  .as-view .as-readout {
+  .as-view .ph-readout {
     margin: 0 0 0 auto;
   }
   .logbook :global(.av-group) {
@@ -414,16 +415,16 @@ const searchText = (c: Card) =>
     padding-bottom: 0.8rem;
     border-bottom: 1px solid var(--border);
   }
-  .logbook :global(.av-group h2 .as-tile) {
-    background: var(--as-sign);
-    border-color: var(--as-sign);
-    color: var(--as-ink);
+  .logbook :global(.av-group h2 .ph-tile) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
     font-size: 0.85rem;
   }
   .logbook :global(.av-group-meta) {
     margin-left: auto;
     font: 0.8rem var(--font-mono);
-    color: var(--as-dim);
+    color: var(--dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -452,7 +453,7 @@ const searchText = (c: Card) =>
     opacity: 0.85;
   }
   .av-card:hover {
-    border-color: var(--as-sign);
+    border-color: var(--accent);
   }
   .av-strip {
     padding: 0.85rem 0.9rem 1rem;
@@ -467,10 +468,10 @@ const searchText = (c: Card) =>
     justify-content: space-between;
     gap: 0.5rem;
     font: 700 1.3rem/1 var(--font-mono);
-    color: var(--as-sign);
+    color: var(--accent);
     letter-spacing: 0.04em;
   }
-  .av-reg .as-tile {
+  .av-reg .ph-tile {
     min-width: 0;
     font-size: 0.75rem;
     color: var(--fg);
@@ -482,7 +483,7 @@ const searchText = (c: Card) =>
   .av-meta {
     margin-top: 0.3rem !important;
     font: 0.75rem var(--font-mono);
-    color: var(--as-dim);
+    color: var(--dim);
     letter-spacing: 0.06em;
   }
   .av-tags {
@@ -500,8 +501,8 @@ const searchText = (c: Card) =>
     color: var(--muted);
   }
   .av-tag.is-livery {
-    border-color: var(--as-sign);
-    color: var(--as-sign);
+    border-color: var(--accent);
+    color: var(--accent);
   }
   .av-empty {
     color: var(--muted);
@@ -520,7 +521,7 @@ const searchText = (c: Card) =>
     .av-type {
       font-size: 0.8rem;
     }
-    .as-view .as-readout {
+    .as-view .ph-readout {
       margin-left: 0;
       width: 100%;
     }

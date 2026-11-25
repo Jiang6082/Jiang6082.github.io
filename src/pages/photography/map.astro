@@ -2,10 +2,15 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
+import DarkroomMotion from "../../components/DarkroomMotion.astro";
 import { getImage } from "astro:assets";
 import { collections, singles } from "../../data/photos";
 import { detailsFor, settingsLine } from "../../data/photo-details";
 import "leaflet/dist/leaflet.css";
+import "@fontsource/b612-mono/400.css";
+import "@fontsource/b612-mono/700.css";
+import "../../styles/darkroom.css";
+import { flapHTML } from "../../lib/flap.js";
 
 const files = import.meta.glob("../../photos/**/*.{jpg,jpeg,png,webp,avif}", {
   eager: true,
@@ -93,22 +98,33 @@ const galleryGroups = sorted.map(({ key, name, items }) => ({
   items,
 }));
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const pad = (n: number, w = 2) => String(n).padStart(w, "0");
+const located = sorted.reduce((n, p) => n + p.items.length, 0);
+const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
 ---
 
 <BaseLayout
   title="Photo map"
   description="Where Charles Jiang’s photographs were taken, to the nearest city."
+  bodyClass="theme-darkroom"
   wide
 >
-  <div class="page-shell">
-    <header class="map-heading">
-      <p class="eyebrow">Photography / Map</p><h1>Photo map</h1><p>
-        Where the photographs were taken, to the nearest city.
-      </p>
-    </header>
-  </div>
+  <header class="ph-head page-shell">
+    <p class="eyebrow">Photography / Map</p><h1>Photo map</h1><p>
+      Where the photographs were taken, to the nearest city.
+    </p>
+  </header>
   <PhotoTabs current="map" />
   <div class="page-shell">
+    {
+      pins.length > 0 && (
+        <dl class="ph-stats" style="--n:3">
+          <div><dt>Places</dt><dd><span class="flap" set:html={flapHTML(pad(pins.length))} /></dd></div>
+          <div><dt>Countries</dt><dd><span class="flap" set:html={flapHTML(pad(countries))} /></dd></div>
+          <div><dt>Located photos</dt><dd><span class="flap" set:html={flapHTML(pad(located, 3))} /></dd></div>
+        </dl>
+      )
+    }
     {
       pins.length > 0 ? (
         <div
@@ -150,6 +166,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
                       width={item.width}
                       height={item.height}
                       alt={item.alt}
+                      class="ph-img"
                       loading="lazy"
                       decoding="async"
                     />
@@ -173,6 +190,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
   <script type="application/json" id="map-data" set:html={json(pins)} />
   <script is:inline set:html={`window.__GALLERY__ = ${json(galleryGroups)};`} />
   <Lightbox />
+  <DarkroomMotion />
 </BaseLayout>
 <script>
   import L from "leaflet";
@@ -201,7 +219,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
       worldCopyJump: true,
     });
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
       {
         subdomains: "abcd",
         maxZoom: 19,
@@ -210,7 +228,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
       },
     ).addTo(map);
 
-    const pinIcon = (thumb: string, count: number) => {
+    const pinIcon = (thumb: string, count: number, order = 0) => {
       const photo = document.createElement("span");
       photo.className = "pin-photo";
       photo.style.backgroundImage = `url("${thumb}")`;
@@ -219,6 +237,8 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
       badge.textContent = String(count);
       const html = document.createElement("span");
       html.append(photo, badge);
+      html.className = "pin-body";
+      html.style.setProperty("--i", String(order));
       return L.divIcon({
         className: "photo-pin",
         html,
@@ -239,13 +259,13 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
         if (near) near.pins.push(pin);
         else groups.push({ pins: [pin], point });
       }
-      for (const group of groups) {
+      for (const [order, group] of groups.entries()) {
         const [first] = group.pins;
         const count = group.pins.reduce((sum, p) => sum + p.count, 0);
         const area = L.latLngBounds(group.pins.map((p) => [p.lat, p.lon]));
         const label = `${group.pins.map((p) => p.name).join(", ")}: ${photos(count)}`;
         L.marker(group.pins.length === 1 ? [first.lat, first.lon] : area.getCenter(), {
-          icon: pinIcon(first.thumb, count),
+          icon: pinIcon(first.thumb, count, order),
           title: label,
           alt: label,
           keyboard: true,
@@ -269,23 +289,12 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     if (pins.length === 1) map.setView(all.getCenter(), 10);
     else map.fitBounds(all, { padding: [56, 56], maxZoom: 11 });
     draw();
+    // Pins drop in on first load only, not on every zoom.
+    setTimeout(() => el.classList.add("is-settled"), 1500);
     map.on("zoomend", draw);
   }
 </script>
 <style>
-  .map-heading {
-    padding: 1rem 0 2.5rem;
-  }
-  .map-heading h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    margin: 2rem 0 1rem;
-  }
-  .map-heading p {
-    font-size: 1.15rem;
-    color: var(--muted);
-  }
   .photo-map {
     /* Own stacking context so Leaflet's layers stay under the lightbox. */
     position: relative;
@@ -302,27 +311,64 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     background: none;
     border: 0;
   }
+  .photo-map :global(.pin-body) {
+    display: block;
+    position: relative;
+    animation: pin-drop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+    animation-delay: calc(min(var(--i, 0), 10) * 70ms);
+  }
+  .photo-map:global(.is-settled) :global(.pin-body) {
+    animation: none;
+  }
+  @keyframes pin-drop {
+    from {
+      opacity: 0;
+      transform: translateY(-18px) scale(0.9);
+    }
+  }
   .photo-map :global(.pin-photo) {
     display: block;
     width: 52px;
     height: 52px;
-    border: 3px solid #fff;
-    border-radius: 10px;
+    border: 2px solid var(--fg);
+    border-radius: 2px;
     background: var(--surface-2) center / cover no-repeat;
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.28);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.55);
+    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .photo-map :global(.leaflet-marker-icon:hover .pin-photo) {
+    transform: translateY(-3px);
   }
   .photo-map :global(.pin-count) {
     position: absolute;
-    top: -8px;
-    right: -6px;
+    top: -9px;
+    right: -9px;
     min-width: 22px;
     height: 22px;
-    padding: 0 6px;
-    border-radius: 11px;
+    padding: 0 5px;
     background: var(--accent);
-    color: #fff;
-    font: 600 0.75rem/22px var(--font-sans);
+    color: var(--accent-fg);
+    font: 700 0.75rem/22px var(--font-mono);
     text-align: center;
+  }
+  .photo-map :global(.leaflet-bar),
+  .photo-map :global(.leaflet-bar a) {
+    border-radius: 0;
+    border-color: var(--border);
+  }
+  .photo-map :global(.leaflet-bar a) {
+    background: var(--surface);
+    color: var(--fg);
+  }
+  .photo-map :global(.leaflet-bar a:hover) {
+    background: var(--surface-2);
+  }
+  .photo-map :global(.leaflet-control-attribution) {
+    background: rgb(15 15 14 / 0.8);
+    color: var(--dim);
+  }
+  .photo-map :global(.leaflet-control-attribution a) {
+    color: var(--muted);
   }
   .photo-map :global(.leaflet-marker-icon:focus-visible .pin-photo) {
     outline: 2px solid var(--accent);
@@ -352,14 +398,18 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     scroll-margin-top: 2rem;
   }
   .place h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 1.3rem;
     font-weight: 500;
     margin: 0 0 1rem;
   }
   .count {
-    font: 0.8125rem var(--font-mono);
-    color: var(--accent);
-    margin-left: 0.4rem;
+    font: 700 0.75rem/1 var(--font-mono);
+    color: var(--accent-fg);
+    background: var(--accent);
+    padding: 0.35em 0.5em;
   }
   .place-photos {
     display: grid;
@@ -368,12 +418,19 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
   }
   .place-photos a {
     display: block;
+    overflow: hidden;
     background: var(--surface-2);
   }
   .place-photos img {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    transition:
+      opacity 0.6s ease,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .place-photos a:hover img {
+    transform: scale(1.04);
   }
   .unplaced {
     font-size: 0.875rem;
