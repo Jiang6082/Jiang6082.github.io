@@ -1,0 +1,29 @@
+---
+// Header shared by every photography page: a breadcrumb and the title.
+// The Gallery / Aviation / Map tabs (PhotoTabs.astro) follow it.
+interface Crumb {
+  label: string;
+  /** Omit for the current page. */
+  href?: string;
+}
+const { title, crumbs } = Astro.props as { title: string; crumbs: Crumb[] };
+---
+
+<header class="ph-head page-shell">
+  <nav class="ph-crumbs" aria-label="Breadcrumb">
+    <ol>
+      {
+        crumbs.map((c) => (
+          <li>
+            {c.href ? (
+              <a href={c.href}>{c.label}</a>
+            ) : (
+              <span aria-current="page">{c.label}</span>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  <h1>{title}</h1>
+</header>

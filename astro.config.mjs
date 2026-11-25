@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config.ts";
 
 // Pages that exist but shouldn't be indexed: old addresses that redirect,
-// the classic gallery (duplicates /photography), and the 404 page.
+// and the 404 page.
 const unlisted = ["/photo-room/", "/travel-world/", "/photography-classic/", "/404/"];
 
 // https://astro.build/config
@@ -14,6 +14,8 @@ export default defineConfig({
   redirects: {
     "/photo-room": "/photography/map/",
     "/travel-world": "/photography/map/",
+    // The classic grid is now the Gallery itself.
+    "/photography-classic": "/photography/",
   },
   integrations: [
     sitemap({

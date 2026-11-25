@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
+import PhotoHeader from "../../components/PhotoHeader.astro";
 import DarkroomMotion from "../../components/DarkroomMotion.astro";
 import { getImage } from "astro:assets";
 import { collections, singles } from "../../data/photos";
@@ -101,6 +102,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
 const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 const located = sorted.reduce((n, p) => n + p.items.length, 0);
 const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <BaseLayout
@@ -109,19 +111,18 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
   bodyClass="theme-darkroom"
   wide
 >
-  <header class="ph-head page-shell">
-    <p class="eyebrow">Photography / Map</p><h1>Photo map</h1><p>
-      Where the photographs were taken, to the nearest city.
-    </p>
-  </header>
+  <PhotoHeader
+    title="Photo map"
+    crumbs={[{ label: "Photography", href: `${base}/photography` }, { label: "Map" }]}
+  />
   <PhotoTabs current="map" />
   <div class="page-shell">
     {
       pins.length > 0 && (
         <dl class="ph-stats" style="--n:3">
-          <div><dt>Places</dt><dd><span class="flap" set:html={flapHTML(pad(pins.length))} /></dd></div>
-          <div><dt>Countries</dt><dd><span class="flap" set:html={flapHTML(pad(countries))} /></dd></div>
-          <div><dt>Located photos</dt><dd><span class="flap" set:html={flapHTML(pad(located, 3))} /></dd></div>
+          <div><dt>Places</dt><dd><span class="flap is-still" set:html={flapHTML(pad(pins.length))} /></dd></div>
+          <div><dt>Countries</dt><dd><span class="flap is-still" set:html={flapHTML(pad(countries))} /></dd></div>
+          <div><dt>Located photos</dt><dd><span class="flap is-still" set:html={flapHTML(pad(located, 3))} /></dd></div>
         </dl>
       )
     }
@@ -143,17 +144,16 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
     {
       sorted.length > 0 && (
         <section class="places" aria-labelledby="places-heading">
-          <h2 id="places-heading" class="eyebrow">
-            By place / {String(sorted.length).padStart(2, "0")}
-          </h2>
+          <h2 id="places-heading" class="visually-hidden">Photographs by place</h2>
           {sorted.map((place) => (
             <section class="place" id={place.key}>
-              <h3>
-                {place.name} <span class="count">{place.items.length}</span>
+              <h3 class="ph-section-head">
+                {place.name} <span class="ph-count">{place.items.length}</span>
               </h3>
               <div class="place-photos">
                 {place.items.map((item, i) => (
                   <a
+                    class="ph-photo"
                     href={item.full}
                     data-group={place.key}
                     data-index={i}
@@ -289,8 +289,11 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
     if (pins.length === 1) map.setView(all.getCenter(), 10);
     else map.fitBounds(all, { padding: [56, 56], maxZoom: 11 });
     draw();
-    // Pins drop in on first load only, not on every zoom.
-    setTimeout(() => el.classList.add("is-settled"), 1500);
+    // Pins drop in on first load only: not again after a zoom, even one
+    // that starts before they've all landed.
+    const settle = () => el.classList.add("is-settled");
+    setTimeout(settle, 900);
+    map.once("zoomstart", settle);
     map.on("zoomend", draw);
   }
 </script>
@@ -314,8 +317,9 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
   .photo-map :global(.pin-body) {
     display: block;
     position: relative;
-    animation: pin-drop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
-    animation-delay: calc(min(var(--i, 0), 10) * 70ms);
+    animation: pin-drop 0.45s var(--ease-out) both;
+    animation-delay: calc(min(var(--i, 0), 5) * 40ms);
+    animation-delay: calc(sqrt(min(var(--i, 0), 6)) * 60ms);
   }
   .photo-map:global(.is-settled) :global(.pin-body) {
     animation: none;
@@ -323,7 +327,7 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
   @keyframes pin-drop {
     from {
       opacity: 0;
-      transform: translateY(-18px) scale(0.9);
+      transform: translateY(-14px);
     }
   }
   .photo-map :global(.pin-photo) {
@@ -334,10 +338,15 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
     border-radius: 2px;
     background: var(--surface-2) center / cover no-repeat;
     box-shadow: 0 8px 20px rgb(0 0 0 / 0.55);
-    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition: transform 0.2s var(--ease-out);
   }
-  .photo-map :global(.leaflet-marker-icon:hover .pin-photo) {
-    transform: translateY(-3px);
+  @media (hover: hover) and (pointer: fine) {
+    .photo-map :global(.leaflet-marker-icon:hover .pin-photo) {
+      transform: translateY(-3px);
+    }
+  }
+  .photo-map :global(.leaflet-marker-icon:active .pin-photo) {
+    transform: scale(0.95);
   }
   .photo-map :global(.pin-count) {
     position: absolute;
@@ -389,48 +398,20 @@ const countries = new Set(sorted.map((p) => p.name.split(", ").at(-1))).size;
   .places {
     padding: 3rem 0 1rem;
   }
-  .places > h2 {
-    margin: 0 0 1.5rem;
-  }
   .place {
     border-top: 1px solid var(--border);
     padding: 1.5rem 0 2rem;
     scroll-margin-top: 2rem;
-  }
-  .place h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.3rem;
-    font-weight: 500;
-    margin: 0 0 1rem;
-  }
-  .count {
-    font: 700 0.75rem/1 var(--font-mono);
-    color: var(--accent-fg);
-    background: var(--accent);
-    padding: 0.35em 0.5em;
   }
   .place-photos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(45vw, 200px), 1fr));
     gap: 0.75rem;
   }
-  .place-photos a {
-    display: block;
-    overflow: hidden;
-    background: var(--surface-2);
-  }
   .place-photos img {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    transition:
-      opacity 0.6s ease,
-      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .place-photos a:hover img {
-    transform: scale(1.04);
   }
   .unplaced {
     font-size: 0.875rem;

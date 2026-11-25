@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import PhotoTabs from "../../components/PhotoTabs.astro";
+import PhotoHeader from "../../components/PhotoHeader.astro";
 import AviationTabs from "../../components/AviationTabs.astro";
 import DarkroomMotion from "../../components/DarkroomMotion.astro";
 import "@fontsource/b612/400.css";
@@ -84,6 +85,7 @@ const searchText = (c: Card) =>
   [c.registration, c.registration.replace("-", ""), c.airline, c.iata, c.type, c.icao, c.family, c.name, c.livery]
     .join(" ")
     .toLowerCase();
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <BaseLayout
@@ -92,11 +94,10 @@ const searchText = (c: Card) =>
   bodyClass="theme-darkroom theme-airside"
   wide
 >
-  <header class="ph-head page-shell">
-    <p class="eyebrow">Photography / Aviation</p><h1>Aviation logbook</h1><p>
-      Every airframe I’ve photographed, filed by airline and type.
-    </p>
-  </header>
+  <PhotoHeader
+    title="Aviation logbook"
+    crumbs={[{ label: "Photography", href: `${base}/photography` }, { label: "Aviation" }]}
+  />
   <PhotoTabs current="aviation" />
   <div class="page-shell">
     <AviationTabs current="logbook" />
@@ -194,7 +195,7 @@ const searchText = (c: Card) =>
       {
         airlines.map((airline) => (
           <section class="av-group">
-            <h2>
+            <h2 class="ph-section-head">
               <span class="ph-tile">{airline.iata}</span>
               <span class="av-group-name">{airline.name}</span>
               <span class="av-group-meta">
@@ -216,7 +217,7 @@ const searchText = (c: Card) =>
                   data-search={searchText(c)}
                 >
                   <a
-                    class="av-photo"
+                    class="av-photo ph-photo"
                     href={c.items[0].full}
                     data-group={c.key}
                     data-index="0"
@@ -295,7 +296,7 @@ const searchText = (c: Card) =>
     return node;
   };
   const heading = (code: string, name: string, meta: string) => {
-    const h = el("h2");
+    const h = el("h2", "ph-section-head");
     h.append(el("span", "ph-tile", code), el("span", "av-group-name", name), el("span", "av-group-meta", meta));
     return h;
   };
@@ -378,9 +379,14 @@ const searchText = (c: Card) =>
   }
 
   search.value = state.q;
+  // Wait for a pause in typing so the cards don't reshuffle on every key.
+  let typing = 0;
   search.addEventListener("input", () => {
-    state.q = search.value;
-    render();
+    clearTimeout(typing);
+    typing = window.setTimeout(() => {
+      state.q = search.value;
+      render();
+    }, 120);
   });
   for (const key of ["airline", "icao", "group", "sort"] as const)
     controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
@@ -404,14 +410,6 @@ const searchText = (c: Card) =>
     padding: 0 0 2.5rem;
   }
   .logbook :global(.av-group h2) {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.9rem;
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin: 0 0 1rem;
     padding-bottom: 0.8rem;
     border-bottom: 1px solid var(--border);
   }
@@ -440,20 +438,20 @@ const searchText = (c: Card) =>
     flex-direction: column;
   }
   .av-photo {
-    display: block;
     background: #0b0c0d;
   }
   .av-photo img {
     width: 100%;
     aspect-ratio: 3 / 2;
     object-fit: cover;
-    transition: opacity 0.15s;
   }
-  .av-photo:hover img {
-    opacity: 0.85;
+  .av-card {
+    transition: border-color 0.15s;
   }
-  .av-card:hover {
-    border-color: var(--accent);
+  @media (hover: hover) and (pointer: fine) {
+    .av-card:hover {
+      border-color: var(--accent);
+    }
   }
   .av-strip {
     padding: 0.85rem 0.9rem 1rem;

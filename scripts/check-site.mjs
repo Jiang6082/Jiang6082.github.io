@@ -69,29 +69,28 @@ const serialized = gallery.match(
 );
 assert(serialized, "Gallery data must be available to the lightbox");
 const groups = JSON.parse(serialized[1]);
+assert.equal(groups.length, 1, "The viewer steps through every photograph");
 const allPhotos = groups[0].items;
-const albumPhotos = groups.slice(1).flatMap((group) => group.items);
+// One tile per photo, numbered in page order, each under its album.
+const tiles = [...gallery.matchAll(/data-group="photographs" data-index="(\d+)"/g)].map((m) => Number(m[1]));
+assert.deepEqual(tiles, allPhotos.map((_, i) => i), "Gallery tiles match the viewer, in order");
 assert.equal(
-  (gallery.match(/data-group="photographs"/g) || []).length,
+  new Set(allPhotos.map((photo) => photo.full)).size,
   allPhotos.length,
+  "Each photo appears once",
 );
-assert.equal(
-  new Set(albumPhotos.map((photo) => photo.full)).size,
-  allPhotos.length,
-);
-assert.equal(
-  albumPhotos.length,
-  allPhotos.length,
-  "Each photo belongs to one album",
-);
-for (const group of groups.slice(1)) {
-  assert(group.items.every((photo) => `album-${photo.album}` === group.key));
-  assert(gallery.includes(`data-album="${group.key.slice(6)}"`));
-}
-for (const photo of allPhotos) {
+const albums = [...new Set(allPhotos.map((photo) => photo.album))];
+for (const album of albums)
+  assert(gallery.includes(`data-album="${album}"`), `album ${album} has a section`);
+for (const photo of allPhotos)
   assert(photo.title && photo.alt, "Photographs need a title and description");
-  assert(albumPhotos.some((item) => item.full === photo.full));
-}
+// The gallery is just the grid: no filmstrip, view switch, or counters.
+for (const gone of ["filmstrip", "view-switch", "album-switch", "ph-stats"])
+  assert(!gallery.includes(gone), `gallery no longer has ${gone}`);
+assert(
+  readFileSync(join(root, "photography-classic/index.html"), "utf8").includes("/photography/"),
+  "/photography-classic redirects to the gallery",
+);
 console.log(
-  `Passed: all ${projectIds.length} project anchors, private-link handling, ${allPhotos.length} photographs in ${groups.length - 1} albums, ${htmls.length} pages and ${checked} local links/assets.`,
+  `Passed: all ${projectIds.length} project anchors, private-link handling, ${allPhotos.length} photographs in ${albums.length} albums, ${htmls.length} pages and ${checked} local links/assets.`,
 );

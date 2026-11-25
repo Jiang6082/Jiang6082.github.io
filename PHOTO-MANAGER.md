@@ -22,7 +22,7 @@ Choose an album and use **Add photographs** to upload JPEG, PNG, WebP, or AVIF f
 
 Use **Earlier / Later** to rearrange photographs, the album menu on each photograph to move it, and **Hide / Restore** to control visibility. **Save changes** applies your edits. Image descriptions provide accessible text; the public gallery does not show photo titles or captions.
 
-The manager runs only on your computer. Changes appear in the local website preview, in the filmstrip, contact sheet, and map. They reach the public site only after the website is published. Keep the manager running while using it, and restart it with the same command when needed.
+The manager runs only on your computer. Changes appear in the local website preview, in the gallery and on the map. They reach the public site only after the website is published. Keep the manager running while using it, and restart it with the same command when needed.
 
 The catalog is `src/data/photos.json`; optimized uploads go into `src/photos/uploads/`. Original uploads and catalog backups are kept in `.photo-manager/`, which is excluded from Git. Back up that folder separately if you want to keep the originals on another computer. Hiding a photograph never deletes its file. Restoring a catalog backup is a manual recovery operation.
 

@@ -1,84 +1,95 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
+import PhotoHeader from "../components/PhotoHeader.astro";
 import PhotoTabs from "../components/PhotoTabs.astro";
 import DarkroomMotion from "../components/DarkroomMotion.astro";
 import { collections, singles } from "../data/photos";
 import { detailsFor, settingsLine } from "../data/photo-details";
-import { SITE } from "../config";
 import { getImage } from "astro:assets";
-import { flapHTML } from "../lib/flap.js";
 import "@fontsource/b612-mono/400.css";
 import "@fontsource/b612-mono/700.css";
 import "../styles/darkroom.css";
+
+// Every image under src/photos, so Astro can optimize it and read its size.
 const files = import.meta.glob("../photos/**/*.{jpg,jpeg,png,webp,avif}", {
   eager: true,
 }) as Record<string, { default: ImageMetadata }>;
+
 const albums = [
   ...collections,
   ...(singles.length
-    ? [
-        {
-          id: "singles",
-          title: "Other photographs",
-          description: "",
-          photos: singles,
-        },
-      ]
+    ? [{ id: "singles", title: "Other photographs", description: "", photos: singles }]
     : []),
 ];
-const entries = albums.flatMap((album) =>
-  album.photos.map((photo) => ({ photo, album })),
-);
-const processed = await Promise.all(
-  entries.map(async ({ photo: p, album }, i) => {
-    const meta = p.src ? files[`../photos/${p.src}`]?.default : undefined;
-    if (!meta) return null;
-    const thumbWidth = Math.min(1100, meta.width);
-    const thumb = await getImage({
-      src: meta,
-      width: thumbWidth,
-      widths: [400, 700, 1100].filter((w) => w <= thumbWidth),
-      format: "webp",
-    });
-    const full = await getImage({
-      src: meta,
-      width: Math.min(2400, meta.width),
-      format: "webp",
-    });
+
+// Keep extreme panoramas and tall portraits from wrecking a row.
+const clampAr = (ar: number) => Math.max(0.5, Math.min(ar, 2.6));
+
+const sections = await Promise.all(
+  albums.map(async (album) => {
+    const items = await Promise.all(
+      album.photos.map(async (p) => {
+        const meta = p.src ? files[`../photos/${p.src}`]?.default : undefined;
+        if (!meta) return null;
+        const thumbWidth = Math.min(900, meta.width);
+        const [thumb, full] = await Promise.all([
+          getImage({
+            src: meta,
+            width: thumbWidth,
+            widths: [400, 650, 900].filter((w) => w <= thumbWidth),
+            format: "webp",
+          }),
+          // Full size for the viewer, never upscaled past the original.
+          getImage({ src: meta, width: Math.min(2400, meta.width), format: "webp" }),
+        ]);
+        const details = detailsFor(p.src);
+        return {
+          title: p.title || "",
+          alt: p.alt || p.title || "Photograph by Charles Jiang",
+          place: details.place?.name ?? "",
+          settings: settingsLine(details),
+          ar: clampAr(meta.width / meta.height),
+          thumb: thumb.src,
+          srcset: thumb.srcSet.attribute,
+          full: full.src,
+          width: meta.width,
+          height: meta.height,
+        };
+      }),
+    );
     return {
-      title: p.title || `Photograph ${i + 1}`,
-      caption: p.caption || "",
-      alt: p.alt || p.title || `Photograph ${i + 1} by Charles Jiang`,
-      location: p.location || "",
-      date: p.date || "",
-      place: detailsFor(p.src).place?.name ?? "",
-      settings: settingsLine(detailsFor(p.src)),
-      album: album.id,
-      albumTitle: album.title,
-      placeholder: false,
-      thumb: thumb.src,
-      srcset: thumb.srcSet.attribute,
-      full: full.src,
-      width: meta.width,
-      height: meta.height,
+      ...album,
+      items: items.filter((it): it is NonNullable<typeof it> => it !== null),
     };
   }),
 );
-const items = processed.filter(
-  (item): item is NonNullable<typeof item> => item !== null,
-);
+// Number the photos in page order: the viewer steps through all of them.
+let index = 0;
+const shown = sections
+  .filter((s) => s.items.length)
+  .map((s) => ({ ...s, items: s.items.map((it) => ({ ...it, index: index++ })) }));
+// What the photo viewer (Lightbox.astro) needs for each photo.
 const galleryGroups = [
-  { key: "photographs", title: "All photographs", items },
-  ...albums.map((a) => ({
-    key: `album-${a.id}`,
-    title: a.title,
-    items: items.filter((it) => it.album === a.id),
-  })),
+  {
+    key: "photographs",
+    title: "All photographs",
+    items: shown.flatMap((s) =>
+      s.items.map((it) => ({
+        title: it.title || `Photograph ${it.index + 1}`,
+        caption: "",
+        alt: it.alt,
+        place: it.place,
+        settings: it.settings,
+        album: s.id,
+        placeholder: false,
+        thumb: it.thumb,
+        full: it.full,
+      })),
+    ),
+  },
 ];
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const pad = (n: number, w = 2) => String(n).padStart(w, "0");
-const cities = new Set(items.map((it) => it.place).filter(Boolean)).size;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
 ---
 
 <BaseLayout
@@ -87,347 +98,136 @@ const cities = new Set(items.map((it) => it.place).filter(Boolean)).size;
   bodyClass="theme-darkroom"
   wide
 >
-  <header class="ph-head page-shell">
-    <p class="eyebrow">Photography / Gallery</p><h1>Photography</h1><p>
-      Trains, planes, coastlines, gardens, and streets.
-    </p>
-  </header>
+  <PhotoHeader title="Photography" crumbs={[{ label: "Photography" }, { label: "Gallery" }]} />
   <PhotoTabs current="gallery" />
   <div class="page-shell">
-    <dl class="ph-stats" style={`--n:${cities ? 3 : 2}`}>
-      <div><dt>Frames</dt><dd><span class="flap" set:html={flapHTML(pad(items.length, 3))} /></dd></div>
-      <div><dt>Albums</dt><dd><span class="flap" set:html={flapHTML(pad(albums.length))} /></dd></div>
-      {cities > 0 && <div><dt>Cities</dt><dd><span class="flap" set:html={flapHTML(pad(cities))} /></dd></div>}
-    </dl>
-    <div class="ph-panel gallery-panel">
-      <div class="ph-panel-row">
-        <span class="ph-label">Album</span>
-        <div class="ph-options album-switch" role="group" aria-label="Filter by album" hidden>
-          <button type="button" class="ph-tile" data-album="all" aria-pressed="true"
-            >All <sub>{items.length}</sub></button
-          >{
-            albums.map((a) => (
-              <button
-                type="button"
-                class="ph-tile"
-                data-album={a.id}
-                data-description={a.description}
-                aria-pressed="false"
-              >
-                {a.title} <sub>{items.filter((it) => it.album === a.id).length}</sub>
-              </button>
-            ))
-          }
-        </div>
-      </div>
-      <div class="ph-panel-row">
-        <span class="ph-label">View</span>
-        <div class="ph-options view-row">
-          <div class="ph-options view-switch" role="group" aria-label="Gallery view" hidden>
-            <button type="button" class="ph-tile" data-view="strip" aria-pressed="false"
-              >3D filmstrip</button
-            ><button type="button" class="ph-tile" data-view="sheet" aria-pressed="true"
-              >Contact sheet</button
-            >
-          </div>
-          <p class="ph-readout" id="album-description">All photographs</p>
-          <a class="classic-link" href={`${base}/photography-classic`}
-            >Classic view <span aria-hidden="true">↗</span></a
-          >
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="strip-shell page-shell">
-    <section
-      class="photo-collection"
-      id="photo-collection"
-      aria-label="Photographs"
-      tabindex="0"
-      aria-describedby="gallery-help"
-    >
-      {
-        items.map((it, i) => (
-          <figure data-album-id={it.album} data-photo-index={i} style={`--i:${i}`}>
-            <>
+    {
+      shown.map((s) => (
+        <section class="album" data-album={s.id} aria-labelledby={`album-${s.id}`}>
+          <h2 class="ph-section-head" id={`album-${s.id}`}>
+            {s.title}
+            <span class="ph-count">{s.items.length}</span>
+            {s.description && <span class="ph-section-meta">{s.description}</span>}
+          </h2>
+          <div class="pgrid">
+            {s.items.map((it) => (
               <a
+                class="cell ph-photo"
                 href={it.full}
-                class="photo-open"
+                style={`--ar:${it.ar.toFixed(3)}`}
+                data-ar={it.ar.toFixed(4)}
                 data-group="photographs"
-                data-index={i}
-                aria-label={`Open ${it.title}`}
+                data-index={it.index}
+                aria-label={`Open photograph: ${it.alt}`}
               >
-                <>
-                  <img
-                    src={it.thumb}
-                    srcset={it.srcset}
-                    sizes="(max-width: 420px) 90vw, (max-width: 700px) 80vw, min(64vw, 680px)"
-                    alt={it.alt}
-                    width={it.width}
-                    height={it.height}
-                    loading={i < 2 ? "eager" : "lazy"}
-                    class="ph-img"
-                    draggable="false"
-                  />
-                  <span class="open-hint" aria-hidden="true">
-                    View photograph ↗
-                  </span>
-                </>
+                <img
+                  src={it.thumb}
+                  srcset={it.srcset}
+                  sizes="(max-width: 480px) 100vw, (max-width: 1100px) 50vw, 640px"
+                  alt={it.alt}
+                  width={it.width}
+                  height={it.height}
+                  class="ph-img"
+                  loading={it.index < 6 ? "eager" : "lazy"}
+                  decoding="async"
+                  draggable="false"
+                />
               </a>
-            </>
-          </figure>
-        ))
-      }
-    </section>
+            ))}
+          </div>
+        </section>
+      ))
+    }
   </div>
-  <div class="gallery-controls page-shell" hidden>
-    <div class="step-controls">
-      <button
-        type="button"
-        class="ph-tile"
-        id="previous-photo"
-        aria-label="Previous photograph"
-        aria-controls="photo-collection">←</button
-      ><span
-        id="gallery-position"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true">1 / {items.length}</span
-      ><button
-        type="button"
-        class="ph-tile"
-        id="next-photo"
-        aria-label="Next photograph"
-        aria-controls="photo-collection">→</button
-      >
-    </div><p id="gallery-help">
-      Scroll up or down to browse. You can also swipe or use the arrow keys.
-    </p><button class="depth-toggle ph-tile" type="button" aria-pressed="true"
-      >Depth on</button
-    >
-  </div>
-  <p class="gallery-end page-shell">
-    That’s the collection, for now. <a href={`mailto:${SITE.email}`}
-      >Say hello <span aria-hidden="true">↗</span></a
-    >
-  </p>
-  <script
-    is:inline
-    set:html={`window.__GALLERY__ = ${JSON.stringify(galleryGroups).replace(/</g, "\\u003c")};`}
-  /><Lightbox />
+  <script is:inline set:html={`window.__GALLERY__ = ${json(galleryGroups)};`} />
+  <Lightbox />
   <DarkroomMotion />
 </BaseLayout>
-<script src="../scripts/photography.ts"></script>
+
+<script>
+  // Justified rows, like Google Photos: every row fills the width and every
+  // photo keeps its aspect ratio (no cropping). CSS flex gives a close
+  // approximation before this runs, and without JavaScript.
+  function layout() {
+    document.querySelectorAll<HTMLElement>(".pgrid").forEach((grid) => {
+      const style = getComputedStyle(grid);
+      const gap = parseFloat(style.columnGap) || 4;
+      const target = parseFloat(style.getPropertyValue("--row-h")) || 320;
+      const width = grid.clientWidth;
+      if (!width) return;
+      let row: HTMLElement[] = [];
+      let sum = 0;
+      const flush = (last: boolean) => {
+        if (!row.length) return;
+        let h = (width - gap * (row.length - 1)) / sum;
+        if (last && h > target) h = target; // don't blow up a short last row
+        for (const cell of row) {
+          cell.style.flex = "0 0 auto";
+          cell.style.width = `${Math.floor(Number(cell.dataset.ar) * h)}px`;
+          cell.style.height = `${Math.round(h)}px`;
+        }
+        row = [];
+        sum = 0;
+      };
+      for (const cell of Array.from(grid.children) as HTMLElement[]) {
+        row.push(cell);
+        sum += Number(cell.dataset.ar) || 1.5;
+        if (sum * target + gap * (row.length - 1) >= width) flush(false);
+      }
+      flush(true);
+    });
+  }
+  layout();
+  let width = window.innerWidth;
+  let timer = 0;
+  window.addEventListener("resize", () => {
+    if (window.innerWidth === width) return; // ignore mobile toolbar resizes
+    width = window.innerWidth;
+    clearTimeout(timer);
+    timer = window.setTimeout(layout, 120);
+  });
+  document.fonts?.ready.then(layout);
+</script>
+
 <style>
-  .view-row {
-    gap: 0.75rem 1.25rem;
+  .album {
+    margin: 0 0 3rem;
   }
-  .view-row .ph-readout {
-    flex: 1;
-    min-width: 12rem;
+  .album:last-child {
+    margin-bottom: 0;
   }
-  .classic-link {
-    font: 0.8rem var(--font-mono);
-    color: var(--muted);
-    letter-spacing: 0.04em;
+  .pgrid {
+    --row-h: 340px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
   }
-  .gallery-controls[hidden] {
-    display: none;
+  @media (max-width: 1100px) {
+    .pgrid {
+      --row-h: 280px;
+    }
   }
-  .photo-collection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem 3rem;
-    padding-top: 2rem;
+  @media (max-width: 760px) {
+    .pgrid {
+      --row-h: 220px;
+      gap: 3px;
+    }
   }
-  .photo-collection figure {
-    margin: 0;
-    min-width: 0;
-    perspective: 1300px;
-    animation: ph-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(min(var(--i, 0), 12) * 45ms);
+  @media (max-width: 480px) {
+    .pgrid {
+      --row-h: 180px;
+    }
   }
-  .photo-collection figure:nth-child(3n + 2) {
-    padding-top: 4rem;
-  }
-  .photo-collection figure[hidden] {
-    display: none;
-  }
-  .photo-open {
-    display: block;
+  .cell {
     position: relative;
-    overflow: hidden;
-    background: var(--surface-2);
-    transition: transform 0.18s ease-out;
-    transform-origin: center;
-    outline-offset: 8px;
+    height: var(--row-h);
+    /* Grow, shrink, and basis all follow the aspect ratio, so rows fill the
+       width while photos keep their shape. */
+    flex: var(--ar) 1 calc(var(--ar) * var(--row-h));
   }
-  .photo-open img {
+  .cell img {
     width: 100%;
-    height: auto;
-  }
-  .photo-collection:not(.filmstrip) .photo-open img {
-    transition:
-      opacity 0.6s ease,
-      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .photo-collection:not(.filmstrip) .photo-open:hover img {
-    transform: scale(1.035);
-  }
-  .open-hint {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    color: var(--fg);
-    background: rgb(15 15 14 / 0.85);
-    border: 1px solid var(--border);
-    padding: 0.45rem 0.7rem;
-    font: 700 0.75rem var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0;
-    transform: translateY(4px);
-    transition:
-      opacity 0.2s,
-      transform 0.2s;
-  }
-  .photo-open:hover .open-hint,
-  .photo-open:focus-visible .open-hint {
-    opacity: 1;
-    transform: none;
-  }
-  .strip-shell {
-    --frame-width: min(64vw, 680px);
-  }
-  .filmstrip {
-    display: flex;
-    gap: 1.5rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-    padding: 2rem max(0px, calc((100% - var(--frame-width)) / 2)) 1.5rem;
-    touch-action: pan-x pan-y;
-    isolation: isolate;
-  }
-  .filmstrip figure,
-  .filmstrip figure:nth-child(3n + 2) {
-    padding-top: 0;
-    flex: 0 0 var(--frame-width);
-    scroll-snap-align: center;
-    scroll-snap-stop: normal;
-  }
-  .filmstrip.wheel-browsing {
-    scroll-snap-type: none;
-  }
-  .filmstrip .photo-open img {
-    height: clamp(240px, 48svh, 520px);
-    object-fit: contain;
-  }
-  .filmstrip .photo-open {
-    background: transparent;
-  }
-  .filmstrip.depth-on .photo-open {
-    transform: perspective(1300px) translateZ(var(--depth, 0px))
-      rotateY(var(--rotation, 0deg));
-    transition: transform 0.12s ease-out;
-  }
-  .gallery-controls {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 1.2rem;
-  }
-  .step-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-  .step-controls .ph-tile {
-    width: 44px;
-    height: 44px;
-    min-width: 0;
-    padding: 0;
-    align-items: center;
-    font-size: 1.1rem;
-  }
-  .step-controls button:disabled {
-    opacity: 0.35;
-  }
-  .step-controls span {
-    font: 700 0.85rem var(--font-mono);
-    color: var(--accent);
-    min-width: 4rem;
-    text-align: center;
-  }
-  .gallery-controls p {
-    font-size: 0.875rem;
-    color: var(--muted);
-    margin: 0;
-  }
-  .depth-toggle:disabled {
-    opacity: 0.5;
-  }
-  .gallery-end {
-    padding-top: 4rem;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-  }
-  @media (max-width: 700px) {
-    .gallery-heading > div {
-      display: block;
-    }
-    .gallery-heading > div > p {
-      margin-top: 1.5rem;
-    }
-    .photo-collection {
-      gap: 2rem 1rem;
-    }
-    .photo-collection figure:nth-child(3n + 2) {
-      padding-top: 2rem;
-    }
-    .strip-shell {
-      --frame-width: 80vw;
-    }
-    .filmstrip {
-      gap: 1rem;
-    }
-    .filmstrip figure:nth-child(3n + 2) {
-      padding-top: 0;
-    }
-    .gallery-controls {
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .gallery-controls p {
-      order: 3;
-      width: 100%;
-    }
-    .gallery-end {
-      flex-wrap: wrap;
-    }
-    .album-summary {
-      align-items: start;
-    }
-  }
-  @media (max-width: 420px) {
-    .photo-collection:not(.filmstrip) {
-      grid-template-columns: 1fr;
-    }
-    .photo-collection figure:nth-child(3n + 2) {
-      padding-top: 0;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .photo-open,
-    .filmstrip.depth-on .photo-open {
-      transform: none !important;
-      transition: none;
-    }
+    height: 100%;
+    object-fit: cover;
   }
 </style>

@@ -1,7 +1,8 @@
 /* Airside: the aviation pages' variant of the darkroom theme, after airport
    wayfinding signs (black on signage yellow) and flight-information
    displays. Pages use <BaseLayout bodyClass="theme-darkroom theme-airside">.
-   Typefaces: B612 and B612 Mono, which Airbus designed for cockpit displays. */
+   Typefaces: B612 and B612 Mono, which Airbus designed for cockpit displays.
+   The page header and tabs stay in the site font, like Gallery and Map. */
 
 .theme-darkroom.theme-airside {
   --accent: #ffd100;
@@ -10,10 +11,6 @@
 }
 .theme-airside main {
   font-family: "B612", "Schibsted Grotesk Variable", Arial, sans-serif;
-}
-.theme-airside main h1 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
 
 /* Logbook / record switch: direction-sign plates. */
@@ -33,20 +30,29 @@
   font: 700 0.8rem/1 var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: background-color 0.15s;
+  transition:
+    background-color 0.15s,
+    transform 0.16s var(--ease-out);
 }
 .as-signs a::after {
   content: "→";
   content: "→" / "";
   font-size: 1rem;
-  transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: transform 0.15s var(--ease-out);
 }
 .as-signs a:hover {
   text-decoration: none;
-  background: #29292a;
 }
-.as-signs a:hover::after {
-  transform: translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  .as-signs a:hover {
+    background: #29292a;
+  }
+  .as-signs a:hover::after {
+    transform: translateX(3px);
+  }
+}
+.as-signs a:active {
+  transform: scale(0.98);
 }
 .as-signs a[aria-current] {
   background: var(--accent);

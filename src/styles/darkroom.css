@@ -1,8 +1,8 @@
 /* Darkroom: the look of the whole Photography section (Gallery, Map,
    Aviation). Pages opt in with <BaseLayout bodyClass="theme-darkroom">.
-   Shared pieces: square tiles (never pills), small B612 Mono labels,
-   split-flap counters. The gallery's accent is rust; the aviation pages
-   swap it for signage yellow (src/styles/airside.css). */
+   Shared pieces: one page header, square tiles (never pills), small
+   B612 Mono labels, split-flap counters. The gallery's accent is rust;
+   the aviation pages swap it for signage yellow (src/styles/airside.css). */
 
 .theme-darkroom {
   --bg: #0f0f0e;
@@ -10,7 +10,8 @@
   --surface-2: #1f1f1c;
   --fg: #edece6;
   --muted: #a09e96;
-  --dim: #7b7972;
+  /* Small labels: at least 4.5:1 on every darkroom surface. */
+  --dim: #8a8880;
   --border: #2c2b27;
   --accent: #e5735b;
   --accent-fg: #140d0b;
@@ -25,6 +26,79 @@ html:has(> body.theme-darkroom) {
 .theme-darkroom ::selection {
   background: var(--accent);
   color: var(--accent-fg);
+}
+
+/* Page header, identical on every photography page: breadcrumb, title,
+   then the Gallery / Aviation / Map tabs (PhotoTabs.astro). */
+.ph-head {
+  font-family: var(--font-sans);
+  padding: 1rem 0 2.25rem;
+}
+.ph-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font: 0.8125rem/1.5 var(--font-mono);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ph-crumbs li {
+  display: inline-flex;
+}
+.ph-crumbs li + li::before {
+  content: "/";
+  margin: 0 0.6em;
+  color: var(--dim);
+}
+.ph-crumbs a {
+  color: var(--muted);
+  transition: color 0.15s;
+}
+.ph-crumbs a:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+.ph-crumbs [aria-current] {
+  color: var(--fg);
+}
+.ph-head h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 1.4rem 0 0;
+}
+
+/* Section headings inside a page (albums, places, airlines): one size,
+   one weight, the site font, with an optional count tile. */
+.ph-section-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+}
+.ph-count {
+  font: 700 0.75rem/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--accent-fg);
+  background: var(--accent);
+  padding: 0.35em 0.5em;
+}
+.ph-section-meta {
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Square tiles: filters, toggles, codes. */
@@ -46,7 +120,7 @@ html:has(> body.theme-darkroom) {
     background-color 0.15s,
     border-color 0.15s,
     color 0.15s,
-    transform 0.1s;
+    transform 0.16s var(--ease-out);
 }
 .ph-tile sub {
   font-size: 0.75em;
@@ -57,11 +131,14 @@ html:has(> body.theme-darkroom) {
 button.ph-tile {
   cursor: pointer;
 }
-button.ph-tile:hover {
-  border-color: var(--muted);
+@media (hover: hover) and (pointer: fine) {
+  button.ph-tile:hover {
+    border-color: var(--muted);
+  }
 }
+/* Press feedback: a small push down, released on the ease-out curve. */
 button.ph-tile:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.97);
 }
 button.ph-tile[aria-pressed="true"] {
   background: var(--accent);
@@ -211,30 +288,47 @@ button.ph-tile:disabled {
   color: var(--muted);
   padding: 2rem 0;
 }
-
-/* Section header shared by every photography page. */
-.ph-head {
-  padding: 1rem 0 2.5rem;
-}
-.ph-head h1 {
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  margin: 1.6rem 0 1rem;
-}
-.ph-head > p:last-child {
-  font-size: 1.05rem;
-  color: var(--muted);
-  max-width: 38rem;
-  margin: 0;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* Motion. Everything here is skipped for "reduce motion"
-   (global.css shortens all animations to nothing). */
+/* Photo tiles (gallery, map, logbook): the photo leads. On a mouse or
+   trackpad it eases up slightly on hover; it never dims. Pressing gives a
+   small push on every device. */
+.ph-photo {
+  display: block;
+  overflow: hidden;
+  background: var(--surface-2);
+  transition: transform 0.16s var(--ease-out);
+}
+.ph-photo img {
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.4s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ph-photo:hover img {
+    transform: scale(1.03);
+    transition:
+      opacity 0.6s var(--ease-out),
+      transform 0.6s var(--ease-out);
+  }
+}
+.ph-photo:active {
+  transform: scale(0.98);
+}
+
+/* Motion. Under "reduce motion", global.css stops movement but keeps
+   the fades. */
 @keyframes ph-rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
 }
 @keyframes ph-fade {
@@ -242,13 +336,19 @@ button.ph-tile:disabled {
     opacity: 0;
   }
 }
+/* Entrance for the first items on a page. The gaps shrink (0, 60, 85,
+   104, 120… ms) and stop growing after the sixth item, so a long list
+   never makes you wait. */
 .ph-rise {
-  animation: ph-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: calc(min(var(--i, 0), 14) * 35ms);
+  animation: ph-rise 0.45s var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 5) * 30ms);
+  animation-delay: calc(sqrt(min(var(--i, 0), 6)) * 60ms);
+}
+.ph-img {
+  transition: opacity 0.6s var(--ease-out);
 }
 .js .ph-img {
   opacity: 0;
-  transition: opacity 0.6s ease;
   /* Failsafe: show the photo anyway if the motion script never runs. */
   animation: ph-reveal 0s 2.5s forwards;
 }
@@ -262,12 +362,12 @@ button.ph-tile:disabled {
   }
 }
 .flap-c.is-rolling {
-  animation: ph-flip 0.09s linear infinite;
+  animation: ph-flip 0.055s linear infinite;
 }
 @keyframes ph-flip {
   50% {
-    transform: scaleY(0.82);
-    filter: brightness(1.25);
+    transform: scaleY(0.86);
+    filter: brightness(1.2);
   }
 }
 

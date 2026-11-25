@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PhotoTabs from "../../../components/PhotoTabs.astro";
+import PhotoHeader from "../../../components/PhotoHeader.astro";
 import AviationTabs from "../../../components/AviationTabs.astro";
 import DarkroomMotion from "../../../components/DarkroomMotion.astro";
 import "@fontsource/b612/400.css";
@@ -25,6 +26,7 @@ const sampleTicks = catches.some((c) => c.sample);
 const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
 const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <BaseLayout
@@ -33,12 +35,14 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   bodyClass="theme-darkroom theme-airside"
   wide
 >
-  <header class="ph-head page-shell">
-    <p class="eyebrow">Photography / Aviation / Record</p><h1>Heathrow record</h1><p>
-      Every airline flying to London Heathrow and the aircraft it operates. A
-      type lights up once I’ve photographed it.
-    </p>
-  </header>
+  <PhotoHeader
+    title="Heathrow record"
+    crumbs={[
+      { label: "Photography", href: `${base}/photography` },
+      { label: "Aviation", href: `${base}/photography/aviation` },
+      { label: "Record" },
+    ]}
+  />
   <PhotoTabs current="aviation" />
   <div class="page-shell">
     <AviationTabs current="record" />
@@ -167,8 +171,12 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     if (el && el.getAttribute("aria-label") !== text) rollFlap(el as HTMLElement, text);
   };
 
+  let drawn = false;
   function render() {
     const { html, stats } = renderRecord(model, state as typeof defaultState);
+    // Only the first draw plays the fill-in animation.
+    if (drawn) root.classList.add("is-settled");
+    drawn = true;
     root.innerHTML = html;
     set("caught", `${pad(stats.caught, 3)}/${pad(stats.types, 3)}`);
     set("pct", `${pad(stats.types ? Math.round((stats.caught / stats.types) * 100) : 0)}%`);
@@ -187,7 +195,12 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
 
   const search = controls.querySelector<HTMLInputElement>('[data-control="q"]')!;
   search.value = state.q;
-  search.addEventListener("input", () => ((state.q = search.value), render()));
+  // Wait for a pause in typing before redrawing the board.
+  let typing = 0;
+  search.addEventListener("input", () => {
+    clearTimeout(typing);
+    typing = window.setTimeout(() => ((state.q = search.value), render()), 120);
+  });
   for (const key of ["show", "alliance", "scope", "sort"])
     controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
       b.addEventListener("click", () => ((state[key] = b.dataset[key]!), render())),
@@ -360,13 +373,20 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     border-style: dashed;
     border-color: #4a4e52;
   }
+  /* The board fills in once, when the page opens: rows first, then the
+     types along each row, with the gaps shrinking down the page. Photographed
+     types then light up. Filtering and searching just redraw it. */
   .as-board :global(.as-cell) {
-    animation: cell-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(min(var(--r, 0), 10) * 40ms + min(var(--c, 0), 16) * 18ms);
+    animation: cell-in 0.4s var(--ease-out) both;
+    animation-delay: calc(min(var(--r, 0), 8) * 25ms + min(var(--c, 0), 8) * 14ms);
+    animation-delay: calc(sqrt(min(var(--r, 0), 8)) * 70ms + min(var(--c, 0), 8) * 14ms);
   }
   .as-board :global(.as-cell.is-caught) {
     animation-name: cell-in, cell-lit;
-    animation-duration: 0.4s, 0.9s;
+    animation-duration: 0.4s, 0.5s;
+  }
+  .as-board.is-settled :global(.as-cell) {
+    animation: none;
   }
   @keyframes cell-in {
     from {
@@ -378,10 +398,6 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
     from {
       background: var(--surface);
       color: var(--fg);
-      box-shadow: 0 0 0 0 rgb(255 209 0 / 0.6);
-    }
-    60% {
-      box-shadow: 0 0 0 6px rgb(255 209 0 / 0);
     }
   }
   .as-board :global(.as-cell.is-elsewhere) {
