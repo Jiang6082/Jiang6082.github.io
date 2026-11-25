@@ -22,55 +22,18 @@
 }
 html:has(> body.theme-darkroom) {
   background: #0f0f0e;
+  /* Scrollbars, form controls, and other browser-drawn parts go dark too. */
+  color-scheme: dark;
 }
 .theme-darkroom ::selection {
   background: var(--accent);
   color: var(--accent-fg);
 }
 
-/* Page header, identical on every photography page: breadcrumb, title,
-   then the Gallery / Aviation / Map tabs (PhotoTabs.astro). */
-.ph-head {
+/* Page header (PageHeader.astro, styled in global.css) stays in the site
+   font on every photography page, including the aviation ones. */
+.theme-darkroom .page-head {
   font-family: var(--font-sans);
-  padding: 1rem 0 2.25rem;
-}
-.ph-crumbs ol {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font: 0.8125rem/1.5 var(--font-mono);
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.ph-crumbs li {
-  display: inline-flex;
-}
-.ph-crumbs li + li::before {
-  content: "/";
-  margin: 0 0.6em;
-  color: var(--dim);
-}
-.ph-crumbs a {
-  color: var(--muted);
-  transition: color 0.15s;
-}
-.ph-crumbs a:hover {
-  color: var(--fg);
-  text-decoration: none;
-}
-.ph-crumbs [aria-current] {
-  color: var(--fg);
-}
-.ph-head h1 {
-  font-family: var(--font-sans);
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  margin: 1.4rem 0 0;
 }
 
 /* Section headings inside a page (albums, places, airlines): one size,
@@ -81,14 +44,14 @@ html:has(> body.theme-darkroom) {
   flex-wrap: wrap;
   gap: 0.4rem 0.75rem;
   font-family: var(--font-sans);
-  font-size: 1.3rem;
+  font-size: var(--fs-h3);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.2;
   margin: 0 0 1rem;
 }
 .ph-count {
-  font: 700 0.75rem/1 var(--font-mono);
+  font: 700 var(--fs-micro)/1 var(--font-mono);
   letter-spacing: 0.04em;
   color: var(--accent-fg);
   background: var(--accent);
@@ -106,7 +69,7 @@ html:has(> body.theme-darkroom) {
   border: 1px solid var(--border);
   background: transparent;
   color: var(--fg);
-  font: 700 0.78rem/1 var(--font-mono);
+  font: 700 var(--fs-micro)/1 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -184,7 +147,7 @@ button.ph-tile:disabled {
   gap: 0.7rem;
 }
 .ph-stats dt {
-  font: 0.75rem var(--font-mono);
+  font: var(--fs-micro) var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--dim);
@@ -215,7 +178,7 @@ button.ph-tile:disabled {
   border-top: 0;
 }
 .ph-label {
-  font: 0.75rem var(--font-mono);
+  font: var(--fs-micro) var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--dim);
@@ -243,7 +206,7 @@ button.ph-tile:disabled {
   color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.85rem;
+  font-size: var(--fs-label);
 }
 .ph-search:focus-visible {
   outline: 2px solid var(--accent);
@@ -251,7 +214,7 @@ button.ph-tile:disabled {
 }
 .ph-readout {
   margin: 0;
-  font: 0.8rem var(--font-mono);
+  font: var(--fs-micro) var(--font-mono);
   color: var(--muted);
   letter-spacing: 0.04em;
 }
@@ -267,12 +230,12 @@ button.ph-tile:disabled {
   font-size: 0.9rem;
 }
 .ph-notice b {
-  font: 700 0.75rem var(--font-mono);
+  font: 700 var(--fs-micro) var(--font-mono);
   letter-spacing: 0.12em;
   color: var(--accent);
 }
 .ph-note {
-  font-size: 0.8rem;
+  font-size: var(--fs-micro);
   color: var(--muted);
   border-top: 1px solid var(--border);
   padding-top: 1rem;
@@ -281,14 +244,6 @@ button.ph-tile:disabled {
 .ph-empty {
   color: var(--muted);
   padding: 2rem 0;
-}
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 /* Photo tiles (gallery, map, logbook): the photo leads. On a mouse or

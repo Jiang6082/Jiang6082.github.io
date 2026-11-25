@@ -62,6 +62,12 @@ for (const file of htmls) {
       !new RegExp(`github\\.com/Jiang6082/${repo}(?![\\w-])`, "i").test(html),
       `${file}: links to private repo ${repo}`,
     );
+  // Design rules: no kicker labels above headings, and browser chrome
+  // themed to match. Redirect pages have no body to check.
+  if (html.includes('http-equiv="refresh"')) continue;
+  assert(!html.includes('class="eyebrow"'), `${file}: kicker label above a heading`);
+  assert(html.includes('name="theme-color"'), `${file}: missing theme-color`);
+  assert.equal((html.match(/<h1[\s>]/g) || []).length, 1, `${file}: needs exactly one h1`);
 }
 const gallery = readFileSync(join(root, "photography/index.html"), "utf8");
 const serialized = gallery.match(

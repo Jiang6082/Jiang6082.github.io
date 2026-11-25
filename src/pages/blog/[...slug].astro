@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
+import PageHeader from "../../components/PageHeader.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -20,14 +21,15 @@ const fmt = (d: Date) =>
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <article>
-    <a class="back muted small" href={`${base}/blog`}
-      ><span aria-hidden="true">←</span> All notes</a
+    <PageHeader
+      title={post.data.title}
+      crumbs={[{ label: "Notes", href: `${base}/blog` }, { label: post.data.title }]}
     >
-    <h1>{post.data.title}</h1>
-    <p class="muted small meta">
-      <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
-      {post.data.tags.length > 0 && <span> · {post.data.tags.join(", ")}</span>}
-    </p>
+      <p class="muted small meta">
+        <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+        {post.data.tags.length > 0 && <span> · {post.data.tags.join(", ")}</span>}
+      </p>
+    </PageHeader>
     <div class="prose">
       <Content />
     </div>
@@ -35,18 +37,14 @@ const fmt = (d: Date) =>
 </BaseLayout>
 
 <style>
-  .back {
-    display: inline-block;
-    margin-bottom: 1rem;
-  }
   .meta {
-    margin-top: -0.25rem;
+    margin: 1rem 0 0;
   }
   .prose :global(h2) {
     margin-top: 2rem;
   }
   .prose :global(img) {
-    border-radius: 8px;
+    border-radius: var(--radius);
     margin: 1.5rem 0;
   }
 </style>

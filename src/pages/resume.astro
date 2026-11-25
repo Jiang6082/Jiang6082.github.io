@@ -14,9 +14,7 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
 >
   <div class="resume-layout">
     <aside>
-      <p class="eyebrow">Résumé / Updated {r.updated}</p><nav
-        aria-label="Résumé sections"
-      >
+      <nav aria-label="Résumé sections">
         {sections.map((s) => <a href={`#${s.toLowerCase()}`}>{s}</a>)}
       </nav><button class="print-button" hidden
         >Print / save PDF <span aria-hidden="true">↗</span></button
@@ -151,42 +149,37 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    margin: 1.5rem 0;
+    margin: 0.5rem 0 1.5rem;
   }
   aside a {
-    font-size: 0.9rem;
     color: var(--muted);
+    transition: color 0.15s;
   }
   aside a:hover {
     color: var(--accent);
   }
   .print-button {
     background: none;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     padding: 0.75rem;
     font: inherit;
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
     color: var(--fg);
     cursor: pointer;
   }
   h1 {
-    font-size: clamp(2rem, 4.5vw, 3.3rem);
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.035em;
-    margin: 0.8rem 0 1.5rem;
+    margin: 0 0 1.25rem;
   }
   .summary {
-    font-size: 1.15rem;
-    line-height: 1.8;
+    font-size: var(--fs-lede);
+    line-height: 1.5;
     color: var(--muted);
   }
   .contact,
   .project-links {
     display: flex;
-    gap: 1rem;
+    gap: 1rem 1.5rem;
     flex-wrap: wrap;
-    font-size: 0.85rem;
   }
   header {
     padding-bottom: 2rem;
@@ -197,18 +190,14 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     scroll-margin-top: 2rem;
   }
   h2 {
-    font-size: 1.5rem;
-    font-weight: 500;
     margin: 0 0 2rem;
   }
   h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
     margin: 0.4rem 0;
   }
   h4 {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: var(--fs-label);
+    font-weight: 600;
     margin-top: 1.5rem;
   }
   .entry {
@@ -231,7 +220,7 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
   .meta,
   .entry-top span,
   .updated {
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
     color: var(--muted);
     line-height: 1.6;
   }
@@ -239,14 +228,15 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     margin: 0.25rem 0 1rem;
   }
   .entry p {
-    line-height: 1.75;
+    line-height: 1.65;
   }
   .entry ul {
     padding-left: 1.2rem;
   }
   .entry li {
-    line-height: 1.8;
+    line-height: 1.65;
     margin: 0.6rem 0;
+    max-width: 68ch;
   }
   .timeline {
     border-left: 1px solid var(--border);
@@ -270,9 +260,7 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     flex-wrap: wrap;
     gap: 0.25rem 1.5rem;
   }
-  .inline-list li {
-    font-size: 0.85rem;
-  }
+
   .skills div {
     display: grid;
     grid-template-columns: 10rem 1fr;
@@ -281,21 +269,19 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     border-bottom: 1px solid var(--border);
   }
   dt {
-    font-size: 0.85rem;
+    font-size: var(--fs-label);
     color: var(--muted);
   }
   dd {
     margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.8;
+    line-height: 1.65;
   }
   .course-list {
     padding-left: 1.2rem;
     margin: 0.5rem 0 0;
   }
   .entry .course-list li {
-    font-size: 0.85rem;
-    line-height: 1.7;
+    line-height: 1.6;
     margin: 0.2rem 0;
   }
   .updated {

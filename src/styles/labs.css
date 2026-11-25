@@ -11,11 +11,7 @@
   margin-bottom: 2.5rem;
 }
 .lab-header h1 {
-  font-size: clamp(2.4rem, 5vw, 4.5rem);
-  line-height: 1.05;
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  margin: 1rem 0 1.5rem;
+  margin: 1.4rem 0 1.25rem;
 }
 .lab-header p {
   line-height: 1.8;
@@ -50,9 +46,9 @@
 }
 .lab-shell button,
 .lab-shell .lab-button {
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--fs-label);
   padding: 0.75rem 1rem;
   background: transparent;
   color: var(--fg);
@@ -79,13 +75,13 @@
   display: none;
 }
 .lab-status {
-  font-size: 0.8rem;
+  font-size: var(--fs-micro);
   color: var(--muted);
   line-height: 1.7;
   min-height: 1.7em;
 }
 .lab-hint {
-  font-size: 0.8rem;
+  font-size: var(--fs-micro);
   color: var(--muted);
 }
 .lab-sliders {
@@ -95,7 +91,7 @@
   margin: 2rem 0;
 }
 .lab-sliders label {
-  font-size: 0.85rem;
+  font-size: var(--fs-label);
   display: grid;
   gap: 0.6rem;
 }
@@ -122,14 +118,14 @@
   font-size: 0.95rem;
 }
 .lab-notes code {
-  font-size: 0.8rem;
+  font-size: var(--fs-micro);
 }
 .lab-notes summary {
   cursor: pointer;
 }
 .lab-notes table {
   width: 100%;
-  font-size: 0.8rem;
+  font-size: var(--fs-micro);
   border-collapse: collapse;
 }
 .lab-notes td,

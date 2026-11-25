@@ -1,0 +1,36 @@
+---
+// Page header used across the site: an optional breadcrumb, the title, and
+// an optional line under it. Styles: .page-head in src/styles/global.css.
+interface Crumb {
+  label: string;
+  /** Omit for the current page. */
+  href?: string;
+}
+interface Props {
+  title: string;
+  crumbs?: Crumb[];
+  lede?: string;
+  /** Extra classes, e.g. "page-shell" for the wide layout. */
+  class?: string;
+}
+const { title, crumbs = [], lede, class: className } = Astro.props;
+---
+
+<header class:list={["page-head", className]}>
+  {
+    crumbs.length > 0 && (
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          {crumbs.map((c) => (
+            <li>
+              {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+  <h1>{title}</h1>
+  {lede && <p class="lede">{lede}</p>}
+  <slot />
+</header>

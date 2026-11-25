@@ -1,10 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectVisual from "../components/ProjectVisual.astro";
+import PageHeader from "../components/PageHeader.astro";
 import { projects } from "../data/projects";
 import { walkthroughs } from "../data/research";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const range = `01—${String(projects.length).padStart(2, "0")}`;
 ---
 
 <BaseLayout
@@ -13,41 +13,26 @@ const range = `01—${String(projects.length).padStart(2, "0")}`;
   wide
 >
   <div class="page-shell">
-    <header class="work-heading">
-      <p class="eyebrow">Selected work / {range}</p><h1>Projects</h1><p
-        class="lede"
-      >
-        Research tools, trading systems, and full-stack software.
-      </p>
-    </header>
+    <PageHeader
+      class="work-heading"
+      title="Projects"
+      lede="Research tools, trading systems, and full-stack software."
+    />
     <div class="work-layout">
       <aside>
-        <p class="eyebrow">Project index</p><nav aria-label="Project index">
-          {
-            projects.map((p, i) => (
-              <a href={`#${p.id}`}>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                {p.title}
-              </a>
-            ))
-          }
+        <nav aria-label="Project index">
+          {projects.map((p) => <a href={`#${p.id}`}>{p.title}</a>)}
         </nav>
       </aside>
       <div>
         {
-          projects.map((p, i) => (
+          projects.map((p) => (
             <article id={p.id} class="project">
-              <div class="project-meta eyebrow">
-                <span>
-                  {String(i + 1).padStart(2, "0")} / {p.language}
-                </span>
-                <span>
-                  {p.visibility === "private"
-                    ? "Private research"
-                    : "Open source"}
-                </span>
-              </div>
               <h2>{p.title}</h2>
+              <p class="project-meta">
+                {p.language} ·{" "}
+                {p.visibility === "private" ? "Private research" : "Open source"}
+              </p>
               <p class="description">{p.purpose}</p>
               <p class="result">{p.result}</p>
               <p class="result-context">{p.context}</p>
@@ -95,18 +80,8 @@ const range = `01—${String(projects.length).padStart(2, "0")}`;
   </div>
 </BaseLayout>
 <style>
-  .work-heading {
-    padding: 1rem 0 5rem;
-  }
-  .work-heading h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    margin: 2rem 0;
-  }
-  .lede {
-    font-size: 1.15rem;
-    color: var(--muted);
+  :global(.work-heading) {
+    padding-bottom: 4rem;
   }
   .work-layout {
     display: grid;
@@ -123,48 +98,44 @@ const range = `01—${String(projects.length).padStart(2, "0")}`;
     flex-direction: column;
   }
   aside a {
-    display: flex;
-    gap: 1.2rem;
-    padding: 0.7rem 0;
+    padding: 0.6rem 0;
     color: var(--muted);
-    font-size: 0.9rem;
+    transition: color 0.15s;
   }
-  aside a span {
-    font-family: var(--font-mono);
+  aside a:hover {
     color: var(--accent);
-    font-size: 0.8rem;
+    text-decoration: none;
   }
   .project {
     border-top: 1px solid var(--border);
     padding: 2rem 0 3rem;
     scroll-margin-top: 2rem;
   }
-  .project-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-  }
   .project h2 {
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
-    font-weight: 400;
-    margin: 1rem 0;
+    margin: 0.5rem 0 0.4rem;
     overflow-wrap: anywhere;
   }
-  .description {
-    font-size: 1.15rem;
+  .project-meta {
+    font-size: var(--fs-label);
     color: var(--muted);
-    max-width: 44rem;
+    margin: 0 0 1.25rem;
+  }
+  .description {
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 40rem;
   }
   .result {
-    font-size: 1.1rem;
+    font-size: var(--fs-lede);
+    line-height: 1.5;
     margin: 1.5rem 0 0.3rem;
   }
   .result-context {
     color: var(--muted);
-    font-size: 0.85rem;
     line-height: 1.6;
     margin: 0 0 1rem;
-    max-width: 43rem;
+    max-width: 68ch;
   }
   .project-actions {
     display: grid;
@@ -216,13 +187,13 @@ const range = `01—${String(projects.length).padStart(2, "0")}`;
     align-items: center;
   }
   .topics {
-    font: 0.8125rem/1.8 var(--font-mono);
+    font: var(--fs-micro) / 1.8 var(--font-mono);
     max-width: 25rem;
     color: var(--muted);
     margin: 0;
   }
   .private-note {
-    font-size: 0.875rem;
+    font-size: var(--fs-label);
     color: var(--muted);
   }
   @media (max-width: 760px) {
@@ -233,7 +204,7 @@ const range = `01—${String(projects.length).padStart(2, "0")}`;
     .work-layout aside {
       position: static;
     }
-    .work-heading {
+    :global(.work-heading) {
       padding-bottom: 2rem;
     }
     aside nav {

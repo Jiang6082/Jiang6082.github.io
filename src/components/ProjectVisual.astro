@@ -119,7 +119,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
       <div class="metric-chart">
         <div class="visual-heading">
           <>
-            <p class="eyebrow">Recorded results</p>
+            <p class="label">Recorded results</p>
             <div
               class="chart-switch"
               role="group"
@@ -195,7 +195,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
       <div>
         <div class="visual-heading">
           <>
-            <p class="eyebrow">Synthetic demo / seed 7</p>
+            <p class="label">Synthetic demo, seed 7</p>
             <span class="record-label">24 attempts → 1 survivor</span>
           </>
         </div>
@@ -217,8 +217,8 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
             </div>
             <div class="survivor-result">
               <>
-                <p class="eyebrow">Recorded survivor</p>
                 <h3>momentum_20</h3>
+                <p class="survivor-note">The one recorded survivor</p>
                 <code>ts_returns(close, 20)</code>
                 <dl>
                   <>
@@ -337,11 +337,11 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   .chart-unit,
   .chart-source,
   .chart-scale {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: var(--muted);
   }
   .chart-note {
-    font-size: 0.85rem;
+    font-size: var(--fs-label);
     line-height: 1.7;
     color: var(--muted);
   }
@@ -352,9 +352,9 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   }
   .chart-switch button {
     font: inherit;
-    font-size: 0.75rem;
+    font-size: var(--fs-label);
     padding: 0.45rem 0.7rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: transparent;
     color: var(--muted);
     cursor: pointer;
@@ -370,7 +370,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     gap: 1rem;
     align-items: center;
     padding: 0.55rem 0;
-    font-size: 0.8rem;
+    font-size: var(--fs-micro);
   }
   :global(.bar-label) {
     line-height: 1.4;
@@ -404,7 +404,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     background: #626d78;
   }
   :global(.bar-row strong) {
-    font: 0.8rem var(--font-mono);
+    font: var(--fs-micro) var(--font-mono);
     text-align: right;
   }
   .chart-scale {
@@ -417,7 +417,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   }
   details {
     margin-top: 1.5rem;
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
   }
   summary {
     cursor: pointer;
@@ -463,7 +463,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     display: grid;
     place-items: center;
     border: 1px solid var(--border);
-    font: 0.75rem var(--font-mono);
+    font: var(--fs-micro) var(--font-mono);
     color: var(--muted);
   }
   .factor.survivor {
@@ -472,12 +472,16 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     border-color: var(--accent);
   }
   .survivor-result h3 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin: 0.5rem 0;
+    font-size: var(--fs-h3);
+    margin: 0 0 0.25rem;
+  }
+  .survivor-note {
+    font-size: var(--fs-label);
+    color: var(--muted);
+    margin: 0 0 0.5rem;
   }
   .survivor-result code {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
   }
   .survivor-result dl div {
     display: flex;
@@ -485,7 +489,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     gap: 1rem;
     padding: 0.45rem 0;
     border-bottom: 1px solid var(--border);
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
   }
   .survivor-result dt {
     color: var(--muted);
@@ -510,7 +514,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     letter-spacing: -0.04em;
   }
   .scan-stats dt {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: var(--muted);
   }
   .scan-trace {
@@ -526,16 +530,16 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   }
   .scan-trace li span {
     display: block;
-    font: 0.75rem var(--font-mono);
+    font: var(--fs-micro) var(--font-mono);
     color: var(--accent);
     margin-bottom: 0.5rem;
   }
   .scan-trace strong {
-    font-size: 0.85rem;
+    font-size: var(--fs-label);
     font-weight: 500;
   }
   .scan-trace li p {
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
     line-height: 1.6;
     color: var(--muted);
   }
@@ -543,10 +547,10 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     :global(.bar-row) {
       grid-template-columns: 6rem minmax(0, 1fr) 4rem;
       gap: 0.6rem;
-      font-size: 0.75rem;
+      font-size: var(--fs-micro);
     }
     :global(.bar-row strong) {
-      font-size: 0.75rem;
+      font-size: var(--fs-micro);
     }
     .factor-layout {
       grid-template-columns: 1fr;

@@ -7,7 +7,10 @@ import {
   forecastAt,
   qlike,
 } from "../lib/project-demos.js";
-const { project } = Astro.props as { project: string };
+// headingLevel: 2 on a walkthrough (under the page title), 3 inside a
+// project on /projects (under the project's h2).
+const { project, headingLevel = 3 } = Astro.props as { project: string; headingLevel?: 2 | 3 };
+const Heading = headingLevel === 2 ? "h2" : "h3";
 const kind = (
   {
     "idx-exchange": "homes",
@@ -41,10 +44,7 @@ const titles: Record<string, string> = {
       data-demo={kind}
       aria-label={titles[kind]}
     >
-      <>
-        <p class="eyebrow">Try it yourself</p>
-        <h3>{titles[kind]}</h3>
-      </>
+      <Heading class="demo-title">{titles[kind]}</Heading>
       {kind === "homes" && (
         <>
           <p class="demo-note">
@@ -382,16 +382,14 @@ const titles: Record<string, string> = {
     background: var(--bg-2);
     overflow: hidden;
   }
-  .playground h3 {
-    font-size: 1.35rem;
-    font-weight: 500;
-    margin: 0.6rem 0 1rem;
+  .demo-title {
+    font-size: var(--fs-h3);
+    margin: 0 0 1rem;
   }
   .demo-note {
-    font-size: 0.85rem;
-    line-height: 1.8;
+    line-height: 1.6;
     color: var(--muted);
-    max-width: 48rem;
+    max-width: 68ch;
   }
   .demo-controls {
     display: flex;
@@ -404,14 +402,14 @@ const titles: Record<string, string> = {
     gap: 0.4rem;
     flex: 1;
     min-width: 135px;
-    font-size: 0.78rem;
+    font-size: var(--fs-label);
   }
   .playground select,
   .playground input[type="number"] {
     padding: 0.65rem;
     background: var(--bg);
     color: var(--fg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     font: inherit;
     width: 100%;
   }
@@ -424,10 +422,10 @@ const titles: Record<string, string> = {
   }
   .playground button {
     font: inherit;
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
     padding: 0.65rem;
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     color: var(--fg);
     cursor: pointer;
   }
@@ -443,7 +441,7 @@ const titles: Record<string, string> = {
     margin-top: 1rem;
   }
   .demo-actions output {
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
   }
   .demo-reading {
     display: block;
@@ -463,7 +461,7 @@ const titles: Record<string, string> = {
     min-width: 0;
   }
   .home-results :global(p) {
-    font-size: 0.75rem;
+    font-size: var(--fs-label);
     line-height: 1.6;
     margin: 0.5rem 0;
   }
@@ -483,11 +481,11 @@ const titles: Record<string, string> = {
     margin: 1rem 0;
   }
   svg text {
-    font: 11px Arial;
+    font: 13px var(--font-sans);
     fill: var(--muted);
   }
   .legend {
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
     display: flex;
     gap: 1.5rem;
   }
@@ -504,7 +502,7 @@ const titles: Record<string, string> = {
     border: 1px solid var(--border);
     display: grid;
     gap: 0.4rem;
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     background: var(--bg);
   }
   .factor-samples strong {
@@ -519,7 +517,7 @@ const titles: Record<string, string> = {
   }
   details {
     margin-top: 1rem;
-    font-size: 0.8rem;
+    font-size: var(--fs-label);
   }
   summary {
     cursor: pointer;

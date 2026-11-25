@@ -18,11 +18,20 @@
   --font-sans: "Schibsted Grotesk Variable", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
-  --fs-label: 0.875rem;
-  --fs-body: 1.0625rem;
-  --fs-mid: 1.375rem;
-  --fs-h2: 2rem;
-  --fs-h1: clamp(2.5rem, 5vw, 4rem);
+  /* Type scale: every size on the site is one of these roles.
+     Reading text is never under 16px, and nothing is under 13px. */
+  --fs-micro: 0.8125rem; /* 13px: tags, codes, chart labels */
+  --fs-label: 0.875rem; /* 14px: dates, captions, field labels */
+  --fs-body: 1.0625rem; /* 17px: long-form reading */
+  --fs-lede: 1.2rem; /* the line under a page title */
+  --fs-h3: 1.3rem; /* item titles: a job, an album, a project row */
+  --fs-mid: var(--fs-h3);
+  --fs-h2: clamp(1.55rem, 2.4vw, 1.9rem); /* sections */
+  --fs-h1: clamp(2.4rem, 5vw, 3.8rem); /* page titles */
+  --fs-display: clamp(2.8rem, 5.6vw, 5.2rem); /* homepage name only */
+  /* Controls (inputs, buttons) need 3:1 against the page. */
+  --border-control: #86847a;
+  color-scheme: light;
   /* Motion: ease-out for things entering or responding to a press,
      ease-in-out for things moving across the screen. No overshoot. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -36,7 +45,8 @@ html {
   background: var(--bg);
   color: var(--fg);
   line-height: 1.65;
-  font-size: 16px;
+  /* 100% rather than 16px, so a visitor's own text size setting applies. */
+  font-size: 100%;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   scroll-padding-top: 7rem;
@@ -80,9 +90,11 @@ h3 {
   line-height: 1.13;
   font-weight: 500;
   letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 h1 {
   font-size: var(--fs-h1);
+  line-height: 1.05;
   margin: 0 0 1rem;
 }
 h2 {
@@ -90,10 +102,88 @@ h2 {
   margin: 2.5rem 0 1rem;
 }
 h3 {
-  font-size: var(--fs-mid);
+  font-size: var(--fs-h3);
+  letter-spacing: -0.01em;
 }
 p {
   margin: 0 0 1.2rem;
+}
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+/* Long-form text: about 68 characters a line. */
+.prose,
+.measure {
+  max-width: 68ch;
+}
+.prose {
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+/* Page header on every page except the homepage: an optional breadcrumb,
+   the title, and sometimes one line under it. */
+.page-head {
+  padding: 1rem 0 2.25rem;
+}
+.page-head h1 {
+  margin: 0;
+}
+.page-head .crumbs + h1 {
+  margin-top: 1.4rem;
+}
+.page-head .lede {
+  margin: 1.1rem 0 0;
+  max-width: 40rem;
+  font-size: var(--fs-lede);
+  line-height: 1.5;
+  color: var(--muted);
+}
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font: var(--fs-micro) / 1.5 var(--font-mono);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.crumbs li {
+  display: inline-flex;
+}
+.crumbs li + li::before {
+  content: "/";
+  margin: 0 0.6em;
+}
+.crumbs a {
+  color: var(--muted);
+  transition: color 0.15s;
+}
+.crumbs a:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+.crumbs [aria-current] {
+  color: var(--fg);
+}
+/* A plain label for a panel or list (sentence case, not a kicker). */
+.label {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 img {
   max-width: 100%;
@@ -111,8 +201,8 @@ button:disabled {
   cursor: default;
 }
 ::selection {
-  background: #b43d28;
-  color: white;
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -123,12 +213,6 @@ button:disabled {
 }
 .small {
   font-size: var(--fs-label);
-}
-.eyebrow {
-  font: 0.8125rem/1.5 var(--font-mono);
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 .text-link {
   display: inline-flex;

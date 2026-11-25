@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PhotoTabs from "../../../components/PhotoTabs.astro";
-import PhotoHeader from "../../../components/PhotoHeader.astro";
+import PageHeader from "../../../components/PageHeader.astro";
 import AviationTabs from "../../../components/AviationTabs.astro";
 import DarkroomMotion from "../../../components/DarkroomMotion.astro";
 import "@fontsource/b612/400.css";
@@ -35,7 +35,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   bodyClass="theme-darkroom theme-airside"
   wide
 >
-  <PhotoHeader
+  <PageHeader
+    class="page-shell"
     title="Heathrow record"
     crumbs={[
       { label: "Photography", href: `${base}/photography` },
@@ -280,7 +281,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     line-height: 1.25;
   }
   .as-board :global(.as-row-name p) {
-    font: 0.75rem var(--font-mono);
+    font: var(--fs-micro) var(--font-mono);
     color: var(--dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -294,7 +295,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     margin: 0.35rem 0 0;
   }
   .as-board :global(.as-row-count) {
-    font: 700 0.85rem var(--font-mono);
+    font: 700 var(--fs-label) var(--font-mono);
     color: var(--accent);
     white-space: nowrap;
   }
@@ -342,7 +343,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
   .as-board :global(.as-cell span:not(.sr-only)),
   .rec-legend .as-cell span {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     line-height: 1.2;
     color: var(--muted);
     white-space: nowrap;
@@ -366,7 +367,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     position: absolute;
     top: 0.4rem;
     right: 0.5rem;
-    font: 700 0.8rem/1 var(--font-mono);
+    font: 700 var(--fs-micro)/1 var(--font-mono);
   }
   .as-board :global(.as-cell.is-occasional),
   .rec-legend .as-cell.is-occasional {

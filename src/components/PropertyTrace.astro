@@ -20,7 +20,7 @@ const steps = [
 ---
 
 <div class="property-trace">
-  <p class="eyebrow">Follow a search / illustrative request</p>
+  <p class="label">Follow a search (an illustrative request)</p>
   <code>city=Portland&amp;minPrice=300000&amp;beds=3&amp;limit=20</code>
   <ol>
     {
@@ -44,7 +44,7 @@ const steps = [
   code {
     display: block;
     overflow-wrap: anywhere;
-    font-size: 0.78rem;
+    font-size: var(--fs-label);
     margin: 1.2rem 0 2rem;
     color: var(--accent);
   }
@@ -74,18 +74,18 @@ const steps = [
   }
   span {
     display: block;
-    font: 0.75rem var(--font-mono);
+    font: var(--fs-micro) var(--font-mono);
     color: var(--accent);
     margin-bottom: 1rem;
   }
   strong {
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
   li p,
   .trace-note {
-    font-size: 0.8rem;
-    line-height: 1.7;
+    font-size: var(--fs-label);
+    line-height: 1.6;
     color: var(--muted);
   }
   .trace-note {

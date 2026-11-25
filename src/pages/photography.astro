@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
-import PhotoHeader from "../components/PhotoHeader.astro";
+import PageHeader from "../components/PageHeader.astro";
 import PhotoTabs from "../components/PhotoTabs.astro";
 import DarkroomMotion from "../components/DarkroomMotion.astro";
 import { collections, singles } from "../data/photos";
@@ -98,7 +98,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
   bodyClass="theme-darkroom"
   wide
 >
-  <PhotoHeader title="Photography" crumbs={[{ label: "Photography" }, { label: "Gallery" }]} />
+  <PageHeader class="page-shell" title="Photography" crumbs={[{ label: "Photography" }, { label: "Gallery" }]} />
   <PhotoTabs current="gallery" />
   <div class="page-shell">
     {
