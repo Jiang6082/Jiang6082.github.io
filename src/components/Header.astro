@@ -5,8 +5,8 @@ const nav = [
   { label: "Projects", href: `${base}/projects` },
   { label: "Photography", href: `${base}/photography` },
   { label: "Résumé", href: `${base}/resume` },
-  { label: "Notes", href: `${base}/blog` },
 ];
+// Notes lives in the footer until there are more posts.
 const current = Astro.url.pathname;
 ---
 
@@ -92,7 +92,7 @@ const current = Astro.url.pathname;
       font-size: var(--fs-label);
     }
     .contact {
-      display: none;
+      margin-left: 0;
     }
   }
 </style>

@@ -14,6 +14,10 @@ export function createScene(host: HTMLElement, label: string, fitAspect = 0) {
   controls.enableDamping = false;
   controls.enablePan = false;
   controls.autoRotate = false;
+  // OrbitControls blocks all touch scrolling on the canvas. Let vertical
+  // swipes scroll the page so a phone user can't get stuck; sideways drags
+  // still turn the surface.
+  renderer.domElement.style.touchAction = "pan-y";
   const draw = () => renderer.render(scene, camera);
   const resize = () => {
     const w = host.clientWidth,

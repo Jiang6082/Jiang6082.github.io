@@ -415,7 +415,7 @@ export const walkthroughs: Walkthrough[] = [
   {
     slug: "volatility",
     project: "market-volatility-forecasting",
-    title: "Forecasting volatility",
+    title: "Market Volatility Forecasting",
     intro:
       "Next-day variance forecasting across 14 US ETFs, evaluated with quarterly walk-forward refits and explicit baseline comparisons.",
     summary: {
@@ -557,7 +557,7 @@ export const walkthroughs: Walkthrough[] = [
   {
     slug: "treasury-yields",
     project: "treasury-yield-curve-research",
-    title: "Treasury yield-curve signals",
+    title: "Treasury Yield-Curve Research",
     intro:
       "Does the shape of the Treasury curve forecast next week’s move in the 10-year yield? A reproducible test on 16 years of official data.",
     summary: {
@@ -665,7 +665,7 @@ export const walkthroughs: Walkthrough[] = [
   {
     slug: "poker",
     project: "poker",
-    title: "Poker opponent modeling",
+    title: "Poker Opponent Modeling",
     intro:
       "Can a player’s own history predict their next action better than population behavior? A study built on 21.6 million audited hands.",
     summary: {

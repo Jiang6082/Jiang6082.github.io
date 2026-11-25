@@ -1,10 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { resume as r } from "../data/resume";
+import { resume as r, resumeProjects } from "../data/resume";
 import { SITE, SOCIALS } from "../config";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const sections = ["Education", "Experience", "Projects", "Skills"];
 const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
+// Shown as the link text, so the printed page still says where links go.
+const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+const site = short(SITE.url);
 ---
 
 <BaseLayout
@@ -16,20 +19,21 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     <aside>
       <nav aria-label="Résumé sections">
         {sections.map((s) => <a href={`#${s.toLowerCase()}`}>{s}</a>)}
-      </nav><button class="print-button" hidden
-        >Print / save PDF <span aria-hidden="true">↗</span></button
-      >
+      </nav><button class="print-button" hidden>Print</button>
     </aside>
     <article>
       <header>
         <h1>{r.name}</h1><p class="summary">{r.summary}</p><div class="contact">
           <a href={`mailto:${SITE.email}`}>{SITE.email}</a><a
             href={social("LinkedIn")}
-            >LinkedIn <span aria-hidden="true">↗</span></a
-          ><a href={social("GitHub")}
-            >GitHub <span aria-hidden="true">↗</span></a
-          >
-        </div>
+            target="_blank"
+            rel="noopener noreferrer">{short(social("LinkedIn"))}</a
+          ><a href={social("GitHub")} target="_blank" rel="noopener noreferrer"
+            >{short(social("GitHub"))}</a
+          ><a class="print-only" href={SITE.url}>{site}</a>
+        </div><a class="text-link pdf-link" href={`${base}/resume.pdf`} download
+          >Download PDF <span aria-hidden="true">↓</span></a
+        >
       </header>
       <section id="education">
         <h2>Education</h2>{
@@ -45,17 +49,13 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
                 {ed.gpa && ` · GPA ${ed.gpa}`}
               </p>
               <h4>{ed.courseworkLabel}</h4>
-              <ul class="course-list">
-                {ed.coursework.map((c) => (
-                  <li>{c}</li>
-                ))}
-              </ul>
+              <p class="course-list">{ed.coursework.join(" · ")}</p>
             </div>
           ))
         }<div class="entry">
-          <h4>Programs & certificates</h4><ul class="inline-list">
-            {r.programs.map((p) => <li>{p}</li>)}
-          </ul>
+          <h3>Programs &amp; certificates</h3><p class="course-list">
+            {r.programs.join(" · ")}
+          </p>
         </div>
       </section>
       <section id="experience">
@@ -75,7 +75,6 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
                     ))}
                   </ul>
                 )}
-                <p class="meta">{e.tags.join(" / ")}</p>
               </div>
             ))
           }
@@ -83,7 +82,7 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
       </section>
       <section id="projects">
         <h2>Projects</h2>{
-          r.projects.map((p) => (
+          resumeProjects.map((p) => (
             <div class="entry">
               <p class="dates">{p.dates}</p>
               <h3>{p.name}</h3>
@@ -96,7 +95,7 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
               {p.links.length > 0 && (
                 <div class="project-links">
                   {p.links.map((l) => (
-                    <a class="text-link" href={`${base}${l.href}`}>
+                    <a class="text-link" href={`${base}${l.href}`} data-print={`${site}${l.href}`}>
                       {l.label} <span aria-hidden="true">→</span>
                     </a>
                   ))}
@@ -125,11 +124,13 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
   </div>
 </BaseLayout>
 <script>
+  import { spySections } from "../scripts/section-spy";
   const button = document.querySelector<HTMLButtonElement>(".print-button");
   if (button) {
     button.hidden = false;
     button.addEventListener("click", () => window.print());
   }
+  spySections("aside nav a");
 </script>
 <style>
   .resume-layout {
@@ -155,8 +156,10 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     color: var(--muted);
     transition: color 0.15s;
   }
-  aside a:hover {
+  aside a:hover,
+  aside a[aria-current] {
     color: var(--accent);
+    text-decoration: none;
   }
   .print-button {
     background: none;
@@ -178,8 +181,14 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
   .contact,
   .project-links {
     display: flex;
-    gap: 1rem 1.5rem;
+    gap: 0.5rem 1.5rem;
     flex-wrap: wrap;
+  }
+  .print-only {
+    display: none;
+  }
+  .pdf-link {
+    margin-top: 1.25rem;
   }
   header {
     padding-bottom: 2rem;
@@ -255,11 +264,6 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     border-radius: 50%;
     background: var(--accent);
   }
-  .inline-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.5rem;
-  }
 
   .skills div {
     display: grid;
@@ -277,12 +281,8 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     line-height: 1.65;
   }
   .course-list {
-    padding-left: 1.2rem;
-    margin: 0.5rem 0 0;
-  }
-  .entry .course-list li {
-    line-height: 1.6;
-    margin: 0.2rem 0;
+    margin: 0.4rem 0 0;
+    max-width: 68ch;
   }
   .updated {
     border-top: 1px solid var(--border);
@@ -348,6 +348,29 @@ const social = (name: string) => SOCIALS.find((s) => s.name === name)!.url;
     }
     .contact {
       font-size: 10pt;
+    }
+    .print-only {
+      display: inline;
+    }
+    /* Links show where they go; arrows and the timeline are screen-only. */
+    .pdf-link,
+    [aria-hidden="true"] {
+      display: none !important;
+    }
+    .project-links a {
+      border: 0;
+      padding: 0;
+    }
+    .project-links a::after {
+      content: attr(data-print);
+      margin-left: 0.4em;
+    }
+    .timeline {
+      border-left: 0;
+      padding-left: 0;
+    }
+    .timeline .entry:before {
+      display: none;
     }
     .updated {
       font-size: 8pt;

@@ -3,7 +3,8 @@
 export const SITE = {
   name: "Charles Jiang",
   // Default meta description for pages that don't set their own.
-  tagline: "Student · Developer · Photographer",
+  tagline:
+    "Mathematics and computer science at the University of Chicago: quantitative research, software, and photography.",
   // Canonical origin, no trailing slash.
   url: "https://jiang6082.github.io",
   // Path prefix; empty for a <user>.github.io repository.

@@ -5,6 +5,8 @@ import PageHeader from "../components/PageHeader.astro";
 import { projects } from "../data/projects";
 import { walkthroughs } from "../data/research";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const hasDemo = (id: string) => walkthroughs.find((w) => w.project === id)?.demo;
+const isOpen = (p: (typeof projects)[number]) => p.visibility === "public" && p.repo;
 ---
 
 <BaseLayout
@@ -20,8 +22,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     />
     <div class="work-layout">
       <aside>
+        <!-- The index doubles as a comparison: each project's headline result. -->
         <nav aria-label="Project index">
-          {projects.map((p) => <a href={`#${p.id}`}>{p.title}</a>)}
+          {
+            projects.map((p) => (
+              <a href={`#${p.id}`}>
+                <span class="index-title">{p.title}</span>
+                <span class="index-result">{p.result}</span>
+                <span class="index-status">{isOpen(p) ? "Open source" : "Private"}</span>
+              </a>
+            ))
+          }
         </nav>
       </aside>
       <div>
@@ -29,45 +40,34 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           projects.map((p) => (
             <article id={p.id} class="project">
               <h2>{p.title}</h2>
-              <p class="project-meta">
-                {p.language} ·{" "}
-                {p.visibility === "private" ? "Private research" : "Open source"}
-              </p>
-              <p class="description">{p.purpose}</p>
               <p class="result">{p.result}</p>
               <p class="result-context">{p.context}</p>
+              <p class="description">{p.purpose}</p>
+              <p class="project-meta">
+                <span>{p.tools}</span>
+                {isOpen(p) ? (
+                  <a href={p.repo} target="_blank" rel="noopener noreferrer">
+                    Code on GitHub <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <span>Private repository</span>
+                )}
+              </p>
               <div class="project-actions">
+                {p.slug && (
+                  <a class="button" href={`${base}/projects/${p.slug}`}>
+                    Read the walkthrough <span aria-hidden="true">→</span>
+                  </a>
+                )}
                 <details class="project-demo">
                   <summary>
-                    {walkthroughs.find((w) => w.project === p.id)?.demo
-                      ? "Try demo"
-                      : "See results"}{" "}
+                    {hasDemo(p.id) ? "Try the demo" : "See the results"}{" "}
                     <span aria-hidden="true">+</span>
                   </summary>
                   <ProjectVisual project={p.id} />
                 </details>
-                {p.slug && (
-                  <a class="text-link" href={`${base}/projects/${p.slug}`}>
-                    Read walkthrough <span aria-hidden="true">→</span>
-                  </a>
-                )}
-              </div>
-              <div class="project-bottom">
-                <p class="topics">{p.topics.join(" / ")}</p>
-                {p.visibility === "public" && p.repo ? (
-                  <a
-                    class="text-link"
-                    href={p.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Explore the code <span aria-hidden="true">↗</span>
-                  </a>
-                ) : (
-                  <span class="private-note">Private repository</span>
-                )}
                 {p.demo && (
-                  <a class="text-link" href={p.demo}>
+                  <a class="text-link" href={p.demo} target="_blank" rel="noopener noreferrer">
                     View project <span aria-hidden="true">↗</span>
                   </a>
                 )}
@@ -79,6 +79,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     </div>
   </div>
 </BaseLayout>
+<script>
+  import { spySections } from "../scripts/section-spy";
+  spySections("aside nav a");
+</script>
 <style>
   :global(.work-heading) {
     padding-bottom: 4rem;
@@ -96,15 +100,39 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   aside nav {
     display: flex;
     flex-direction: column;
+    border-left: 1px solid var(--border);
   }
   aside a {
-    padding: 0.6rem 0;
-    color: var(--muted);
-    transition: color 0.15s;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.7rem 1rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--fg);
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background-color 0.15s;
   }
   aside a:hover {
-    color: var(--accent);
     text-decoration: none;
+    background: var(--surface-2);
+  }
+  aside a[aria-current] {
+    border-left-color: var(--accent);
+    background: var(--surface-2);
+  }
+  .index-title {
+    font-weight: 500;
+  }
+  .index-result {
+    font-size: var(--fs-label);
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  .index-status {
+    font-size: var(--fs-micro);
+    color: var(--muted);
   }
   .project {
     border-top: 1px solid var(--border);
@@ -112,52 +140,57 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     scroll-margin-top: 2rem;
   }
   .project h2 {
-    margin: 0.5rem 0 0.4rem;
+    margin: 0.5rem 0 1rem;
     overflow-wrap: anywhere;
   }
-  .project-meta {
-    font-size: var(--fs-label);
-    color: var(--muted);
-    margin: 0 0 1.25rem;
-  }
-  .description {
-    font-size: var(--fs-lede);
-    line-height: 1.5;
-    color: var(--muted);
-    max-width: 40rem;
-  }
+  /* The result leads; its caveat sits right under it. */
   .result {
     font-size: var(--fs-lede);
-    line-height: 1.5;
-    margin: 1.5rem 0 0.3rem;
+    line-height: 1.45;
+    margin: 0 0 0.3rem;
   }
   .result-context {
+    font-size: var(--fs-label);
     color: var(--muted);
     line-height: 1.6;
-    margin: 0 0 1rem;
+    margin: 0 0 1.25rem;
     max-width: 68ch;
   }
+  .description {
+    max-width: 68ch;
+    margin: 0 0 0.75rem;
+  }
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    font-size: var(--fs-label);
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+  .project-meta a {
+    color: var(--fg);
+  }
+  /* One main action (the walkthrough); the demo opens underneath. */
   .project-actions {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
-    gap: 0 1.5rem;
   }
-  .project-actions > a {
+  .project-actions > .button {
     grid-area: 1 / 1;
-    justify-self: end;
-    align-self: start;
+    justify-self: start;
     position: relative;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
+    z-index: 1;
   }
   .project-demo {
     grid-area: 1 / 1;
     min-width: 0;
+    interpolate-size: allow-keywords;
   }
   .project-demo summary {
     width: max-content;
+    margin-left: auto;
     cursor: pointer;
     list-style: none;
     min-height: 44px;
@@ -166,35 +199,36 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     gap: 1rem;
     color: var(--accent);
     border-bottom: 1px solid var(--accent);
+    transition: transform 0.16s var(--ease-out);
+  }
+  .project-demo summary:active {
+    transform: scale(0.97);
   }
   .project-demo summary::-webkit-details-marker {
     display: none;
   }
+  .project-demo summary span {
+    transition: transform 0.2s var(--ease-out);
+  }
   .project-demo[open] summary span {
     transform: rotate(45deg);
   }
+  /* The panel eases open in browsers that can animate <details>. */
+  .project-demo::details-content {
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    transition:
+      block-size 0.25s var(--ease-out),
+      opacity 0.2s var(--ease-out),
+      content-visibility 0.25s allow-discrete;
+  }
+  .project-demo[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
   .project-demo :global(.project-visual) {
     min-width: 0;
-  }
-  .project-bottom {
-    margin-top: 1.5rem;
-  }
-  .project-bottom {
-    display: flex;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .topics {
-    font: var(--fs-micro) / 1.8 var(--font-mono);
-    max-width: 25rem;
-    color: var(--muted);
-    margin: 0;
-  }
-  .private-note {
-    font-size: var(--fs-label);
-    color: var(--muted);
   }
   @media (max-width: 760px) {
     .work-layout {
@@ -207,13 +241,39 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     :global(.work-heading) {
       padding-bottom: 2rem;
     }
+    /* On a phone the index is just the titles, in a row. */
     aside nav {
       flex-direction: row;
-      gap: 0.3rem 1.2rem;
       flex-wrap: wrap;
+      gap: 0.25rem 1.25rem;
+      border-left: 0;
+    }
+    aside a {
+      padding: 0.4rem 0;
+      margin: 0;
+      border: 0;
+      color: var(--muted);
+    }
+    aside a:hover,
+    aside a[aria-current] {
+      background: none;
+      color: var(--accent);
+    }
+    .index-result,
+    .index-status {
+      display: none;
     }
     .project {
       padding-bottom: 3rem;
+    }
+  }
+  @media (max-width: 560px) {
+    .project-actions > .button,
+    .project-demo {
+      grid-area: auto;
+    }
+    .project-demo summary {
+      margin: 0.75rem 0 0;
     }
   }
 </style>

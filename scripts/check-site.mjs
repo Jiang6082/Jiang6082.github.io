@@ -53,6 +53,30 @@ const projectIds = [
 ];
 for (const id of projectIds) assert(projects.includes(`id="${id}"`), `projects page: missing ${id}`);
 assert(!projects.includes('id="Project-Olsen"'), "Olsen is no longer listed");
+// One record per project: each walkthrough, the homepage, and the résumé use
+// the Projects page's name for it.
+const text = (s) => s.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+const titles = new Map(
+  [...projects.matchAll(/<article id="([^"]+)" class="project"[^>]*>\s*<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => [m[1], text(m[2])]),
+);
+assert.equal(titles.size, projectIds.length, "every project has a title on /projects");
+const home = readFileSync(join(root, "index.html"), "utf8");
+const resumePage = readFileSync(join(root, "resume/index.html"), "utf8");
+for (const [id, title] of titles) {
+  const slug = projects.match(new RegExp(`id="${id}"[\\s\\S]*?href="/projects/([^"#]+)"`))?.[1];
+  assert(slug, `${id}: links to its walkthrough`);
+  const walk = readFileSync(join(root, `projects/${slug}/index.html`), "utf8");
+  assert.equal(text(walk.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1]), title, `${slug}: walkthrough title`);
+  assert(walk.includes('rel="prev"') || walk.includes('rel="next"'), `${slug}: links to other walkthroughs`);
+}
+for (const h3 of [...home.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/g)].map((m) => text(m[1])))
+  assert([...titles.values()].includes(h3), `homepage project "${h3}" matches /projects`);
+for (const name of ["Poker Opponent Modeling", "Treasury Yield-Curve Research", "Market Volatility Forecasting", "Property Search Platform"])
+  assert(resumePage.includes(name) && [...titles.values()].includes(name), `résumé and /projects agree on "${name}"`);
+// The résumé PDF is built from the same data.
+const pdf = readFileSync(join(root, "resume.pdf"));
+assert.equal(pdf.subarray(0, 5).toString(), "%PDF-", "résumé PDF is built");
+assert(resumePage.includes('href="/resume.pdf"'), "résumé page links to the PDF");
 // Private repositories must never be linked from any page.
 const privateRepos = ["Project-Olsen", "poker", "treasury-yield-curve-research"];
 for (const file of htmls) {

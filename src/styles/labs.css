@@ -28,7 +28,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: none;
+  /* Sideways drags turn the surface; up and down still scroll the page,
+     so the stage can't trap a phone user. */
+  touch-action: pan-y;
 }
 .lab-stage canvas:focus-visible {
   outline: 3px solid var(--accent);

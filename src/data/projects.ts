@@ -1,5 +1,6 @@
-// Every project on the site, in display order. The homepage, the Projects
-// page, and the walkthrough links all read from this list.
+// Every project on the site, in display order. This is the one record for
+// each project: the homepage, the Projects page, the walkthrough pages, and
+// the résumé all read titles, dates, and tools from here.
 //
 // `id` is the GitHub repository name. It doubles as the anchor on /projects
 // and as the key for the demos in ProjectVisual and ProjectPlayground.
@@ -22,8 +23,10 @@ export interface Project {
   context: string;
   /** Show on the homepage. */
   featured: boolean;
-  language: string;
-  topics: string[];
+  /** When it was built, as on the résumé, e.g. "May 2026 – Present". */
+  dates: string;
+  /** Main tools by name, e.g. "Python · DuckDB · Polars". */
+  tools: string;
   visibility: "public" | "private";
   repo?: string;
   /** Optional public demo or write-up URL. */
@@ -42,8 +45,8 @@ export const projects: Project[] = [
     result: "24 candidates → 1 survivor",
     context: "Documented synthetic demo; not evidence of a live trading edge.",
     featured: true,
-    language: "Python",
-    topics: ["python", "quant-research", "factor-discovery", "statistics"],
+    dates: "May 2026 – Present",
+    tools: "Python · NumPy · pandas · SciPy · statsmodels · LLM API",
     visibility: "public",
     repo: "https://github.com/Jiang6082/project-emberforge",
   },
@@ -60,20 +63,14 @@ export const projects: Project[] = [
     context:
       "V4 diagnostic, 2020–July 2026, at 10 bps slippage. Previously inspected history, not a fresh holdout.",
     featured: true,
-    language: "Python",
-    topics: [
-      "python",
-      "quantitative-finance",
-      "algorithmic-trading",
-      "alpaca",
-      "backtesting",
-    ],
+    dates: "May 2026 – Present",
+    tools: "Python · NumPy · pandas · SQLite · Alpaca REST API",
     visibility: "public",
     repo: "https://github.com/Jiang6082/project-geld",
   },
   {
     id: "market-volatility-forecasting",
-    title: "Forecasting volatility",
+    title: "Market Volatility Forecasting",
     slug: "volatility",
     kind: "Machine learning",
     summary: "Comparing next-day variance forecasts across 14 U.S. ETFs.",
@@ -81,15 +78,15 @@ export const projects: Project[] = [
       "Forecast next-day volatility across 14 ETFs with walk-forward evaluation.",
     result: "39.7% lower QLIKE loss than persistence",
     context: "Recorded 2020–2025 ensemble forecasts; lower loss is better.",
-    featured: true,
-    language: "Python",
-    topics: ["python", "machine-learning", "volatility", "time-series"],
+    featured: false,
+    dates: "February 2026 – March 2026",
+    tools: "Python · pandas · NumPy · scikit-learn · PyTorch · Matplotlib",
     visibility: "public",
     repo: "https://github.com/Jiang6082/market-volatility-forecasting",
   },
   {
     id: "treasury-yield-curve-research",
-    title: "Treasury yield-curve signals",
+    title: "Treasury Yield-Curve Research",
     slug: "treasury-yields",
     kind: "Fixed-income research",
     summary: "Testing whether the yield curve forecasts next-week Treasury moves.",
@@ -98,14 +95,14 @@ export const projects: Project[] = [
     result: "No edge over predicting no change: 14.24 vs. 14.20 bp RMSE",
     context:
       "993 held-out 2022–2025 forecasts. Par-yield changes aren’t tradable returns.",
-    featured: true,
-    language: "Python",
-    topics: ["python", "fixed-income", "ridge-regression", "block-bootstrap"],
+    featured: false,
+    dates: "November 2026",
+    tools: "Python · pandas · NumPy · SciPy · scikit-learn · Matplotlib",
     visibility: "private",
   },
   {
     id: "poker",
-    title: "Poker opponent modeling",
+    title: "Poker Opponent Modeling",
     slug: "poker",
     kind: "Bayesian modeling",
     summary: "Personal opponent models from 21.6 million audited poker hands.",
@@ -115,8 +112,8 @@ export const projects: Project[] = [
     context:
       "11,298 held-out decisions from two PokerStars players; assumes anonymized player IDs persist.",
     featured: true,
-    language: "Python",
-    topics: ["python", "duckdb", "pokerkit", "bayesian-statistics"],
+    dates: "November 2026",
+    tools: "Python · DuckDB · Polars · PokerKit · NumPy · SciPy · scikit-learn",
     visibility: "private",
   },
   {
@@ -131,9 +128,16 @@ export const projects: Project[] = [
     context:
       "Implemented with React, Express, and MySQL. Demo listings are fictional.",
     featured: true,
-    language: "JavaScript",
-    topics: ["react", "nodejs", "express", "mysql", "leaflet"],
+    dates: "January 2026 – April 2026",
+    tools: "React · Node.js · Express · MySQL · Docker · Jest",
     visibility: "public",
     repo: "https://github.com/Jiang6082/idx-exchange",
   },
 ];
+
+/** Look up a project by id (throws if it doesn't exist, so typos fail the build). */
+export function project(id: string): Project {
+  const p = projects.find((x) => x.id === id);
+  if (!p) throw new Error(`Unknown project: ${id}`);
+  return p;
+}

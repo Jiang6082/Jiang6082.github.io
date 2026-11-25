@@ -227,6 +227,58 @@ button:disabled {
   color: var(--accent);
   text-decoration: none;
 }
+.text-link {
+  transition:
+    color 0.15s,
+    transform 0.16s var(--ease-out);
+}
+/* The one main action in a block (e.g. "Read the walkthrough"). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+  padding: 0.65rem 1.1rem;
+  background: var(--fg);
+  border: 1px solid var(--fg);
+  color: var(--bg);
+  font-size: 1rem;
+  line-height: 1.3;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    transform 0.16s var(--ease-out);
+}
+.button:hover {
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+}
+/* Press feedback on the light pages' controls: a small push, released on
+   the ease-out curve. (Photography has its own, in darkroom.css.) */
+.button:active,
+.text-link:active,
+.print-button:active,
+.chart-switch button:active,
+.playground button:active,
+.lab-shell button:active {
+  transform: scale(0.97);
+}
+.print-button,
+.chart-switch button,
+.playground button,
+.lab-shell button {
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.16s var(--ease-out);
+}
 .social-row {
   display: flex;
   flex-wrap: wrap;
@@ -263,9 +315,6 @@ hr {
   border: 0;
   border-top: 1px solid var(--border);
   margin: 3rem 0;
-}
-.reveal {
-  opacity: 1;
 }
 .skip-link {
   position: fixed;

@@ -157,7 +157,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
         <>
           <p class="chart-scale">Bars use a linear scale starting at zero.</p>
           {first.source && (
-            <a class="chart-source" href={first.source}>
+            <a class="chart-source" href={first.source} target="_blank" rel="noopener noreferrer">
               View recorded data <span aria-hidden="true">↗</span>
             </a>
           )}
@@ -254,6 +254,8 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
           </p>
           <a
             class="chart-source"
+            target="_blank"
+            rel="noopener noreferrer"
             href={
               study!.sections.find((s) => s.id === "results")!.sources[0].url
             }
@@ -267,6 +269,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
   {project === "idx-exchange" && <PropertyTrace />}
 </div>
 <script>
+  import { EASE_OUT, reducedMotion } from "../lib/motion.js";
   document.querySelectorAll<HTMLElement>(".metric-chart").forEach((chart) => {
     const datasets = JSON.parse(
       chart.querySelector(".chart-data")!.textContent!,
@@ -301,6 +304,14 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
           value.textContent = d.display[i];
           row.append(name, track, value);
           bars.append(row);
+          // New bars grow from the axis, one just after another.
+          if (!reducedMotion())
+            fill.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+              duration: 300,
+              delay: Math.min(i, 6) * 30,
+              easing: EASE_OUT,
+              fill: "backwards",
+            });
         });
         chart.querySelector(".chart-scale")!.textContent = signed
           ? "Zero is at the center. Losses extend left; gains extend right."
@@ -321,6 +332,15 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     background: var(--surface);
     margin: 2rem 0;
     overflow: hidden;
+  }
+  /* One frame only: inside this panel the demo drops its own box and is
+     separated from the recorded results by a hairline. */
+  .project-visual :global(.playground) {
+    margin: 0 0 2rem;
+    padding: 0 0 2rem;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: none;
   }
   .visual-heading {
     display: flex;
@@ -386,6 +406,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     top: 0;
     height: 100%;
     background: var(--accent);
+    transform-origin: left;
   }
   :global(.bar-track):global(.signed):after {
     content: "";
@@ -402,6 +423,7 @@ const max = first ? Math.max(...first.values.map(Math.abs)) : 1;
     left: auto;
     right: 50%;
     background: #626d78;
+    transform-origin: right;
   }
   :global(.bar-row strong) {
     font: var(--fs-micro) var(--font-mono);
