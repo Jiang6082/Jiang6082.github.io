@@ -94,12 +94,6 @@ html:has(> body.theme-darkroom) {
   background: var(--accent);
   padding: 0.35em 0.5em;
 }
-.ph-section-meta {
-  font-size: 0.95rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--muted);
-}
 
 /* Square tiles: filters, toggles, codes. */
 .ph-tile {

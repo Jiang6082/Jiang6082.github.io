@@ -104,11 +104,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     {
       shown.map((s) => (
         <section class="album" data-album={s.id} aria-labelledby={`album-${s.id}`}>
-          <h2 class="ph-section-head" id={`album-${s.id}`}>
-            {s.title}
-            <span class="ph-count">{s.items.length}</span>
-            {s.description && <span class="ph-section-meta">{s.description}</span>}
-          </h2>
+          <h2 class="ph-section-head" id={`album-${s.id}`}>{s.title}</h2>
           <div class="pgrid">
             {s.items.map((it) => (
               <a
