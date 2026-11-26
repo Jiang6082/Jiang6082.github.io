@@ -39,15 +39,17 @@ export function parseRecord(text) {
 /**
  * Turn a manufacturer's model designation into the record's type label:
  * A380-841 → A380-800, A350-1041 → A350-1000, A320-251N → A320neo,
+ * A321-271NX (LR) → A321LR,
  * 777-336ER → 777-300ER, 777-3DZER → 777-300ER, 737-8 → 737 MAX 8.
  * Labels that are already generic pass through unchanged.
  */
 export function canonicalType(variant = "") {
   const v = variant.trim().toUpperCase().replace(/\s+/g, " ");
   let m;
-  if ((m = v.match(/^A(31[89]|32[01])-\d{3}(N|NX|NY)?$/))) {
+  if ((m = v.match(/^A(31[89]|32[01])-\d{3}(N|NX|NY)?(?: ?\(?(LR|XLR)\)?)?$/))) {
     const base = `A${m[1]}`;
-    if (m[2] === "NY") return "A321XLR";
+    if (m[2] === "NY" || m[3] === "XLR") return "A321XLR";
+    if (m[3] === "LR") return "A321LR";
     return m[2] ? `${base}neo` : base;
   }
   if ((m = v.match(/^A(330|340|350|380)-(\d{1,2})\d{2}$/))) {

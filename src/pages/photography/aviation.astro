@@ -27,17 +27,19 @@ const image = (file: string) => {
 const cards = await Promise.all(
   airframes.map(async (a) => {
     const meta = image(a.spots[0].file);
-    const width = Math.min(720, meta.width);
+    // Cards: sharp on high-density screens. Viewer: up to 3200 px.
+    const width = Math.min(960, meta.width);
     const thumb = await getImage({
       src: meta,
       width,
-      widths: [360, width].filter((w, i, all) => w <= width && all.indexOf(w) === i),
+      widths: [480, width].filter((w, i, all) => w <= width && all.indexOf(w) === i),
       format: "webp",
+      quality: 82,
     });
     const items = await Promise.all(
       a.spots.map(async (s) => {
         const m = image(s.file);
-        const full = await getImage({ src: m, width: Math.min(2400, m.width), format: "webp" });
+        const full = await getImage({ src: m, width: Math.min(3200, m.width), format: "webp", quality: 88 });
         return {
           title: "",
           caption: "",

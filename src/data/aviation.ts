@@ -85,8 +85,14 @@ const rows = parseCsv(raw) as Record<string, string>[];
 const iataByAirline = new Map(
   parseRecord(recordCsv).map((r: { airline: string; iata: string }) => [r.airline.toLowerCase(), r.iata]),
 );
+// Operators that fly under another airline's brand at Heathrow. The logbook
+// names the operator; the Heathrow record counts the photo for the brand.
+const BRANDS: Record<string, { brand: string; iata: string }> = {
+  "lufthansa city airlines": { brand: "Lufthansa", iata: "VL" },
+};
 export const iataFor = (airline: string) =>
-  iataByAirline.get(airline.toLowerCase()) || airline.slice(0, 2).toUpperCase();
+  BRANDS[airline.toLowerCase()]?.iata ?? iataByAirline.get(airline.toLowerCase()) ?? airline.slice(0, 2).toUpperCase();
+const brandFor = (airline: string) => BRANDS[airline.toLowerCase()]?.brand ?? airline;
 
 export const spots: Spot[] = rows.map((r) => ({
   file: r.file,
@@ -160,7 +166,7 @@ export function noteLine(s: Spot) {
 
 /** Logbook photos as Heathrow-record catches (airline + generic type). */
 export const catches = spots.map((s) => ({
-  airline: s.airline,
+  airline: brandFor(s.airline),
   type: canonicalType(s.variant),
   date: formatDate(s.date),
   registration: s.registration,

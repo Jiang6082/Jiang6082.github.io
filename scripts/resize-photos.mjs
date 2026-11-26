@@ -4,8 +4,8 @@
 //   npm run photos -- --details    only record details (don't touch images)
 //   npm run photos -- --refresh    re-read details even if already recorded
 //
-// Images: max 2560 px on the long edge (never upscaled), re-encoded at
-// quality ~85, all EXIF/GPS metadata stripped. Subfolders are preserved
+// Images: max 3840 px on the long edge (never upscaled), re-encoded at
+// quality 92, all EXIF/GPS metadata stripped. Subfolders are preserved
 // (photos-src/busan/x.jpg -> src/photos/busan/x.jpg). Files whose resized copy
 // is already newer than the original are skipped.
 //
@@ -26,7 +26,7 @@ import { extractDetails, readDetails, writeDetails } from "./photo-details.mjs";
 const root = path.resolve(fileURLToPath(import.meta.url), "../..");
 const SRC = path.join(root, "photos-src");
 const OUT = path.join(root, "src", "photos");
-const MAX_EDGE = 2560;
+const MAX_EDGE = 3840;
 const EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".tif", ".tiff", ".heic"]);
 const detailsOnly = process.argv.includes("--details");
 const refresh = process.argv.includes("--refresh");
@@ -89,8 +89,8 @@ for await (const file of walk(SRC)) {
       .rotate() // apply EXIF orientation, then drop metadata
       .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true });
 
-    if (outExt === ".png") await pipeline.png({ quality: 85 }).toFile(outPath);
-    else await pipeline.jpeg({ quality: 85, mozjpeg: true }).toFile(outPath);
+    if (outExt === ".png") await pipeline.png({ quality: 90 }).toFile(outPath);
+    else await pipeline.jpeg({ quality: 92, mozjpeg: true }).toFile(outPath);
 
     console.log(`✓ ${rel} -> src/photos/${outRel}`);
     resized++;
