@@ -181,92 +181,44 @@
       "lon": 114.17
     }
   },
-  "aviation/sample-01.jpg": {
+  "aviation/IMG_0855.jpg": {
     "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1000",
-    "iso": 200
-  },
-  "aviation/sample-02.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1250",
-    "iso": 200
-  },
-  "aviation/sample-03.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 93,
-    "aperture": 7.1,
-    "shutter": "1/1600",
-    "iso": 250
-  },
-  "aviation/sample-04.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1000",
-    "iso": 320
-  },
-  "aviation/sample-06.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 6.3,
+    "lens": "RF70-200mm F4 L IS USM",
+    "focalLength": 200,
+    "aperture": 4,
     "shutter": "1/2000",
-    "iso": 400
-  },
-  "aviation/sample-07.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1000",
     "iso": 250
   },
-  "aviation/sample-08.jpg": {
+  "aviation/IMG_0867.jpg": {
     "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 70,
-    "aperture": 8,
-    "shutter": "1/1600",
-    "iso": 200
-  },
-  "aviation/sample-09.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/800",
-    "iso": 400
-  },
-  "aviation/sample-10.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1000",
-    "iso": 320
-  },
-  "aviation/sample-11.jpg": {
-    "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 77,
-    "aperture": 7.1,
-    "shutter": "1/1600",
+    "lens": "RF70-200mm F4 L IS USM",
+    "focalLength": 169,
+    "aperture": 4,
+    "shutter": "1/2000",
     "iso": 250
   },
-  "aviation/sample-12.jpg": {
+  "aviation/IMG_0878.jpg": {
     "camera": "Canon EOS R8",
-    "lens": "RF24-105mm F4 L IS USM",
-    "focalLength": 105,
-    "aperture": 8,
-    "shutter": "1/1000",
-    "iso": 200
+    "lens": "RF70-200mm F4 L IS USM",
+    "focalLength": 158,
+    "aperture": 4,
+    "shutter": "1/2000",
+    "iso": 250
+  },
+  "aviation/IMG_0898.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF70-200mm F4 L IS USM",
+    "focalLength": 161,
+    "aperture": 4,
+    "shutter": "1/2000",
+    "iso": 640
+  },
+  "aviation/IMG_0909.jpg": {
+    "camera": "Canon EOS R8",
+    "lens": "RF70-200mm F4 L IS USM",
+    "focalLength": 200,
+    "aperture": 4,
+    "shutter": "1/2000",
+    "iso": 640
   }
 }
