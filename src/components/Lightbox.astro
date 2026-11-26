@@ -323,6 +323,95 @@
   let swipe: Swipe | null = null;
   const FLICK = 0.11; // px per ms
 
+  // Touch zoom, like scroll / double-click with a mouse: pinch with two
+  // fingers (zooms around the point between them, and pans as they move),
+  // double-tap to zoom in or back out. These run first (capture) and stop
+  // the swipe handlers below while a pinch is going on.
+  const fingers = new Map<number, { x: number; y: number; x0: number; y0: number }>();
+  let pinch: { dist: number; scale: number; mx: number; my: number } | null = null;
+  let lastTap = { t: 0, x: 0, y: 0 };
+  let tapZoomed = 0;
+  const spread = () => {
+    const [a, b] = [...fingers.values()];
+    return { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+  };
+  media.addEventListener(
+    "pointerdown",
+    (e) => {
+      if (e.pointerType === "mouse" || !curImg) return;
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY });
+      media.setPointerCapture?.(e.pointerId);
+      if (fingers.size === 2) {
+        swipe = null;
+        dragging = false;
+        lb.style.backgroundColor = "";
+        applyTransform();
+        const s = spread();
+        pinch = { dist: s.dist, scale, mx: s.mx, my: s.my };
+        curImg.style.transition = "none";
+        e.stopImmediatePropagation();
+      }
+    },
+    true,
+  );
+  media.addEventListener(
+    "pointermove",
+    (e) => {
+      const f = fingers.get(e.pointerId);
+      if (!f) return;
+      f.x = e.clientX;
+      f.y = e.clientY;
+      if (!pinch || fingers.size < 2 || !curImg) return;
+      const s = spread();
+      const target = clamp((pinch.scale * s.dist) / pinch.dist, 1, 6);
+      zoomAt(s.mx, s.my, target / scale);
+      tx += s.mx - pinch.mx;
+      ty += s.my - pinch.my;
+      pinch.mx = s.mx;
+      pinch.my = s.my;
+      if (scale <= 1.001) resetZoom();
+      applyTransform();
+      e.stopImmediatePropagation();
+    },
+    true,
+  );
+  const liftFinger = (e: PointerEvent) => {
+    const f = fingers.get(e.pointerId);
+    if (!f) return;
+    fingers.delete(e.pointerId);
+    if (pinch) {
+      if (fingers.size < 2) {
+        pinch = null;
+        if (curImg) curImg.style.transition = "transform .08s ease-out";
+        if (scale <= 1.02) resetZoom();
+        applyTransform();
+        // One finger still down on a zoomed photo: keep panning with it.
+        const [rest] = [...fingers.values()];
+        if (rest && scale > 1) {
+          dragging = true;
+          sx = rest.x;
+          sy = rest.y;
+          stx = tx;
+          sty = ty;
+        }
+      }
+      e.stopImmediatePropagation();
+      return;
+    }
+    // A tap that didn't move: two in quick succession toggle zoom.
+    if (e.type !== "pointerup" || Math.hypot(f.x - f.x0, f.y - f.y0) > 10 || !curImg) return;
+    const now = e.timeStamp;
+    if (now - lastTap.t < 320 && Math.hypot(f.x - lastTap.x, f.y - lastTap.y) < 40) {
+      if (scale > 1) resetZoom();
+      else zoomAt(f.x, f.y, 2.4);
+      applyTransform();
+      tapZoomed = now;
+      lastTap.t = 0;
+    } else lastTap = { t: now, x: f.x, y: f.y };
+  };
+  media.addEventListener("pointerup", liftFinger, true);
+  media.addEventListener("pointercancel", liftFinger, true);
+
   media.addEventListener("pointerdown", (e) => {
     if (!curImg) return;
     if (scale > 1) {
@@ -425,7 +514,8 @@
   media.addEventListener("pointerup", endPointer);
   media.addEventListener("pointercancel", endPointer);
   media.addEventListener("dblclick", (e) => {
-    if (!curImg) return;
+    // Phones may also send dblclick after a double-tap we already handled.
+    if (!curImg || e.timeStamp - tapZoomed < 600) return;
     if (scale > 1) resetZoom();
     else {
       zoomAt(e.clientX, e.clientY, 2.4);
