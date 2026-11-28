@@ -342,7 +342,6 @@
       sy = e.clientY;
       stx = tx;
       sty = ty;
-      media.setPointerCapture?.(e.pointerId);
       return;
     }
     if (e.pointerType === "mouse") return;
@@ -365,6 +364,7 @@
     if (dragging) {
       if (!moved && Math.hypot(e.clientX - sx, e.clientY - sy) >= 5) {
         moved = true;
+        media.setPointerCapture?.(e.pointerId);
         if (curImg) {
           curImg.style.transition = "none";
           curImg.style.cursor = "grabbing";
@@ -448,7 +448,7 @@
       suppressClick = false;
       return;
     }
-    if (!curImg || e.target !== curImg) return;
+    if (!curImg || (e.target !== curImg && e.target !== media)) return;
     curImg.style.transition = zoomTransition(ZOOM_TRANSITION);
     if (scale > 1) {
       resetZoom();
