@@ -3,7 +3,7 @@
 // `window.__GALLERY__` (array of { key, title, items:[{title,caption,alt,
 // placeholder,thumb,full,heading?,place?,note?,settings?}] }) and renders clickable elements
 // carrying `data-group` + `data-index`, or calls window.__openLightbox(key, i).
-// Click → open; scroll → zoom; drag → pan; ← / → or swipe → navigate;
+// Click → open; click or scroll → zoom; drag → pan; ← / → or swipe → navigate;
 // Esc, backdrop, or swipe down → close.
 ---
 
@@ -82,6 +82,9 @@
   let closing: Animation | null = null;
   const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const ZOOM_TRANSITION = `transform 0.28s ${EASE_OUT}`;
+  const WHEEL_TRANSITION = `transform 0.14s ${EASE_OUT}`;
+  const zoomTransition = (value: string) => (still() ? "none" : value);
 
   let scale = 1;
   let tx = 0;
@@ -146,7 +149,7 @@
       img.alt = item.alt;
       img.draggable = false;
       img.style.cssText =
-        "display:block;max-width:94vw;max-height:84vh;width:auto;height:auto;border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform-origin:center center;transition:transform .08s ease-out;user-select:none;-webkit-user-drag:none;touch-action:none;";
+        `display:block;max-width:94vw;max-height:84vh;width:auto;height:auto;border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform-origin:center center;transition:${zoomTransition(ZOOM_TRANSITION)};user-select:none;-webkit-user-drag:none;touch-action:none;`;
       node = img;
       curImg = img;
     }
@@ -204,6 +207,10 @@
     if (!group) return;
     closing?.cancel();
     closing = null;
+    dragging = false;
+    moved = false;
+    suppressClick = false;
+    swipe = null;
     current = group.items;
     index = Math.max(0, Math.min(startIndex, current.length - 1));
     lastFocus = document.activeElement as HTMLElement;
@@ -293,11 +300,14 @@
     (e) => {
       if (lb.hidden || !curImg) return;
       e.preventDefault();
+      curImg.style.transition = zoomTransition(WHEEL_TRANSITION);
       zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
     },
     { passive: false },
   );
   let dragging = false;
+  let moved = false;
+  let suppressClick = false;
   let sx = 0,
     sy = 0,
     stx = 0,
@@ -327,12 +337,11 @@
     if (!curImg) return;
     if (scale > 1) {
       dragging = true;
+      moved = false;
       sx = e.clientX;
       sy = e.clientY;
       stx = tx;
       sty = ty;
-      curImg.style.transition = "none";
-      curImg.style.cursor = "grabbing";
       media.setPointerCapture?.(e.pointerId);
       return;
     }
@@ -354,6 +363,14 @@
   });
   media.addEventListener("pointermove", (e) => {
     if (dragging) {
+      if (!moved && Math.hypot(e.clientX - sx, e.clientY - sy) >= 5) {
+        moved = true;
+        if (curImg) {
+          curImg.style.transition = "none";
+          curImg.style.cursor = "grabbing";
+        }
+      }
+      if (!moved) return;
       tx = stx + (e.clientX - sx);
       ty = sty + (e.clientY - sy);
       applyTransform();
@@ -386,7 +403,8 @@
   const endPointer = (e: PointerEvent) => {
     if (dragging) {
       dragging = false;
-      if (curImg) curImg.style.transition = "transform .08s ease-out";
+      if (moved) suppressClick = true;
+      if (curImg) curImg.style.transition = zoomTransition(ZOOM_TRANSITION);
       applyTransform();
       return;
     }
@@ -395,6 +413,7 @@
     swipe = null;
     const img = curImg;
     if (!img || !s.axis) return;
+    suppressClick = true;
     const cancelled = e.type === "pointercancel";
     if (!cancelled && s.axis === "x" && current.length > 1) {
       const far = Math.abs(s.dx) > window.innerWidth * 0.25;
@@ -414,7 +433,7 @@
     }
     // Not far enough: spring back.
     const from = img.style.transform;
-    img.style.transition = "transform .08s ease-out";
+    img.style.transition = zoomTransition(ZOOM_TRANSITION);
     applyTransform();
     lb.style.backgroundColor = "";
     img.animate([{ transform: from }, { transform: img.style.transform }], {
@@ -424,14 +443,19 @@
   };
   media.addEventListener("pointerup", endPointer);
   media.addEventListener("pointercancel", endPointer);
-  media.addEventListener("dblclick", (e) => {
-    if (!curImg) return;
-    if (scale > 1) resetZoom();
-    else {
-      zoomAt(e.clientX, e.clientY, 2.4);
+  media.addEventListener("click", (e) => {
+    if (suppressClick) {
+      suppressClick = false;
       return;
     }
-    applyTransform();
+    if (!curImg || e.target !== curImg) return;
+    curImg.style.transition = zoomTransition(ZOOM_TRANSITION);
+    if (scale > 1) {
+      resetZoom();
+      applyTransform();
+    } else {
+      zoomAt(e.clientX, e.clientY, 2.4);
+    }
   });
 </script>
 
