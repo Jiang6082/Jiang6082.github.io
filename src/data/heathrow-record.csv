@@ -246,6 +246,7 @@ Ethiopian Airlines,ET,Star Alliance,777-300ER,No,,FALSE,,,Medium,
 Ethiopian Airlines,ET,Star Alliance,Dash 8-400,No,,FALSE,,,High,
 Etihad Airways,EY,None,787-9,Yes,"≈ 07:30 (EY11), ~13:00 (EY19), ~15:30 (EY21), ~19:30 (EY17)",FALSE,,,Medium,
 Etihad Airways,EY,None,787-10,Yes,"≈ 07:30 (EY11), ~13:00 (EY19), ~15:30 (EY21), ~19:30 (EY17)",FALSE,,,Medium,
+Etihad Airways,EY,None,A350-1000,Yes,Varies,FALSE,,,Medium,Seen at LHR: A6-XWC (Nov 2026)
 Etihad Airways,EY,None,A380-800,Occasional,Varies,FALSE,,,Medium,Returned to LHR on some flights
 Etihad Airways,EY,None,777-300ER,Occasional,Varies,FALSE,,,Low,
 Etihad Airways,EY,None,A320,No,,FALSE,,,Medium,
@@ -378,6 +379,7 @@ LOT Polish Airlines,LO,Star Alliance,E195,Occasional,Varies,FALSE,,,Low,
 LOT Polish Airlines,LO,Star Alliance,787-8,No,,FALSE,,,Medium,Long-haul
 LOT Polish Airlines,LO,Star Alliance,787-9,No,,FALSE,,,Medium,Long-haul
 LOT Polish Airlines,LO,Star Alliance,E170,No,,FALSE,,,Low,
+Loganair,LM,None,ERJ-145,Yes,Varies,FALSE,,,Medium,Seen at LHR: G-SAJI (Nov 2026)
 Lufthansa,LH,Star Alliance,A319,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
 Lufthansa,LH,Star Alliance,A320,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,Medium,
 Lufthansa,LH,Star Alliance,A320neo,Yes,≈ Frankfurt ~8-10 daily and Munich ~6-7 daily; roughly hourly 07:30–22:30,FALSE,,,High,

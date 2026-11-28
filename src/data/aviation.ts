@@ -89,6 +89,7 @@ const iataByAirline = new Map(
 // names the operator; the Heathrow record counts the photo for the brand.
 const BRANDS: Record<string, { brand: string; iata: string }> = {
   "lufthansa city airlines": { brand: "Lufthansa", iata: "VL" },
+  "klm cityhopper": { brand: "KLM", iata: "WA" },
 };
 export const iataFor = (airline: string) =>
   BRANDS[airline.toLowerCase()]?.iata ?? iataByAirline.get(airline.toLowerCase()) ?? airline.slice(0, 2).toUpperCase();

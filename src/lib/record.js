@@ -56,6 +56,7 @@ export function canonicalType(variant = "") {
     const series = m[1] === "350" && m[2] === "10" ? "1000" : `${m[2]}00`;
     return `A${m[1]}-${series}`;
   }
+  if (/^ERJ-?145[A-Z]{0,2}$/.test(v)) return "ERJ-145";
   if (/^BD-500-1A10$/.test(v)) return "A220-100";
   if (/^BD-500-1A11$/.test(v)) return "A220-300";
   if ((m = v.match(/^737-(7|8|9|10)$/))) return `737 MAX ${m[1]}`;
@@ -78,7 +79,7 @@ const ICAO = {
   "767-300ER": "B763", "767-400ER": "B764", "777-200": "B772", "777-200ER": "B772",
   "777-200LR": "B77L", "777-300": "B773", "777-300ER": "B77W", "777-9": "B779",
   "787-8": "B788", "787-9": "B789", "787-10": "B78X", E170: "E170", E175: "E175",
-  E190: "E190", E195: "E195", "E190-E2": "E290", "E195-E2": "E295", "ATR 72-500": "AT75",
+  E190: "E190", E195: "E195", "E190-E2": "E290", "E195-E2": "E295", "ERJ-145": "E145", "ATR 72-500": "AT75",
   "ATR 72-600": "AT76", "Dash 8-400": "DH8D", CRJ900: "CRJ9", C919: "C919", ARJ21: "AJ27",
 };
 /** "A380-800" → "A388"; unknown types fall back to the label itself. */
