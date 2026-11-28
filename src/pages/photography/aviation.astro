@@ -81,6 +81,8 @@ const aircraft = [...new Set(cards.map((c) => c.icao))]
 
 const latest = spots.map((s) => s.date).sort().at(-1) ?? "";
 const sample = cards.some((c) => c.sample);
+// Airframes in a special livery (anything in the CSV's livery column).
+const specials = cards.filter((c) => c.livery).length;
 const galleryGroups = cards.map((c) => ({ key: c.key, title: c.registration, items: c.items }));
 const json = (v: unknown) => JSON.stringify(v).replace(/</g, "\\u003c");
 const searchText = (c: Card) =>
@@ -177,6 +179,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         </div>
       </div>
       <div class="ph-panel-row">
+        <span class="ph-label">Livery</span>
+        <div class="ph-options" role="group" aria-label="Filter by livery">
+          <button type="button" class="ph-tile" data-livery="all" aria-pressed="true">All</button>
+          <button type="button" class="ph-tile" data-livery="special" aria-pressed="false" disabled={specials === 0}
+            >Special liveries <sub>{specials}</sub></button
+          >
+        </div>
+      </div>
+      <div class="ph-panel-row">
         <span class="ph-label">Group · Sort</span>
         <div class="ph-options as-view">
           <div class="ph-options" role="group" aria-label="Group by">
@@ -218,6 +229,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                   data-type={c.type}
                   data-date={c.latest}
                   data-search={searchText(c)}
+                  data-special={c.livery ? "yes" : "no"}
                 >
                   <a
                     class="av-photo ph-photo"
@@ -226,6 +238,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                     data-index="0"
                     aria-label={`Open photo of ${c.registration}`}
                   >
+                    {c.livery && <span class="av-badge">Special livery</span>}
                     <img
                       src={c.thumb.src}
                       srcset={c.thumb.srcSet.attribute}
@@ -284,6 +297,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     q: params.get("q") ?? "",
     airline: params.get("airline") ?? "all",
     icao: params.get("aircraft") ?? "all",
+    livery: params.get("livery") === "special" ? "special" : "all",
     group: (params.get("group") as Group) ?? "airline",
     sort: (params.get("sort") as Sort) ?? "type",
   };
@@ -320,6 +334,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       (c) =>
         (state.airline === "all" || c.dataset.airline === state.airline) &&
         (state.icao === "all" || c.dataset.icao === state.icao) &&
+        (state.livery === "all" || c.dataset.special === "yes") &&
         (!q || c.dataset.search!.includes(q)),
     );
     const reg = (a: HTMLElement, b: HTMLElement) => a.dataset.reg!.localeCompare(b.dataset.reg!);
@@ -366,7 +381,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   function finish(visible: HTMLElement[]) {
     empty.hidden = visible.length > 0;
     readout.textContent = `Showing ${pad(visible.length)} of ${pad(cards.length)}`;
-    for (const key of ["airline", "icao", "group", "sort"] as const)
+    for (const key of ["airline", "icao", "livery", "group", "sort"] as const)
       controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset[key] === state[key])),
       );
@@ -375,6 +390,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     if (state.q) next.set("q", state.q);
     if (state.airline !== "all") next.set("airline", state.airline);
     if (state.icao !== "all") next.set("aircraft", state.icao);
+    if (state.livery !== "all") next.set("livery", state.livery);
     if (state.group !== "airline") next.set("group", state.group);
     if (state.sort !== "type") next.set("sort", state.sort);
     const query = next.toString();
@@ -391,7 +407,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       render();
     }, 120);
   });
-  for (const key of ["airline", "icao", "group", "sort"] as const)
+  for (const key of ["airline", "icao", "livery", "group", "sort"] as const)
     controls.querySelectorAll<HTMLButtonElement>(`[data-${key}]`).forEach((b) =>
       b.addEventListener("click", () => {
         (state as Record<string, string>)[key] = b.dataset[key]!;
@@ -500,6 +516,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     padding: 0.25em 0.5em;
     border: 1px solid var(--border);
     color: var(--muted);
+  }
+  .av-photo {
+    position: relative;
+  }
+  /* Special liveries are marked on the photo itself. */
+  .av-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 1;
+    padding: 0.3em 0.55em;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: 700 var(--fs-micro) / 1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .av-tag.is-livery {
     border-color: var(--accent);
